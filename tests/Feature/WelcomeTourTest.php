@@ -10,6 +10,7 @@ use Capell\Admin\Filament\Plugin\CapellAdminPlugin;
 use Capell\Core\Support\Database\RuntimeSchemaState;
 use Capell\Tests\Fixtures\Models\User;
 use Capell\WelcomeTour\Actions\BuildWelcomeTourChecklistAction;
+use Capell\WelcomeTour\Actions\CanShowWelcomeTourStepAction;
 use Capell\WelcomeTour\Actions\Users\CanShowWelcomeTourAction;
 use Capell\WelcomeTour\Actions\Users\GetUserWelcomeTourStateAction;
 use Capell\WelcomeTour\Actions\Users\RecordWelcomeTourStepAction;
@@ -42,13 +43,17 @@ use Illuminate\Contracts\Session\Session;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Http\Request;
+use Illuminate\Session\SessionManager;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Schema as SchemaFacade;
 use Illuminate\Support\HtmlString;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 use function Livewire\store;
+
+use Spatie\Permission\PermissionRegistrar;
 
 beforeEach(function (): void {
     config()->set('capell-welcome-tour.presentation_mode', false);
@@ -103,7 +108,7 @@ it('waits for the requested filament tour registry entry before automatically op
         ->not->toContain('setTimeout(');
 });
 
-it('skips an active single-step chapter when its rendered target is missing', function (): void {
+it('reports an unavailable target without completing its chapter', function (): void {
     $html = view('capell-welcome-tour::livewire.welcome-tour-orchestrator', [
         'autoStart' => false,
         'tourIdToOpen' => null,
@@ -112,8 +117,9 @@ it('skips an active single-step chapter when its rendered target is missing', fu
     ])->render();
 
     expect($html)
-        ->toContain('document.querySelector(targetSelector)')
-        ->toContain('capell-welcome-tour::complete-chapter')
+        ->toContain('document.querySelector(selector)')
+        ->toContain('capell-welcome-tour::target-unavailable')
+        ->not->toContain('capell-welcome-tour::complete-chapter')
         ->toContain('welcome-tour-sites');
 });
 
@@ -137,8 +143,9 @@ it('sends the welcome message as a persistent filament notification', function (
     SchemaFacade::dropIfExists('sites');
     SchemaFacade::create('sites', static function (Blueprint $table): void {
         $table->id();
+        $table->uuid('uuid');
     });
-    DB::table('sites')->insert(['id' => 1]);
+    DB::table('sites')->insert(['uuid' => (string) Str::uuid(), 'id' => 1]);
     resolve(RuntimeSchemaState::class)->refreshTable('sites');
 
     try {
@@ -189,7 +196,7 @@ it('activates a presentation tour before the renderer resolves its chapters', fu
     );
 
     $request = Request::create('/admin');
-    $session = app('session')->driver();
+    $session = resolve(SessionManager::class)->driver();
     throw_unless($session instanceof Session, RuntimeException::class, 'Expected a Laravel session driver.');
     $request->setLaravelSession($session);
     app()->instance('request', $request);
@@ -223,7 +230,7 @@ it('opens the first configured chapter for an active normal session', function (
     session()->put('capell_welcome_tour.active', true);
 
     $request = Request::create('/admin');
-    $session = app('session')->driver();
+    $session = resolve(SessionManager::class)->driver();
     throw_unless($session instanceof Session, RuntimeException::class, 'Expected a Laravel session driver.');
     $request->setLaravelSession($session);
     app()->instance('request', $request);
@@ -709,7 +716,6 @@ it('records tour progress and resumes at the first incomplete step', function ()
         key: 'capell-welcome-tour.dashboard',
         title: 'Dashboard',
         description: 'Use the dashboard',
-        element: null,
         sort: 20,
     );
 
@@ -877,4 +883,18 @@ it('only adds the user resource tour toggle while editing users', function (): v
             UserSchemaHookEnum::AfterIdentity,
             UserSchemaContextData::forEdit($record, [], 'default'),
         ))->toHaveCount(1);
+});
+
+it('does not use a scalar role to bypass team scoped tour restrictions', function (): void {
+    $user = User::factory()->create();
+    $user->setAttribute('role', 'admin');
+    config(['permission.teams' => true]);
+    resolve(PermissionRegistrar::class)->teams = true;
+
+    try {
+        expect(CanShowWelcomeTourStepAction::run(['roles' => ['admin']], $user))->toBeFalse();
+    } finally {
+        config(['permission.teams' => false]);
+        resolve(PermissionRegistrar::class)->teams = false;
+    }
 });

@@ -34,7 +34,7 @@ Welcome Tour replaces the default admin dashboard with `WelcomeTourDashboard`, r
 ],
 ```
 
-`WelcomeTourStepRegistrar` translates `title` and `description` when the values are real translation keys, accepts literal strings otherwise, and skips rows without a key. Do not pre-escape descriptions in config; keep them plain text.
+`WelcomeTourStepRegistrar` translates `title` and `description` when the values are real translation keys, accepts literal strings otherwise, and derives deterministic keys and editor ordering when a config row omits them. The editor generates a persistent key for each new row; explicit keys and sort values remain supported. Do not pre-escape descriptions in config; keep them plain text.
 
 ## Register a Step From Code
 
@@ -107,7 +107,7 @@ Configured steps can be limited by:
 
 Code-side contributors can pass a `visible` closure to `WelcomeTourStepContributor::dashboardStep()` or `WelcomeTourStepContributor::contextualStep()` for package-specific targeting.
 
-The shipped default sequence includes anchored dashboard steps for the admin menu, header tools, Sites, Pages, and Media so new editors see the main Capell work areas without another package contributing steps. The contextual defaults then add page-scoped guidance for the Sites, Pages, and Media admin surfaces when those Filament pages opt into `HasContextualWelcomeTour`.
+The package ships a generic getting started checklist and no dashboard guided steps. Applications and packages contribute their own steps. An empty guided sequence is a supported state, not an incomplete installation. Contextual tours remain separate and appear only on opted-in page surfaces.
 
 ## Checklist
 
@@ -139,3 +139,13 @@ The package table also records completed step keys and snooze state. When a user
 ```bash
 vendor/bin/pest packages/welcome-tour/tests --configuration=phpunit.xml
 ```
+
+## Operator controls and developer authoring
+
+Extension settings lead with **Enabled**, the current actor's checklist and chapter summary, **Preview as me**, and **Restart my tour**. The summary uses the saved registry and applies the current actor's visibility and resource permissions. Save settings before previewing. Preview runs the existing tour renderer with isolated session state; completion, dismissal and snooze leave database preferences and progress unchanged. Restart clears only the current actor's main tour progress and snooze. Account eligibility remains a separate User form preference; enabling it no longer clears completed steps.
+
+**Advanced developer** contains the optional step editor. Start with title, description and destination. Destination details accept `@dashboard`, an existing local path, or a resource/page class and page name. Resources take precedence. Unresolvable destinations and unsupported selectors fail form validation. New keys are generated once; dragging rows controls ordering unless a numeric sort override is supplied. A blank chapter groups steps by destination; explicitly grouped steps must share the same destination. Audience and Appearance are collapsed groups.
+
+Use stable selectors composed of tags, IDs, classes and attributes, optionally joined by combinators. The live controller checks remaining targets on the rendered destination before opening the preview, reports missing or invalid targets, and does not mark them complete. Per-step progress is recorded for resume; chapter and step positions are visible in the overlay title.
+
+Screenshot routes and the light/dark viewport matrix are specified in `screenshots.json`. Captures must be produced separately in an installed App; this change supplies Livewire and executable DOM tests, not browser evidence.

@@ -76,7 +76,24 @@ final class DatabaseWelcomeTourStateStore implements WelcomeTourStateStore
             'updated_at' => Date::now(),
         ]);
 
-        $this->removeDismissedHint($user);
+        if ($tourKey === 'capell_admin_welcome') {
+            $this->removeDismissedHint($user);
+        }
+    }
+
+    public function enable(Model $user, string $tourKey): void
+    {
+        if (WelcomeTourSchema::hasUserStateTable()) {
+            DB::table('welcome_tour_user_states')->updateOrInsert($this->identity($user, $tourKey), [
+                'snoozed_until' => null,
+                'dismissed_at' => null,
+                'updated_at' => Date::now(),
+            ]);
+        }
+
+        if ($tourKey === 'capell_admin_welcome') {
+            $this->removeDismissedHint($user);
+        }
     }
 
     public function restartProgress(Model $user, string $tourKey): void
@@ -139,7 +156,7 @@ final class DatabaseWelcomeTourStateStore implements WelcomeTourStateStore
 
     public function dismiss(Model $user, string $tourKey): void
     {
-        if ($user instanceof AuthenticatableUser && WelcomeTourSchema::hasDismissedHintsColumn($user->getTable())) {
+        if ($tourKey === 'capell_admin_welcome' && $user instanceof AuthenticatableUser && WelcomeTourSchema::hasDismissedHintsColumn($user->getTable())) {
             DismissHintAction::run($user, CanShowWelcomeTourAction::DISMISSED_HINT_KEY);
 
             return;

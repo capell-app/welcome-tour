@@ -18,25 +18,18 @@ This guide is for owners and operators who set up the admin onboarding tour, and
 ### How to turn the welcome tour on
 
 1. Open the **Welcome tour** settings in the admin.
-2. Switch on **Enable welcome tour**. This allows the tour to be shown to admins. Per-user preferences only take effect while this is on.
+2. Switch on **Enabled**. This allows the tour to be shown to admins. Per-user preferences only take effect while this is on.
 3. Save.
 
 ![A site owner configures the enabled state and tour steps from the extension management surface.](screenshots/welcome-tour-settings.png)
 
+### Preview your onboarding
+
+The settings summary shows your getting started checklist and available guided chapters. **No guided steps are registered** means the checklist works on its own; you do not need to fill in the developer builder. Save any settings changes, then select **Preview as me** to try the saved sequence using your own roles and access. Preview leaves your saved progress and preferences unchanged.
+
 ### How to edit the tour steps
 
-1. Open the **Welcome tour** settings.
-2. Find **Tour steps**. Each step is one pointer in the tour.
-3. To add a step, add a new item and fill in:
-    - **Title**: the heading for the step.
-    - **Description**: the text the admin reads.
-    - **Icon** and **Icon color**: optional, to give the step a visual cue.
-    - **Sort**: a number that sets the order. Lower numbers come first.
-    - **Visible**: leave on for the step to appear.
-4. To change the order, drag the steps into the sequence you want.
-5. Save when you are happy.
-
-Keep the tour short and focused on the first few things a new admin needs. Update the steps whenever your admin screens change so the tour stays accurate.
+Open **Advanced developer** only when you need custom guidance. Add a title, description and an existing local destination. Keys are generated automatically and dragging controls ordering. Destination contains optional resource, selector and chapter details; Audience contains visibility, roles and the new-user window; Appearance contains icons and colours. Use Key and order overrides only when integrating with existing steps. Save, then preview to check targets on their destination pages.
 
 ### How to limit a step to certain admins
 
@@ -47,13 +40,13 @@ Keep the tour short and focused on the first few things a new admin needs. Updat
 
 ### How to restart the tour for yourself
 
-1. Open the option to **Restart tour** from the dashboard.
-2. The tour will start again the next time the dashboard loads.
+1. Open Welcome Tour settings and select **Restart my tour**.
+2. Your guided progress and snooze are cleared, and the first available chapter opens. Other users and contextual tours are unaffected.
 
 ### How to let a specific user see the tour again
 
 1. Go to the user's account in **Users** and open their edit form.
-2. Switch on **Show welcome tour**. This controls whether the tour is available for that user account.
+2. Switch on **Show welcome tour**. This clears dismissal and snooze for that account without resetting completed steps. Restarting progress is a separate personal control.
 3. Save. The next time that user opens the dashboard, the tour is available to them again.
 
 ![An administrator toggles whether a user should see the welcome tour again from the user edit form.](screenshots/welcome-tour-user-toggle.png)
@@ -62,7 +55,7 @@ Keep the tour short and focused on the first few things a new admin needs. Updat
 
 ### Turn on first
 
-- **Enable welcome tour** with a short set of steps. Get the core walkthrough working before you tailor it.
+- **Enabled** with a short set of steps. Get the core walkthrough working before you tailor it.
 
 ### Add when needed
 
@@ -84,7 +77,7 @@ Keep the tour short and focused on the first few things a new admin needs. Updat
 
 | What you see                         | What it means                                                  | What to do                                                     |
 | ------------------------------------ | -------------------------------------------------------------- | -------------------------------------------------------------- |
-| The tour does not appear for anyone  | **Enable welcome tour** is off                                 | Open the settings and switch on **Enable welcome tour**        |
+| The tour does not appear for anyone  | **Enabled** is off                                             | Open the settings and switch on **Enabled**                    |
 | One admin never sees the tour        | That user's **Show welcome tour** is off, or they dismissed it | Open their account and switch on **Show welcome tour**         |
 | A step shows for the wrong people    | The step **Roles** or **First-run days** limit it              | Edit the step and adjust **Roles** or clear **First-run days** |
 | A step is unclear or out of date     | The screen it describes has changed                            | Edit the step's **Description** in the settings                |

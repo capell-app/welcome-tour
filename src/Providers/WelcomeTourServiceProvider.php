@@ -16,6 +16,7 @@ use Capell\WelcomeTour\Filament\Extenders\WelcomeTourPanelExtender;
 use Capell\WelcomeTour\Filament\Settings\WelcomeTourSettingsSchema;
 use Capell\WelcomeTour\Filament\Widgets\WelcomeTourChecklistFilamentWidget;
 use Capell\WelcomeTour\Livewire\WelcomeTourOrchestrator;
+use Capell\WelcomeTour\Livewire\WelcomeTourSettingsControls;
 use Capell\WelcomeTour\Settings\WelcomeTourSettings;
 use Capell\WelcomeTour\Support\ContextualWelcomeTourRegistry;
 use Capell\WelcomeTour\Support\WelcomeTourStepRegistrar;
@@ -53,6 +54,7 @@ final class WelcomeTourServiceProvider extends AbstractPackageServiceProvider
             ->hasTranslations();
     }
 
+    #[Override]
     public function registeringPackage(): void
     {
         parent::registeringPackage();
@@ -68,6 +70,7 @@ final class WelcomeTourServiceProvider extends AbstractPackageServiceProvider
         }
 
         Livewire::component('capell-welcome-tour.orchestrator', WelcomeTourOrchestrator::class);
+        Livewire::component('capell-welcome-tour.settings-controls', WelcomeTourSettingsControls::class);
         $this->app->tag([WelcomeTourPanelExtender::class], AdminPanelExtender::TAG);
         $this->app->tag([WelcomeTourUserResourceBridge::class], UserResourceBridge::TAG);
 

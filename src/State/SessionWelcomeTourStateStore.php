@@ -15,7 +15,7 @@ final class SessionWelcomeTourStateStore implements WelcomeTourStateStore
 {
     private const string SESSION_KEY = 'capell_welcome_tour';
 
-    public function __construct(private readonly Session $session) {}
+    public function __construct(private readonly Session $session, private readonly string $namespace = self::SESSION_KEY) {}
 
     public function state(Model $user, string $tourKey): WelcomeTourUserStateData
     {
@@ -55,6 +55,11 @@ final class SessionWelcomeTourStateStore implements WelcomeTourStateStore
             'dismissed' => false,
             'auto_started' => true,
         ]);
+    }
+
+    public function enable(Model $user, string $tourKey): void
+    {
+        $this->put($tourKey, [...$this->arrayState($tourKey), 'dismissed' => false, 'snoozed_until' => null]);
     }
 
     public function restartProgress(Model $user, string $tourKey): void
@@ -133,6 +138,6 @@ final class SessionWelcomeTourStateStore implements WelcomeTourStateStore
 
     private function key(string $tourKey): string
     {
-        return self::SESSION_KEY . '.' . $tourKey;
+        return $this->namespace . '.' . $tourKey;
     }
 }

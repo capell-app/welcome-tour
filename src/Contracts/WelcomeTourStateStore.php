@@ -15,6 +15,8 @@ interface WelcomeTourStateStore
 
     public function reset(Model $user, string $tourKey): void;
 
+    public function enable(Model $user, string $tourKey): void;
+
     public function restartProgress(Model $user, string $tourKey): void;
 
     public function setChecklistItemCompleted(Model $user, string $itemKey, bool $completed, string $tourKey): void;

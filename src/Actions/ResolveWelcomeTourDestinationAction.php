@@ -75,7 +75,10 @@ final class ResolveWelcomeTourDestinationAction
             return null;
         }
 
-        if (str_starts_with($destination, '//')) {
+        if (str_starts_with($destination, '//')
+            || str_contains($destination, '\\')
+            || preg_match('/[\x00-\x20]/', $destination) === 1
+            || ! in_array(parse_url($destination, PHP_URL_SCHEME), [null, 'http', 'https'], true)) {
             return null;
         }
 

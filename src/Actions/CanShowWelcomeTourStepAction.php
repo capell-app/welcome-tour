@@ -55,7 +55,12 @@ final class CanShowWelcomeTourStepAction
                     }
                 }
             } catch (Throwable) {
-                //
+                return false;
+            }
+
+            // A legacy scalar role must not override a scoped permission denial.
+            if (config('permission.teams')) {
+                return false;
             }
         }
 

@@ -13,8 +13,8 @@ use Capell\WelcomeTour\Manifest\WelcomeTourHealthContribution;
 use Capell\WelcomeTour\Manifest\WelcomeTourSettingsContribution;
 use Capell\WelcomeTour\Settings\WelcomeTourSettings;
 use Filament\Forms\Components\Repeater;
-use Filament\Schemas\Components\Grid;
-use Filament\Schemas\Components\Section;
+use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Livewire;
 use Filament\Schemas\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema as SchemaFacade;
@@ -26,11 +26,13 @@ it('declares welcome tour settings metadata and schema structure', function (): 
     expect(WelcomeTourSettings::group())->toBe('welcome-tour')
         ->and(WelcomeTourSettings::schema())->toBe(WelcomeTourSettingsSchema::class)
         ->and(WelcomeTourHealthCheck::compatibleCapellApiVersion())->toBe('^1.0')
-        ->and($components)->toHaveCount(1)
-        ->and($components[0])->toBeInstanceOf(Section::class)
+        ->and($components)->toHaveCount(2)
+        ->and($components[0]->getHeading())->toBe('Welcome tour')
         ->and($sectionComponents)->toHaveCount(2)
-        ->and($sectionComponents[0])->toBeInstanceOf(Grid::class)
-        ->and($sectionComponents[1])->toBeInstanceOf(Repeater::class);
+        ->and($sectionComponents[0])->toBeInstanceOf(Toggle::class)
+        ->and($sectionComponents[1])->toBeInstanceOf(Livewire::class)
+        ->and($components[1]->isCollapsed())->toBeTrue()
+        ->and(welcomeTourCoverageChildComponents($components[1])[0])->toBeInstanceOf(Repeater::class);
 });
 
 it('reports real welcome tour health diagnostics', function (): void {

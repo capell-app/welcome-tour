@@ -6,8 +6,10 @@ namespace Capell\WelcomeTour\Support;
 
 use Capell\Admin\Facades\CapellAdmin;
 use Capell\WelcomeTour\Actions\CanShowWelcomeTourStepAction;
+use Capell\WelcomeTour\Actions\NormalizeWelcomeTourStepsAction;
 use Capell\WelcomeTour\Actions\ResolveWelcomeTourDestinationAction;
 use Capell\WelcomeTour\Actions\ResolveWelcomeTourEnabledAction;
+use Capell\WelcomeTour\Rules\WelcomeTourSelector;
 use Capell\WelcomeTour\Settings\WelcomeTourSettings;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Lang;
@@ -24,7 +26,7 @@ final class WelcomeTourStepRegistrar
         foreach ($this->steps() as $step) {
             $key = $this->stringValue($step, 'key');
 
-            if ($key === '') {
+            if ($key === '' || ! WelcomeTourSelector::accepts($step['element'] ?? null)) {
                 continue;
             }
 
@@ -47,7 +49,7 @@ final class WelcomeTourStepRegistrar
                 iconColor: $this->nullableStringValue($step, 'icon_color'),
                 sort: $this->integerValue($step, 'sort', 100),
                 visible: fn (): bool => $this->isVisible($step),
-                chapter: $this->nullableStringValue($step, 'chapter') ?? 'dashboard',
+                chapter: $this->nullableStringValue($step, 'chapter') ?? 'destination.' . substr(hash('sha256', $route), 0, 12),
                 route: $route,
             );
         }
@@ -81,10 +83,7 @@ final class WelcomeTourStepRegistrar
      */
     private function normalizeSteps(array $steps): array
     {
-        return array_values(collect($steps)
-            ->filter(fn (mixed $step): bool => is_array($step))
-            ->values()
-            ->all());
+        return NormalizeWelcomeTourStepsAction::run($steps);
     }
 
     /**

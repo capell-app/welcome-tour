@@ -21,7 +21,7 @@ final class SetUserWelcomeTourPreferenceAction
         $store = resolve(WelcomeTourStateStoreResolver::class)->resolve();
 
         if ($enabled) {
-            $store->reset($user, $tourKey);
+            $store->enable($user, $tourKey);
 
             return;
         }

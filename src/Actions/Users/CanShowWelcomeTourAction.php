@@ -6,6 +6,7 @@ namespace Capell\WelcomeTour\Actions\Users;
 
 use Capell\WelcomeTour\Actions\ResolveWelcomeTourEnabledAction;
 use Capell\WelcomeTour\Support\WelcomeTourSchema;
+use Capell\WelcomeTour\Support\WelcomeTourStateStoreResolver;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Lorisleiva\Actions\Concerns\AsFake;
@@ -34,7 +35,9 @@ final class CanShowWelcomeTourAction
             return false;
         }
 
-        if (config('capell-welcome-tour.presentation_mode', false)) {
+        if ($tourKey !== 'capell_admin_welcome'
+            || resolve(WelcomeTourStateStoreResolver::class)->isPreview()
+            || config('capell-welcome-tour.presentation_mode', false)) {
             return true;
         }
 

@@ -33,37 +33,139 @@ Evidence: [`src/Support/ContextualWelcomeTourRegistry.php`](src/Support/Contextu
 
 Screenshot contract: `docs/screenshots.json`.
 
-![Admin dashboard with the Welcome Tour onboarding checklist](docs/screenshots/welcome-tour-dashboard.png)
+![Capell admin dashboard with the Welcome Tour onboarding checklist](docs/screenshots/welcome-tour-dashboard.png)
 
 ![Welcome tour overlay showing the first configured onboarding step](docs/screenshots/welcome-tour-overlay.png)
 
-- Admin dashboard with the Welcome Tour onboarding checklist (admin, required).
-- Welcome tour overlay showing the first configured onboarding step (admin, required).
-- Welcome tour settings group with enabled toggle and step repeater (admin, required).
-- User edit form with Show welcome tour toggle (admin, required).
+Desktop, tablet, and mobile variants remain defined in the screenshot contract; this list groups them by workflow.
+
+- Capell admin dashboard with the Welcome Tour onboarding checklist (admin, required evidence).
+- Welcome tour overlay showing the first configured onboarding step (admin, required evidence).
+- Welcome Tour settings with ordinary onboarding controls and collapsed developer details (admin, required evidence).
+- User edit form with Show welcome tour toggle (admin, required evidence).
+- Capell admin dashboard with the Welcome Tour onboarding checklist with admin sidebar menu open (admin, supplementary evidence).
+- Welcome Tour grouped developer authoring and destination validation (admin, required evidence).
 
 ## Technical Shape
 
-- Service providers: `Capell\WelcomeTour\Providers\WelcomeTourServiceProvider`.
-- Config files: `packages/welcome-tour/config/capell-welcome-tour.php`.
-- Migrations: `packages/welcome-tour/database/migrations/2026_06_04_000001_create_welcome_tour_user_states_table.php`.
-- Settings migrations: `packages/welcome-tour/database/settings/2026_05_10_190836_01_add_welcome_tour_settings.php`.
-- Settings classes: `WelcomeTourSettings`.
-- Filament classes: `HasContextualWelcomeTour`, `WelcomeTourPanelExtender`, `WelcomeTourDashboard`, `WelcomeTourSettingsSchema`, `WelcomeTourChecklistFilamentWidget`.
-- Events: `WelcomeTourCompleted`, `WelcomeTourRestarted`, `WelcomeTourSnoozed`, `WelcomeTourStarted`, `WelcomeTourStepCompleted`.
-- Actions: `BuildWelcomeTourChecklistAction`, `CanShowWelcomeTourStepAction`, `ResolveWelcomeTourEnabledAction`, `AuthorizeWelcomeTourUserMutationAction`, `CanShowWelcomeTourAction`, `GetUserWelcomeTourStateAction`, `RecordWelcomeTourStepAction`, `ResetUserWelcomeTourAction`, `ResolveWelcomeTourStepsForUserAction`, `SetUserWelcomeTourPreferenceAction`, `SnoozeUserWelcomeTourAction`.
-- Data objects: `WelcomeTourChecklistItemData`, `WelcomeTourUserStateData`.
-- Manifest action API: `buildWelcomeTourChecklist: Capell\WelcomeTour\Actions\BuildWelcomeTourChecklistAction`, `canShowWelcomeTour: Capell\WelcomeTour\Actions\Users\CanShowWelcomeTourAction`, `canShowWelcomeTourStep: Capell\WelcomeTour\Actions\CanShowWelcomeTourStepAction`, `getUserWelcomeTourState: Capell\WelcomeTour\Actions\Users\GetUserWelcomeTourStateAction`, `recordWelcomeTourStep: Capell\WelcomeTour\Actions\Users\RecordWelcomeTourStepAction`, `resetUserWelcomeTour: Capell\WelcomeTour\Actions\Users\ResetUserWelcomeTourAction`, `resolveWelcomeTourEnabled: Capell\WelcomeTour\Actions\ResolveWelcomeTourEnabledAction`, `resolveWelcomeTourStepsForUser: Capell\WelcomeTour\Actions\Users\ResolveWelcomeTourStepsForUserAction`, `setUserWelcomeTourPreference: Capell\WelcomeTour\Actions\Users\SetUserWelcomeTourPreferenceAction`, `snoozeUserWelcomeTour: Capell\WelcomeTour\Actions\Users\SnoozeUserWelcomeTourAction`.
-- Manifest contributions: `dashboard-widget: Capell\WelcomeTour\Manifest\WelcomeTourChecklistWidgetContribution`, `health-check: Capell\WelcomeTour\Manifest\WelcomeTourHealthContribution`, `setting: Capell\WelcomeTour\Manifest\WelcomeTourSettingsContribution`.
-- Health checks: `Capell\WelcomeTour\Health\WelcomeTourHealthCheck`.
-- Blade views: `packages/welcome-tour/resources/views/filament/widgets/welcome-tour-checklist.blade.php`.
-- Cache tags: `welcome-tour`.
+### Service providers
+
+- `Capell\WelcomeTour\Providers\WelcomeTourServiceProvider`
+
+### Config files
+
+- `packages/welcome-tour/config/capell-welcome-tour.php`
+
+### Migrations
+
+- `packages/welcome-tour/database/migrations/2026_06_04_000001_create_welcome_tour_user_states_table.php`
+- `packages/welcome-tour/database/migrations/2026_07_19_000001_add_checklist_state_to_welcome_tour_user_states_table.php`
+
+### Settings migrations
+
+- `packages/welcome-tour/database/settings/2026_05_10_190836_01_add_welcome_tour_settings.php`
+- `packages/welcome-tour/database/settings/2026_07_19_000001_upgrade_welcome_tour_chapter_steps.php`
+
+### Settings classes
+
+- `WelcomeTourSettings`
+
+### Filament classes
+
+- `HasContextualWelcomeTour`
+- `WelcomeTourPanelExtender`
+- `WelcomeTourDashboard`
+- `WelcomeTourSettingsSchema`
+- `WelcomeTourChecklistFilamentWidget`
+
+### Livewire components
+
+- `WelcomeTourOrchestrator`
+- `WelcomeTourSettingsControls`
+
+### Extension contracts
+
+- `WelcomeTourReadinessResolver`
+- `WelcomeTourStateStore`
+
+### Events
+
+- `WelcomeTourCompleted`
+- `WelcomeTourRestarted`
+- `WelcomeTourSnoozed`
+- `WelcomeTourStarted`
+- `WelcomeTourStepCompleted`
+
+### Actions
+
+- `BuildWelcomeTourChecklistAction`
+- `BuildWelcomeTourSummaryAction`
+- `CanShowWelcomeTourStepAction`
+- `NormalizeWelcomeTourStepsAction`
+- `ResolveWelcomeTourChaptersAction`
+- `ResolveWelcomeTourDestinationAction`
+- `ResolveWelcomeTourEnabledAction`
+- `AuthorizeWelcomeTourUserMutationAction`
+- `CanShowWelcomeTourAction`
+- `GetUserWelcomeTourStateAction`
+- `RecordWelcomeTourStepAction`
+- `ResetUserWelcomeTourAction`
+- `ResolveWelcomeTourStepsForUserAction`
+- `RestartWelcomeTourProgressAction`
+- `SetUserWelcomeTourPreferenceAction`
+- `SetWelcomeTourChecklistItemCompletionAction`
+- `SetWelcomeTourChecklistVisibilityAction`
+- `SnoozeUserWelcomeTourAction`
+- `StartWelcomeTourForCurrentUserAction`
+
+### Data objects
+
+- `WelcomeTourChapterData`
+- `WelcomeTourChecklistItemData`
+- `WelcomeTourReadinessData`
+- `WelcomeTourSummaryData`
+- `WelcomeTourUserStateData`
+
+### Manifest action API
+
+- `buildWelcomeTourChecklist: Capell\WelcomeTour\Actions\BuildWelcomeTourChecklistAction`
+- `canShowWelcomeTour: Capell\WelcomeTour\Actions\Users\CanShowWelcomeTourAction`
+- `canShowWelcomeTourStep: Capell\WelcomeTour\Actions\CanShowWelcomeTourStepAction`
+- `getUserWelcomeTourState: Capell\WelcomeTour\Actions\Users\GetUserWelcomeTourStateAction`
+- `recordWelcomeTourStep: Capell\WelcomeTour\Actions\Users\RecordWelcomeTourStepAction`
+- `resetUserWelcomeTour: Capell\WelcomeTour\Actions\Users\ResetUserWelcomeTourAction`
+- `resolveWelcomeTourEnabled: Capell\WelcomeTour\Actions\ResolveWelcomeTourEnabledAction`
+- `resolveWelcomeTourStepsForUser: Capell\WelcomeTour\Actions\Users\ResolveWelcomeTourStepsForUserAction`
+- `setUserWelcomeTourPreference: Capell\WelcomeTour\Actions\Users\SetUserWelcomeTourPreferenceAction`
+- `snoozeUserWelcomeTour: Capell\WelcomeTour\Actions\Users\SnoozeUserWelcomeTourAction`
+
+### Manifest contributions
+
+- `dashboard-widget: Capell\WelcomeTour\Manifest\WelcomeTourChecklistWidgetContribution`
+- `health-check: Capell\WelcomeTour\Manifest\WelcomeTourHealthContribution`
+- `setting: Capell\WelcomeTour\Manifest\WelcomeTourSettingsContribution`
+
+### Health checks
+
+- `Capell\WelcomeTour\Health\WelcomeTourHealthCheck`
+
+### Blade views
+
+- `packages/welcome-tour/resources/views/filament/actions/replay-tour.blade.php`
+- `packages/welcome-tour/resources/views/filament/settings/controls.blade.php`
+- `packages/welcome-tour/resources/views/filament/widgets/welcome-tour-checklist.blade.php`
+- `packages/welcome-tour/resources/views/livewire/welcome-tour-orchestrator.blade.php`
+
+### Cache tags
+
+- `welcome-tour`
+
 
 ## Data Model
 
 - Required tables: `welcome_tour_user_states`.
 - Core record references in migrations: `users via user_id`.
-- Migration files: `2026_06_04_000001_create_welcome_tour_user_states_table.php`.
+- Migration files: `2026_06_04_000001_create_welcome_tour_user_states_table.php`, `2026_07_19_000001_add_checklist_state_to_welcome_tour_user_states_table.php`.
 - Migration impact: run host migrations through the package install flow before opening package surfaces.
 - Deletion/retention behaviour: Docs gap: migrations and manifest contributions do not prove a cascade, pruning command, or timed retention policy.
 
@@ -72,7 +174,7 @@ Screenshot contract: `docs/screenshots.json`.
 - Required packages: `capell-app/admin`.
 - Admin navigation: no admin page or resource contribution is declared.
 - Admin/editor extensions: `dashboard-widget: WelcomeTourChecklistWidgetContribution`.
-- Permissions: none declared in `capell.json`.
+- Permissions: no package permission declarations or Shield gates detected; host access rules still apply.
 - Public routes: none declared.
 - Database changes: package migrations are declared.
 - Config: `config/capell-welcome-tour.php`.
@@ -98,8 +200,7 @@ Screenshot contract: `docs/screenshots.json`.
 ## Quick Start
 
 1. Install the package: `composer require capell-app/welcome-tour`.
-2. Run the required setup: `php artisan migrate`.
-3. Open the Admin dashboard rendered through WelcomeTourDashboard and confirm the admin workflow loads.
+2. Open a verified package admin surface and confirm Welcome Tour is available.
 
 ## Next Steps
 

@@ -13,13 +13,18 @@
             "targetType": "admin-route",
             "target": "/admin",
             "required": true,
-            "notes": "Capture from a disposable installed Capell application with Welcome Tour enabled and onboarding checklist state available for the authenticated administrator.",
+            "notes": "Capture from a disposable installed Capell application with Welcome Tour enabled and onboarding checklist state available for the authenticated administrator. Capture at 1440, 768 and 360px in both schemes; reject overflow, focus-order and console/network/backend errors.",
             "useCase": "A first-time administrator lands on the dashboard checklist and can launch onboarding.",
             "screenshotPath": "packages/welcome-tour/docs/screenshots/welcome-tour-dashboard.png",
             "covers": [
                 "packages/welcome-tour/src/Filament/Widgets/WelcomeTourChecklistFilamentWidget.php"
             ],
-            "colorSchemes": ["light", "dark"]
+            "colorSchemes": ["light", "dark"],
+            "viewport": "desktop",
+            "requiredViewport": {
+                "width": 1440,
+                "height": 900
+            }
         },
         {
             "id": "welcome-tour-overlay",
@@ -44,21 +49,34 @@
                 }
             ],
             "waitFor": ".driver-popover",
-            "notes": "Use an admin account that has not dismissed the tour.",
+            "notes": "Install real registered steps with available DOM targets. Prove chapter and step progress, Next, Previous, Done, Snooze and dismissal; no dashboard fallback counts. Capture at 1440, 768 and 360px in both schemes; reject overflow, focus-order and console/network/backend errors.",
             "useCase": "A first-time administrator sees the first configured tour step overlay.",
-            "screenshotPath": "packages/welcome-tour/docs/screenshots/welcome-tour-overlay.png"
+            "screenshotPath": "packages/welcome-tour/docs/screenshots/welcome-tour-overlay.png",
+            "viewport": "desktop",
+            "colorSchemes": ["light", "dark"],
+            "requiredViewport": {
+                "width": 1440,
+                "height": 900
+            }
         },
         {
             "id": "welcome-tour-settings",
-            "title": "Welcome tour settings action with enabled toggle and step repeater.",
+            "title": "Welcome Tour settings with ordinary onboarding controls and collapsed developer details.",
             "package": "welcome-tour",
             "surface": "admin",
             "targetType": "admin-route",
             "target": "/admin/extensions?manage=capell-app%2Fwelcome-tour&surface=welcome-tour",
             "required": true,
-            "notes": "Open the Welcome Tour settings action from the Extensions manager after publishing and running the package settings migration.",
-            "useCase": "A site owner configures the enabled state and tour step repeater from the extension management surface.",
-            "screenshotPath": "packages/welcome-tour/docs/screenshots/welcome-tour-settings.png"
+            "notes": "Open the Welcome Tour settings action from the Extensions manager after publishing and running the package settings migration. Capture at 1440, 768 and 360px in both schemes; reject overflow, focus-order and console/network/backend errors.",
+            "useCase": "An owner reads eligible chapters and checklist tasks, previews as themselves, or restarts their own tour.",
+            "screenshotPath": "packages/welcome-tour/docs/screenshots/welcome-tour-settings.png",
+            "waitFor": "[data-tour-settings-summary]",
+            "viewport": "desktop",
+            "colorSchemes": ["light", "dark"],
+            "requiredViewport": {
+                "width": 1440,
+                "height": 900
+            }
         },
         {
             "id": "welcome-tour-user-toggle",
@@ -69,9 +87,15 @@
             "target": "UserResource",
             "required": true,
             "url": "/users/{first-record}/edit",
-            "notes": "Requires a users table with the dismissed_hints column so the bridge contributes the field.",
+            "notes": "Use an authorised user editor with package state storage available. Prove Show welcome tour copy distinguishes eligibility from restarting progress. Capture at 1440, 768 and 360px in both schemes; reject overflow, focus-order and console/network/backend errors.",
             "useCase": "An administrator toggles whether a user should see the welcome tour again from the user edit form.",
-            "screenshotPath": "packages/welcome-tour/docs/screenshots/welcome-tour-user-toggle.png"
+            "screenshotPath": "packages/welcome-tour/docs/screenshots/welcome-tour-user-toggle.png",
+            "viewport": "desktop",
+            "colorSchemes": ["light", "dark"],
+            "requiredViewport": {
+                "width": 1440,
+                "height": 900
+            }
         },
         {
             "id": "welcome-tour-admin-sidebar-menu-open",
@@ -93,7 +117,312 @@
                     "type": "click",
                     "selector": ".fi-topbar-open-collapse-sidebar-btn"
                 }
-            ]
+            ],
+            "requiredViewport": {
+                "width": 1440,
+                "height": 900
+            }
+        },
+        {
+            "id": "welcome-tour-settings-advanced",
+            "title": "Welcome Tour grouped developer authoring and destination validation.",
+            "package": "welcome-tour",
+            "surface": "admin",
+            "targetType": "admin-route",
+            "target": "/admin/extensions?manage=capell-app%2Fwelcome-tour&surface=welcome-tour",
+            "required": true,
+            "notes": "Open Advanced developer and add an unsaved custom step. Capture Destination and the collapsed Audience, Appearance and key/order groups. Do not save this capture draft. Use requiredViewport; the runner tablet/mobile presets are 1024/390px and must be adjusted by the capture manager to 768/360px.",
+            "useCase": "An owner reads eligible chapters and checklist tasks, previews as themselves, or restarts their own tour.",
+            "screenshotPath": "packages/welcome-tour/docs/screenshots/welcome-tour-settings-advanced.png",
+            "waitFor": "input[id$=\".title\"]",
+            "viewport": "desktop",
+            "colorSchemes": ["light", "dark"],
+            "beforeWait": [
+                {
+                    "type": "click",
+                    "selector": ".fi-section-header:has-text(\"Advanced developer\")"
+                },
+                {
+                    "type": "click",
+                    "selector": "button:has-text(\"Add to tour steps\")"
+                },
+                {
+                    "type": "fill",
+                    "selector": "input[id$=\".title\"]",
+                    "value": "Create a page"
+                },
+                {
+                    "type": "fill",
+                    "selector": "input[id$=\".description\"]",
+                    "value": "Learn how to create your first page."
+                }
+            ],
+            "requiredViewport": {
+                "width": 1440,
+                "height": 900
+            }
+        },
+        {
+            "id": "welcome-tour-dashboard-tablet",
+            "title": "Capell admin dashboard with the Welcome Tour onboarding checklist.",
+            "package": "welcome-tour",
+            "surface": "admin",
+            "targetType": "admin-route",
+            "target": "/admin",
+            "required": true,
+            "notes": "Capture from a disposable installed Capell application with Welcome Tour enabled and onboarding checklist state available for the authenticated administrator. Capture at 1440, 768 and 360px in both schemes; reject overflow, focus-order and console/network/backend errors. Capture manager: the current runner preset is 1024px for tablet / 390px for mobile. Apply requiredViewport before capture; preset-sized output does not satisfy this contract.",
+            "useCase": "A first-time administrator lands on the dashboard checklist and can launch onboarding.",
+            "screenshotPath": "packages/welcome-tour/docs/screenshots/welcome-tour-dashboard-tablet.png",
+            "covers": [
+                "packages/welcome-tour/src/Filament/Widgets/WelcomeTourChecklistFilamentWidget.php"
+            ],
+            "colorSchemes": ["light", "dark"],
+            "viewport": "tablet",
+            "requiredViewport": {
+                "width": 768,
+                "height": 900
+            }
+        },
+        {
+            "id": "welcome-tour-dashboard-mobile",
+            "title": "Capell admin dashboard with the Welcome Tour onboarding checklist.",
+            "package": "welcome-tour",
+            "surface": "admin",
+            "targetType": "admin-route",
+            "target": "/admin",
+            "required": true,
+            "notes": "Capture from a disposable installed Capell application with Welcome Tour enabled and onboarding checklist state available for the authenticated administrator. Capture at 1440, 768 and 360px in both schemes; reject overflow, focus-order and console/network/backend errors. Capture manager: the current runner preset is 1024px for tablet / 390px for mobile. Apply requiredViewport before capture; preset-sized output does not satisfy this contract.",
+            "useCase": "A first-time administrator lands on the dashboard checklist and can launch onboarding.",
+            "screenshotPath": "packages/welcome-tour/docs/screenshots/welcome-tour-dashboard-mobile.png",
+            "covers": [
+                "packages/welcome-tour/src/Filament/Widgets/WelcomeTourChecklistFilamentWidget.php"
+            ],
+            "colorSchemes": ["light", "dark"],
+            "viewport": "mobile",
+            "requiredViewport": {
+                "width": 360,
+                "height": 900
+            }
+        },
+        {
+            "id": "welcome-tour-overlay-tablet",
+            "title": "Welcome tour overlay showing the first configured onboarding step.",
+            "package": "welcome-tour",
+            "surface": "admin",
+            "targetType": "admin-overlay",
+            "target": "/admin",
+            "required": true,
+            "beforeWait": [
+                {
+                    "type": "scrollIntoView",
+                    "selector": "[wire\\:name=\"capell.welcome-tour.filament.widgets.welcome-tour-checklist-filament-widget\"]"
+                },
+                {
+                    "type": "waitFor",
+                    "selector": "button[wire\\:click=\"startTour\"]"
+                },
+                {
+                    "type": "click",
+                    "selector": "button[wire\\:click=\"startTour\"]"
+                }
+            ],
+            "waitFor": ".driver-popover",
+            "notes": "Install real registered steps with available DOM targets. Prove chapter and step progress, Next, Previous, Done, Snooze and dismissal; no dashboard fallback counts. Capture at 1440, 768 and 360px in both schemes; reject overflow, focus-order and console/network/backend errors. Capture manager: the current runner preset is 1024px for tablet / 390px for mobile. Apply requiredViewport before capture; preset-sized output does not satisfy this contract.",
+            "useCase": "A first-time administrator sees the first configured tour step overlay.",
+            "screenshotPath": "packages/welcome-tour/docs/screenshots/welcome-tour-overlay-tablet.png",
+            "viewport": "tablet",
+            "colorSchemes": ["light", "dark"],
+            "requiredViewport": {
+                "width": 768,
+                "height": 900
+            }
+        },
+        {
+            "id": "welcome-tour-overlay-mobile",
+            "title": "Welcome tour overlay showing the first configured onboarding step.",
+            "package": "welcome-tour",
+            "surface": "admin",
+            "targetType": "admin-overlay",
+            "target": "/admin",
+            "required": true,
+            "beforeWait": [
+                {
+                    "type": "scrollIntoView",
+                    "selector": "[wire\\:name=\"capell.welcome-tour.filament.widgets.welcome-tour-checklist-filament-widget\"]"
+                },
+                {
+                    "type": "waitFor",
+                    "selector": "button[wire\\:click=\"startTour\"]"
+                },
+                {
+                    "type": "click",
+                    "selector": "button[wire\\:click=\"startTour\"]"
+                }
+            ],
+            "waitFor": ".driver-popover",
+            "notes": "Install real registered steps with available DOM targets. Prove chapter and step progress, Next, Previous, Done, Snooze and dismissal; no dashboard fallback counts. Capture at 1440, 768 and 360px in both schemes; reject overflow, focus-order and console/network/backend errors. Capture manager: the current runner preset is 1024px for tablet / 390px for mobile. Apply requiredViewport before capture; preset-sized output does not satisfy this contract.",
+            "useCase": "A first-time administrator sees the first configured tour step overlay.",
+            "screenshotPath": "packages/welcome-tour/docs/screenshots/welcome-tour-overlay-mobile.png",
+            "viewport": "mobile",
+            "colorSchemes": ["light", "dark"],
+            "requiredViewport": {
+                "width": 360,
+                "height": 900
+            }
+        },
+        {
+            "id": "welcome-tour-settings-tablet",
+            "title": "Welcome Tour settings with ordinary onboarding controls and collapsed developer details.",
+            "package": "welcome-tour",
+            "surface": "admin",
+            "targetType": "admin-route",
+            "target": "/admin/extensions?manage=capell-app%2Fwelcome-tour&surface=welcome-tour",
+            "required": true,
+            "notes": "Open the Welcome Tour settings action from the Extensions manager after publishing and running the package settings migration. Capture at 1440, 768 and 360px in both schemes; reject overflow, focus-order and console/network/backend errors. Capture manager: the current runner preset is 1024px for tablet / 390px for mobile. Apply requiredViewport before capture; preset-sized output does not satisfy this contract.",
+            "useCase": "An owner reads eligible chapters and checklist tasks, previews as themselves, or restarts their own tour.",
+            "screenshotPath": "packages/welcome-tour/docs/screenshots/welcome-tour-settings-tablet.png",
+            "waitFor": "[data-tour-settings-summary]",
+            "viewport": "tablet",
+            "colorSchemes": ["light", "dark"],
+            "requiredViewport": {
+                "width": 768,
+                "height": 900
+            }
+        },
+        {
+            "id": "welcome-tour-settings-mobile",
+            "title": "Welcome Tour settings with ordinary onboarding controls and collapsed developer details.",
+            "package": "welcome-tour",
+            "surface": "admin",
+            "targetType": "admin-route",
+            "target": "/admin/extensions?manage=capell-app%2Fwelcome-tour&surface=welcome-tour",
+            "required": true,
+            "notes": "Open the Welcome Tour settings action from the Extensions manager after publishing and running the package settings migration. Capture at 1440, 768 and 360px in both schemes; reject overflow, focus-order and console/network/backend errors. Capture manager: the current runner preset is 1024px for tablet / 390px for mobile. Apply requiredViewport before capture; preset-sized output does not satisfy this contract.",
+            "useCase": "An owner reads eligible chapters and checklist tasks, previews as themselves, or restarts their own tour.",
+            "screenshotPath": "packages/welcome-tour/docs/screenshots/welcome-tour-settings-mobile.png",
+            "waitFor": "[data-tour-settings-summary]",
+            "viewport": "mobile",
+            "colorSchemes": ["light", "dark"],
+            "requiredViewport": {
+                "width": 360,
+                "height": 900
+            }
+        },
+        {
+            "id": "welcome-tour-user-toggle-tablet",
+            "title": "User edit form with Show welcome tour toggle.",
+            "package": "welcome-tour",
+            "surface": "admin",
+            "targetType": "admin-resource-form",
+            "target": "UserResource",
+            "required": true,
+            "url": "/users/{first-record}/edit",
+            "notes": "Use an authorised user editor with package state storage available. Prove Show welcome tour copy distinguishes eligibility from restarting progress. Capture at 1440, 768 and 360px in both schemes; reject overflow, focus-order and console/network/backend errors. Capture manager: the current runner preset is 1024px for tablet / 390px for mobile. Apply requiredViewport before capture; preset-sized output does not satisfy this contract.",
+            "useCase": "An administrator toggles whether a user should see the welcome tour again from the user edit form.",
+            "screenshotPath": "packages/welcome-tour/docs/screenshots/welcome-tour-user-toggle-tablet.png",
+            "viewport": "tablet",
+            "colorSchemes": ["light", "dark"],
+            "requiredViewport": {
+                "width": 768,
+                "height": 900
+            }
+        },
+        {
+            "id": "welcome-tour-user-toggle-mobile",
+            "title": "User edit form with Show welcome tour toggle.",
+            "package": "welcome-tour",
+            "surface": "admin",
+            "targetType": "admin-resource-form",
+            "target": "UserResource",
+            "required": true,
+            "url": "/users/{first-record}/edit",
+            "notes": "Use an authorised user editor with package state storage available. Prove Show welcome tour copy distinguishes eligibility from restarting progress. Capture at 1440, 768 and 360px in both schemes; reject overflow, focus-order and console/network/backend errors. Capture manager: the current runner preset is 1024px for tablet / 390px for mobile. Apply requiredViewport before capture; preset-sized output does not satisfy this contract.",
+            "useCase": "An administrator toggles whether a user should see the welcome tour again from the user edit form.",
+            "screenshotPath": "packages/welcome-tour/docs/screenshots/welcome-tour-user-toggle-mobile.png",
+            "viewport": "mobile",
+            "colorSchemes": ["light", "dark"],
+            "requiredViewport": {
+                "width": 360,
+                "height": 900
+            }
+        },
+        {
+            "id": "welcome-tour-settings-advanced-tablet",
+            "title": "Welcome Tour grouped developer authoring and destination validation.",
+            "package": "welcome-tour",
+            "surface": "admin",
+            "targetType": "admin-route",
+            "target": "/admin/extensions?manage=capell-app%2Fwelcome-tour&surface=welcome-tour",
+            "required": true,
+            "notes": "Open Advanced developer and add an unsaved custom step. Capture Destination and the collapsed Audience, Appearance and key/order groups. Do not save this capture draft. Use requiredViewport; the runner tablet/mobile presets are 1024/390px and must be adjusted by the capture manager to 768/360px.",
+            "useCase": "An owner reads eligible chapters and checklist tasks, previews as themselves, or restarts their own tour.",
+            "screenshotPath": "packages/welcome-tour/docs/screenshots/welcome-tour-settings-advanced-tablet.png",
+            "waitFor": "input[id$=\".title\"]",
+            "viewport": "tablet",
+            "colorSchemes": ["light", "dark"],
+            "beforeWait": [
+                {
+                    "type": "click",
+                    "selector": ".fi-section-header:has-text(\"Advanced developer\")"
+                },
+                {
+                    "type": "click",
+                    "selector": "button:has-text(\"Add to tour steps\")"
+                },
+                {
+                    "type": "fill",
+                    "selector": "input[id$=\".title\"]",
+                    "value": "Create a page"
+                },
+                {
+                    "type": "fill",
+                    "selector": "input[id$=\".description\"]",
+                    "value": "Learn how to create your first page."
+                }
+            ],
+            "requiredViewport": {
+                "width": 768,
+                "height": 900
+            }
+        },
+        {
+            "id": "welcome-tour-settings-advanced-mobile",
+            "title": "Welcome Tour grouped developer authoring and destination validation.",
+            "package": "welcome-tour",
+            "surface": "admin",
+            "targetType": "admin-route",
+            "target": "/admin/extensions?manage=capell-app%2Fwelcome-tour&surface=welcome-tour",
+            "required": true,
+            "notes": "Open Advanced developer and add an unsaved custom step. Capture Destination and the collapsed Audience, Appearance and key/order groups. Do not save this capture draft. Use requiredViewport; the runner tablet/mobile presets are 1024/390px and must be adjusted by the capture manager to 768/360px.",
+            "useCase": "An owner reads eligible chapters and checklist tasks, previews as themselves, or restarts their own tour.",
+            "screenshotPath": "packages/welcome-tour/docs/screenshots/welcome-tour-settings-advanced-mobile.png",
+            "waitFor": "input[id$=\".title\"]",
+            "viewport": "mobile",
+            "colorSchemes": ["light", "dark"],
+            "beforeWait": [
+                {
+                    "type": "click",
+                    "selector": ".fi-section-header:has-text(\"Advanced developer\")"
+                },
+                {
+                    "type": "click",
+                    "selector": "button:has-text(\"Add to tour steps\")"
+                },
+                {
+                    "type": "fill",
+                    "selector": "input[id$=\".title\"]",
+                    "value": "Create a page"
+                },
+                {
+                    "type": "fill",
+                    "selector": "input[id$=\".description\"]",
+                    "value": "Learn how to create your first page."
+                }
+            ],
+            "requiredViewport": {
+                "width": 360,
+                "height": 900
+            }
         }
     ]
 }

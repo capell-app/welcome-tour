@@ -6,6 +6,7 @@ namespace Capell\WelcomeTour\Filament\Concerns;
 
 use Capell\WelcomeTour\Actions\Users\CanShowWelcomeTourAction;
 use Capell\WelcomeTour\Actions\Users\RecordWelcomeTourStepAction;
+use Capell\WelcomeTour\Actions\Users\ResolveWelcomeTourStepsForUserAction;
 use Capell\WelcomeTour\Actions\Users\SetUserWelcomeTourPreferenceAction;
 use Capell\WelcomeTour\Events\WelcomeTourCompleted;
 use Capell\WelcomeTour\Events\WelcomeTourStarted;
@@ -36,7 +37,7 @@ trait HasContextualWelcomeTour
             return [];
         }
 
-        $tourSteps = resolve(ContextualWelcomeTourRegistry::class)->stepsFor($tourKey);
+        $tourSteps = ResolveWelcomeTourStepsForUserAction::run($user, resolve(ContextualWelcomeTourRegistry::class)->stepsFor($tourKey), $tourKey);
 
         if ($tourSteps === []) {
             return [];
@@ -46,7 +47,7 @@ trait HasContextualWelcomeTour
 
         event(new WelcomeTourStarted($user, $tourKey));
 
-        foreach (array_values($tourSteps) as $index => $tourStep) {
+        foreach ($tourSteps as $index => $tourStep) {
             $eventName = $index === array_key_last($tourSteps)
                 ? self::CONTEXTUAL_DISMISS_EVENT
                 : self::CONTEXTUAL_STEP_COMPLETED_EVENT;
@@ -69,7 +70,8 @@ trait HasContextualWelcomeTour
     {
         $user = auth()->user();
 
-        if ($user instanceof Model) {
+        if ($user instanceof Model && $tourKey === $this->welcomeTourKey()
+            && collect(resolve(ContextualWelcomeTourRegistry::class)->stepsFor($tourKey))->contains('key', $stepKey)) {
             RecordWelcomeTourStepAction::run($user, $stepKey, $tourKey);
         }
     }
@@ -80,12 +82,12 @@ trait HasContextualWelcomeTour
         $user = auth()->user();
         $tourKey ??= $this->welcomeTourKey();
 
-        if (! $user instanceof Model) {
+        if (! $user instanceof Model || $tourKey !== $this->welcomeTourKey()) {
             return;
         }
 
         if (is_string($stepKey) && $stepKey !== '') {
-            RecordWelcomeTourStepAction::run($user, $stepKey, $tourKey);
+            $this->recordContextualWelcomeTourStep($stepKey, $tourKey);
         }
 
         SetUserWelcomeTourPreferenceAction::run($user, enabled: false, tourKey: $tourKey);
