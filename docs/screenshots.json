@@ -24,7 +24,8 @@
             "requiredViewport": {
                 "width": 1440,
                 "height": 900
-            }
+            },
+            "url": "/screenshot-fixtures/welcome-tour/dashboard"
         },
         {
             "id": "welcome-tour-overlay",
@@ -36,20 +37,12 @@
             "required": true,
             "beforeWait": [
                 {
-                    "type": "scrollIntoView",
-                    "selector": "[wire\\:name=\"capell.welcome-tour.filament.widgets.welcome-tour-checklist-filament-widget\"]"
-                },
-                {
                     "type": "waitFor",
-                    "selector": "button[wire\\:click=\"startTour\"]"
-                },
-                {
-                    "type": "click",
-                    "selector": "button[wire\\:click=\"startTour\"]"
+                    "selector": ".fi-header-heading"
                 }
             ],
             "waitFor": ".driver-popover",
-            "notes": "Install real registered steps with available DOM targets. Prove chapter and step progress, Next, Previous, Done, Snooze and dismissal; no dashboard fallback counts. Capture at 1440, 768 and 360px in both schemes; reject overflow, focus-order and console/network/backend errors.",
+            "notes": "The disposable fixture starts a session-only preview of the registered dashboard chapter against the real replay control. Saved progress is preserved. Require the populated overlay and clean initialisation at the declared viewport.",
             "useCase": "A first-time administrator sees the first configured tour step overlay.",
             "screenshotPath": "packages/welcome-tour/docs/screenshots/welcome-tour-overlay.png",
             "viewport": "desktop",
@@ -58,7 +51,8 @@
                 "width": 1440,
                 "height": 900
             },
-            "user": "admin"
+            "user": "admin",
+            "url": "/screenshot-fixtures/welcome-tour/overlay"
         },
         {
             "id": "welcome-tour-settings",
@@ -77,7 +71,9 @@
             "requiredViewport": {
                 "width": 1440,
                 "height": 900
-            }
+            },
+            "url": "/screenshot-fixtures/welcome-tour/settings",
+            "beforeWait": []
         },
         {
             "id": "welcome-tour-user-toggle",
@@ -87,7 +83,7 @@
             "targetType": "admin-resource-form",
             "target": "UserResource",
             "required": true,
-            "url": "/users/{first-record}/edit",
+            "url": "/screenshot-fixtures/welcome-tour/user-toggle",
             "notes": "Use an authorised user editor with package state storage available. Prove Show welcome tour copy distinguishes eligibility from restarting progress. Capture at 1440, 768 and 360px in both schemes; reject overflow, focus-order and console/network/backend errors.",
             "useCase": "An administrator toggles whether a user should see the welcome tour again from the user edit form.",
             "screenshotPath": "packages/welcome-tour/docs/screenshots/welcome-tour-user-toggle.png",
@@ -98,7 +94,13 @@
                 "height": 900
             },
             "waitFor": "[role=\"switch\"][id$=\"welcome_tour_enabled\"]",
-            "user": "admin"
+            "user": "admin",
+            "beforeWait": [
+                {
+                    "type": "scrollIntoView",
+                    "selector": "[role=\"switch\"][id$=\"welcome_tour_enabled\"]"
+                }
+            ]
         },
         {
             "id": "welcome-tour-admin-sidebar-menu-open",
@@ -124,7 +126,8 @@
             "requiredViewport": {
                 "width": 1440,
                 "height": 900
-            }
+            },
+            "url": "/screenshot-fixtures/welcome-tour/dashboard"
         },
         {
             "id": "welcome-tour-settings-advanced",
@@ -141,10 +144,6 @@
             "viewport": "desktop",
             "colorSchemes": ["light", "dark"],
             "beforeWait": [
-                {
-                    "type": "click",
-                    "selector": ".driver-popover-close-btn"
-                },
                 {
                     "type": "click",
                     "selector": ".fi-section-header:has-text(\"Advanced developer\")"
@@ -171,7 +170,8 @@
             "requiredViewport": {
                 "width": 1440,
                 "height": 900
-            }
+            },
+            "url": "/screenshot-fixtures/welcome-tour/settings"
         },
         {
             "id": "welcome-tour-dashboard-tablet",
@@ -192,7 +192,8 @@
             "requiredViewport": {
                 "width": 768,
                 "height": 900
-            }
+            },
+            "url": "/screenshot-fixtures/welcome-tour/dashboard"
         },
         {
             "id": "welcome-tour-dashboard-mobile",
@@ -213,7 +214,8 @@
             "requiredViewport": {
                 "width": 360,
                 "height": 900
-            }
+            },
+            "url": "/screenshot-fixtures/welcome-tour/dashboard"
         },
         {
             "id": "welcome-tour-overlay-tablet",
@@ -225,20 +227,12 @@
             "required": true,
             "beforeWait": [
                 {
-                    "type": "scrollIntoView",
-                    "selector": "[wire\\:name=\"capell.welcome-tour.filament.widgets.welcome-tour-checklist-filament-widget\"]"
-                },
-                {
                     "type": "waitFor",
-                    "selector": "button[wire\\:click=\"startTour\"]"
-                },
-                {
-                    "type": "click",
-                    "selector": "button[wire\\:click=\"startTour\"]"
+                    "selector": ".fi-header-heading"
                 }
             ],
             "waitFor": ".driver-popover",
-            "notes": "Install real registered steps with available DOM targets. Prove chapter and step progress, Next, Previous, Done, Snooze and dismissal; no dashboard fallback counts. Capture at 1440, 768 and 360px in both schemes; reject overflow, focus-order and console/network/backend errors. Capture manager: the current runner preset is 1024px for tablet / 390px for mobile. Apply requiredViewport before capture; preset-sized output does not satisfy this contract.",
+            "notes": "The disposable fixture starts a session-only preview of the registered dashboard chapter against the real replay control. Saved progress is preserved. Require the populated overlay and clean initialisation at the declared viewport.",
             "useCase": "A first-time administrator sees the first configured tour step overlay.",
             "screenshotPath": "packages/welcome-tour/docs/screenshots/welcome-tour-overlay-tablet.png",
             "viewport": "tablet",
@@ -247,7 +241,8 @@
                 "width": 768,
                 "height": 900
             },
-            "user": "admin"
+            "user": "admin",
+            "url": "/screenshot-fixtures/welcome-tour/overlay"
         },
         {
             "id": "welcome-tour-overlay-mobile",
@@ -259,20 +254,12 @@
             "required": true,
             "beforeWait": [
                 {
-                    "type": "scrollIntoView",
-                    "selector": "[wire\\:name=\"capell.welcome-tour.filament.widgets.welcome-tour-checklist-filament-widget\"]"
-                },
-                {
                     "type": "waitFor",
-                    "selector": "button[wire\\:click=\"startTour\"]"
-                },
-                {
-                    "type": "click",
-                    "selector": "button[wire\\:click=\"startTour\"]"
+                    "selector": ".fi-header-heading"
                 }
             ],
             "waitFor": ".driver-popover",
-            "notes": "Install real registered steps with available DOM targets. Prove chapter and step progress, Next, Previous, Done, Snooze and dismissal; no dashboard fallback counts. Capture at 1440, 768 and 360px in both schemes; reject overflow, focus-order and console/network/backend errors. Capture manager: the current runner preset is 1024px for tablet / 390px for mobile. Apply requiredViewport before capture; preset-sized output does not satisfy this contract.",
+            "notes": "The disposable fixture starts a session-only preview of the registered dashboard chapter against the real replay control. Saved progress is preserved. Require the populated overlay and clean initialisation at the declared viewport.",
             "useCase": "A first-time administrator sees the first configured tour step overlay.",
             "screenshotPath": "packages/welcome-tour/docs/screenshots/welcome-tour-overlay-mobile.png",
             "viewport": "mobile",
@@ -281,7 +268,8 @@
                 "width": 360,
                 "height": 900
             },
-            "user": "admin"
+            "user": "admin",
+            "url": "/screenshot-fixtures/welcome-tour/overlay"
         },
         {
             "id": "welcome-tour-settings-tablet",
@@ -300,7 +288,9 @@
             "requiredViewport": {
                 "width": 768,
                 "height": 900
-            }
+            },
+            "url": "/screenshot-fixtures/welcome-tour/settings",
+            "beforeWait": []
         },
         {
             "id": "welcome-tour-settings-mobile",
@@ -319,7 +309,9 @@
             "requiredViewport": {
                 "width": 360,
                 "height": 900
-            }
+            },
+            "url": "/screenshot-fixtures/welcome-tour/settings",
+            "beforeWait": []
         },
         {
             "id": "welcome-tour-user-toggle-tablet",
@@ -329,7 +321,7 @@
             "targetType": "admin-resource-form",
             "target": "UserResource",
             "required": true,
-            "url": "/users/{first-record}/edit",
+            "url": "/screenshot-fixtures/welcome-tour/user-toggle",
             "notes": "Use an authorised user editor with package state storage available. Prove Show welcome tour copy distinguishes eligibility from restarting progress. Capture at 1440, 768 and 360px in both schemes; reject overflow, focus-order and console/network/backend errors. Capture manager: the current runner preset is 1024px for tablet / 390px for mobile. Apply requiredViewport before capture; preset-sized output does not satisfy this contract.",
             "useCase": "An administrator toggles whether a user should see the welcome tour again from the user edit form.",
             "screenshotPath": "packages/welcome-tour/docs/screenshots/welcome-tour-user-toggle-tablet.png",
@@ -340,7 +332,13 @@
                 "height": 900
             },
             "waitFor": "[role=\"switch\"][id$=\"welcome_tour_enabled\"]",
-            "user": "admin"
+            "user": "admin",
+            "beforeWait": [
+                {
+                    "type": "scrollIntoView",
+                    "selector": "[role=\"switch\"][id$=\"welcome_tour_enabled\"]"
+                }
+            ]
         },
         {
             "id": "welcome-tour-user-toggle-mobile",
@@ -350,7 +348,7 @@
             "targetType": "admin-resource-form",
             "target": "UserResource",
             "required": true,
-            "url": "/users/{first-record}/edit",
+            "url": "/screenshot-fixtures/welcome-tour/user-toggle",
             "notes": "Use an authorised user editor with package state storage available. Prove Show welcome tour copy distinguishes eligibility from restarting progress. Capture at 1440, 768 and 360px in both schemes; reject overflow, focus-order and console/network/backend errors. Capture manager: the current runner preset is 1024px for tablet / 390px for mobile. Apply requiredViewport before capture; preset-sized output does not satisfy this contract.",
             "useCase": "An administrator toggles whether a user should see the welcome tour again from the user edit form.",
             "screenshotPath": "packages/welcome-tour/docs/screenshots/welcome-tour-user-toggle-mobile.png",
@@ -361,7 +359,13 @@
                 "height": 900
             },
             "waitFor": "[role=\"switch\"][id$=\"welcome_tour_enabled\"]",
-            "user": "admin"
+            "user": "admin",
+            "beforeWait": [
+                {
+                    "type": "scrollIntoView",
+                    "selector": "[role=\"switch\"][id$=\"welcome_tour_enabled\"]"
+                }
+            ]
         },
         {
             "id": "welcome-tour-settings-advanced-tablet",
@@ -380,10 +384,6 @@
             "beforeWait": [
                 {
                     "type": "click",
-                    "selector": ".driver-popover-close-btn"
-                },
-                {
-                    "type": "click",
                     "selector": ".fi-section-header:has-text(\"Advanced developer\")"
                 },
                 {
@@ -408,7 +408,8 @@
             "requiredViewport": {
                 "width": 768,
                 "height": 900
-            }
+            },
+            "url": "/screenshot-fixtures/welcome-tour/settings"
         },
         {
             "id": "welcome-tour-settings-advanced-mobile",
@@ -425,10 +426,6 @@
             "viewport": "mobile",
             "colorSchemes": ["light", "dark"],
             "beforeWait": [
-                {
-                    "type": "click",
-                    "selector": ".driver-popover-close-btn"
-                },
                 {
                     "type": "click",
                     "selector": ".fi-section-header:has-text(\"Advanced developer\")"
@@ -455,7 +452,8 @@
             "requiredViewport": {
                 "width": 360,
                 "height": 900
-            }
+            },
+            "url": "/screenshot-fixtures/welcome-tour/settings"
         }
     ]
 }

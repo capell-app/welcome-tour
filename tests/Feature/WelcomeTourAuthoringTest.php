@@ -35,7 +35,7 @@ it('derives keys and editor ordering while preserving explicit overrides and man
     $settings = WelcomeTourSettings::instance();
     $settings->steps = $rows;
     $settings->save();
-    config()->set('capell-welcome-tour.manifest_steps', [[...$rows[1], 'title' => 'Manifest']]);
+    config()->set('capell-welcome-tour.manifest_steps', [array_replace($rows[1], ['title' => 'Manifest'])]);
     resolve(WelcomeTourStepRegistrar::class)->register();
     $steps = CapellAdmin::getWelcomeTourSteps();
     expect($steps)->toHaveCount(2)

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use Illuminate\Support\Facades\File;
 
-it('loads the lazy checklist before starting the required overlay capture', function (): void {
+it('starts overlay previews through the disposable fixture and a stable dashboard target', function (): void {
     $screenshots = json_decode(
         File::get(__DIR__ . '/../../docs/screenshots.json'),
         associative: true,
@@ -17,18 +17,11 @@ it('loads the lazy checklist before starting the required overlay capture', func
     $entry = collect($entries)->firstWhere('id', 'welcome-tour-overlay');
 
     expect($entry)->toMatchArray([
+        'url' => '/screenshot-fixtures/welcome-tour/overlay',
         'beforeWait' => [
             [
-                'type' => 'scrollIntoView',
-                'selector' => '[wire\\:name="capell.welcome-tour.filament.widgets.welcome-tour-checklist-filament-widget"]',
-            ],
-            [
                 'type' => 'waitFor',
-                'selector' => 'button[wire\\:click="startTour"]',
-            ],
-            [
-                'type' => 'click',
-                'selector' => 'button[wire\\:click="startTour"]',
+                'selector' => '.fi-header-heading',
             ],
         ],
         'waitFor' => '.driver-popover',

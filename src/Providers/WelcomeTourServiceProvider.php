@@ -33,6 +33,8 @@ final class WelcomeTourServiceProvider extends AbstractPackageServiceProvider
 
     public static string $packageName = 'capell-app/welcome-tour';
 
+    private bool $panelExtenderTagged = false;
+
     /**
      * @return array<array-key, mixed>
      */
@@ -61,11 +63,12 @@ final class WelcomeTourServiceProvider extends AbstractPackageServiceProvider
 
         $this->app->singleton(ContextualWelcomeTourRegistry::class);
 
-        $this->app->booted(function (): void {
-            if ($this->shouldRegisterRuntime()) {
-                $this->app->tag([WelcomeTourPanelExtender::class], AdminPanelExtender::TAG);
-            }
-        });
+        // The panel consumes extenders before installed-package boot callbacks.
+        // The extender itself checks installation when the panel consumes it.
+        if (! $this->panelExtenderTagged) {
+            $this->app->tag([WelcomeTourPanelExtender::class], AdminPanelExtender::TAG);
+            $this->panelExtenderTagged = true;
+        }
     }
 
     #[Override]

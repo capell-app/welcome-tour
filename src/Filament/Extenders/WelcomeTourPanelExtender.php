@@ -6,7 +6,9 @@ namespace Capell\WelcomeTour\Filament\Extenders;
 
 use Capell\Admin\Contracts\Extenders\AdminPanelExtender;
 use Capell\Admin\Filament\Pages\CapellDashboard;
+use Capell\Core\Facades\CapellCore;
 use Capell\WelcomeTour\Filament\Pages\WelcomeTourDashboard;
+use Capell\WelcomeTour\Providers\WelcomeTourServiceProvider;
 use Filament\Panel;
 use Filament\View\PanelsRenderHook;
 use Illuminate\Support\Facades\Blade;
@@ -16,6 +18,11 @@ final class WelcomeTourPanelExtender implements AdminPanelExtender
 {
     public function extend(Panel $panel): void
     {
+        if (config('capell-welcome-tour.enabled', true) !== true
+            || ! CapellCore::isPackageInstalled(WelcomeTourServiceProvider::$packageName)) {
+            return;
+        }
+
         $panel->pages([WelcomeTourDashboard::class]);
 
         if (! $panel->hasPlugin('filament-tour')) {

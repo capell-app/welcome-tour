@@ -89,6 +89,23 @@ it('cleans up keyboard dismissal listeners during Livewire navigation', function
         ->toContain("document.body.classList.contains('driver-active')");
 });
 
+it('keeps tour next and done buttons legible when the upstream background utility misses', function (): void {
+    $html = view('capell-welcome-tour::livewire.welcome-tour-orchestrator', [
+        'autoStart' => false,
+        'tourIdToOpen' => null,
+        'currentChapterKey' => null,
+        'currentTargetSelector' => null,
+    ])->render();
+
+    expect($html)
+        ->toContain('.driver-popover .driver-popover-next-btn {')
+        ->toContain('background-color: var(--primary-800, #1d4ed8) !important;')
+        ->toContain('color: #fff !important;')
+        ->toContain('.driver-popover .driver-popover-next-btn:focus-visible {')
+        ->toContain('background-color: var(--primary-900, #1e40af) !important;')
+        ->not->toContain('--c-600: var(--primary-600) !important;');
+});
+
 it('waits for the requested filament tour registry entry before automatically opening the dashboard tour', function (): void {
     $html = view('capell-welcome-tour::livewire.welcome-tour-orchestrator', [
         'autoStart' => true,

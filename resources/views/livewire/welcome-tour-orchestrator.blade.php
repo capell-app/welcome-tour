@@ -1,3 +1,18 @@
+@once
+    <style>
+        .driver-popover .driver-popover-next-btn {
+            /* The tour button misses Filament's custom background utility and otherwise renders white on white. */
+            background-color: var(--primary-800, #1d4ed8) !important;
+            color: #fff !important;
+        }
+
+        .driver-popover .driver-popover-next-btn:hover,
+        .driver-popover .driver-popover-next-btn:focus-visible {
+            background-color: var(--primary-900, #1e40af) !important;
+        }
+    </style>
+@endonce
+
 <div
     x-data="{ suppressDismiss: false }"
     x-init="
