@@ -39,6 +39,9 @@ Go to **Welcome tour** in the admin settings. Open the dashboard to use the tour
 - Checklist completion is installation-wide: it checks whether the Sites, Pages, and Media tables contain any rows. It is not scoped to the current user or assigned site.
 - A deliberately empty list of shared tour steps stays empty; the package does not restore its defaults. Contextual tours for Sites, Pages, and Media come from package configuration or extension contributions, rather than this settings form.
 - Diagnostics checks the dashboard integration, settings, checklist contribution, and per-user state storage.
+- The dashboard orchestrator requests the Filament Tour registry after its listener is registered. This second event-driven request is intentional: the Filament asset can dispatch its initial registry load before Livewire has initialised the orchestrator, especially after a restart redirect.
+- The panel extender is registered during package registration, before Capell builds the Filament panel. Moving it to the installed-package boot callback prevents the Filament Tour plugin and its Livewire registry widget from mounting; the visible checklist can still render, but no tour can open.
+- Starting from the checklist routes to the first configured chapter. This matters when the first step belongs to another admin page: returning to the dashboard leaves the registry valid but gives the tour no matching route or target.
 
 ---
 

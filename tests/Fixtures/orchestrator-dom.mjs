@@ -35,6 +35,7 @@ function run({ missing = false, invalid = false, active = true } = {}) {
     }
     vm.runInNewContext(source, {
         document,
+        window: { location: { href: 'http://localhost/' } },
         $data: data,
         AbortController,
         requestAnimationFrame: (callback) => callback(),
@@ -48,6 +49,7 @@ function run({ missing = false, invalid = false, active = true } = {}) {
                 }
             },
             dispatch(event, payload) {
+                if (event === 'filament-tour::load-elements') return
                 dispatched.push([event, payload])
             },
         },

@@ -101,6 +101,7 @@ it('waits for the requested filament tour registry entry before automatically op
         ->toContain("Livewire.on('filament-tour::loaded-elements'")
         ->toContain('({ tours = [] })')
         ->toContain('tours.some((tour) => tour.id === `tour_${tourIdToOpen}`)')
+        ->toContain("Livewire.dispatch('filament-tour::load-elements'")
         ->toContain("queueMicrotask(() => Livewire.dispatch('filament-tour::open-tour'")
         ->toContain("Livewire.dispatch('filament-tour::open-tour'")
         ->toContain('capell_admin_welcome.dashboard')
@@ -299,6 +300,24 @@ it('redirects tour replay to its locked page path instead of the Livewire update
     $externalRefererWidget->startTour();
 
     expect(store($externalRefererWidget)->get('redirect'))->toBe('/admin');
+});
+
+it('starts the checklist tour at its first configured chapter', function (): void {
+    $user = User::factory()->create();
+    test()->actingAs($user);
+    CapellAdmin::registerWelcomeTourStep(
+        key: 'welcome-tour.extensions',
+        title: 'Extensions',
+        description: 'Review extensions',
+        chapter: 'extensions',
+        route: '/admin/extensions',
+    );
+
+    $widget = new WelcomeTourChecklistFilamentWidget;
+    $widget->mount();
+    $widget->startTour();
+
+    expect(store($widget)->get('redirect'))->toBe('/admin/extensions');
 });
 
 it('replays from chapter one without clearing dismissal history', function (): void {

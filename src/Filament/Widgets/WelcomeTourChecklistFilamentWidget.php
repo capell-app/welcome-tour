@@ -9,6 +9,7 @@ use Capell\Admin\Filament\Concerns\GatedByRoleAndSettings;
 use Capell\Admin\Support\AdminPanelEntrypoint;
 use Capell\Core\Contracts\Extensions\RegistersExtensionFilamentWidget;
 use Capell\WelcomeTour\Actions\BuildWelcomeTourChecklistAction;
+use Capell\WelcomeTour\Actions\BuildWelcomeTourSummaryAction;
 use Capell\WelcomeTour\Actions\Users\CanShowWelcomeTourAction;
 use Capell\WelcomeTour\Actions\Users\GetUserWelcomeTourStateAction;
 use Capell\WelcomeTour\Actions\Users\RestartWelcomeTourProgressAction;
@@ -109,17 +110,25 @@ final class WelcomeTourChecklistFilamentWidget extends Widget implements CapellF
     public function startTour(): void
     {
         $user = auth()->user();
+        $destination = $this->returnPath !== ''
+            ? $this->returnPath
+            : '/' . AdminPanelEntrypoint::path();
 
         if ($user instanceof Model) {
             RestartWelcomeTourProgressAction::run($user);
             SetWelcomeTourChecklistVisibilityAction::run($user, visible: true);
+
+            $firstChapter = BuildWelcomeTourSummaryAction::run()->chapters[0] ?? null;
+            $currentPath = parse_url($destination, PHP_URL_PATH);
+
+            if ($firstChapter !== null && $currentPath !== $firstChapter->route) {
+                $destination = $firstChapter->route;
+            }
         }
 
         session()->put('capell_welcome_tour.active', true);
         session()->put('capell_welcome_tour.show_checklist', true);
-        $this->redirect($this->returnPath !== ''
-            ? $this->returnPath
-            : '/' . AdminPanelEntrypoint::path());
+        $this->redirect($destination);
     }
 
     public function shouldShowChecklist(): bool

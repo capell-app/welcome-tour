@@ -60,6 +60,10 @@ final class WelcomeTourServiceProvider extends AbstractPackageServiceProvider
         parent::registeringPackage();
 
         $this->app->singleton(ContextualWelcomeTourRegistry::class);
+
+        if (config('capell-welcome-tour.enabled', true)) {
+            $this->app->tag([WelcomeTourPanelExtender::class], AdminPanelExtender::TAG);
+        }
     }
 
     #[Override]
@@ -71,7 +75,6 @@ final class WelcomeTourServiceProvider extends AbstractPackageServiceProvider
 
         Livewire::component('capell-welcome-tour.orchestrator', WelcomeTourOrchestrator::class);
         Livewire::component('capell-welcome-tour.settings-controls', WelcomeTourSettingsControls::class);
-        $this->app->tag([WelcomeTourPanelExtender::class], AdminPanelExtender::TAG);
         $this->app->tag([WelcomeTourUserResourceBridge::class], UserResourceBridge::TAG);
 
         CapellAdmin::registerDashboardFilamentWidget(WelcomeTourChecklistFilamentWidget::class, DashboardEnum::Main);

@@ -140,11 +140,19 @@
             "beforeWait": [
                 {
                     "type": "click",
+                    "selector": ".driver-popover-close-btn"
+                },
+                {
+                    "type": "click",
                     "selector": ".fi-section-header:has-text(\"Advanced developer\")"
                 },
                 {
                     "type": "click",
                     "selector": "button:has-text(\"Add to tour steps\")"
+                },
+                {
+                    "type": "waitFor",
+                    "selector": "input[id$=\".title\"]"
                 },
                 {
                     "type": "fill",
@@ -363,11 +371,19 @@
             "beforeWait": [
                 {
                     "type": "click",
+                    "selector": ".driver-popover-close-btn"
+                },
+                {
+                    "type": "click",
                     "selector": ".fi-section-header:has-text(\"Advanced developer\")"
                 },
                 {
                     "type": "click",
                     "selector": "button:has-text(\"Add to tour steps\")"
+                },
+                {
+                    "type": "waitFor",
+                    "selector": "input[id$=\".title\"]"
                 },
                 {
                     "type": "fill",
@@ -402,11 +418,19 @@
             "beforeWait": [
                 {
                     "type": "click",
+                    "selector": ".driver-popover-close-btn"
+                },
+                {
+                    "type": "click",
                     "selector": ".fi-section-header:has-text(\"Advanced developer\")"
                 },
                 {
                     "type": "click",
                     "selector": "button:has-text(\"Add to tour steps\")"
+                },
+                {
+                    "type": "waitFor",
+                    "selector": "input[id$=\".title\"]"
                 },
                 {
                     "type": "fill",

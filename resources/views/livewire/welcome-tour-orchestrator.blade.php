@@ -14,19 +14,27 @@
                 return false;
             }
         };
-        if (tourIdToOpen) stopWaitingForTourElements = Livewire.on('filament-tour::loaded-elements', ({ tours = [] }) => {
-            if (! tours.some((tour) => tour.id === `tour_${tourIdToOpen}`)) return;
-            stopWaitingForTourElements();
-            requestAnimationFrame(() => requestAnimationFrame(() => {
-                if (! targetsAvailable()) {
-                    $data.suppressDismiss = true;
-                    Livewire.dispatch('capell-welcome-tour::target-unavailable');
-                    document.querySelector('.driver-popover-close-btn')?.click();
-                    return;
-                }
-                queueMicrotask(() => Livewire.dispatch('filament-tour::open-tour', { id: tourIdToOpen }));
-            }));
-        });
+        if (tourIdToOpen) {
+            stopWaitingForTourElements = Livewire.on('filament-tour::loaded-elements', ({ tours = [] }) => {
+                if (! tours.some((tour) => tour.id === `tour_${tourIdToOpen}`)) return;
+                stopWaitingForTourElements();
+                requestAnimationFrame(() => requestAnimationFrame(() => {
+                    if (! targetsAvailable()) {
+                        $data.suppressDismiss = true;
+                        Livewire.dispatch('capell-welcome-tour::target-unavailable');
+                        document.querySelector('.driver-popover-close-btn')?.click();
+                        return;
+                    }
+                    queueMicrotask(() => Livewire.dispatch('filament-tour::open-tour', { id: tourIdToOpen }));
+                }));
+            });
+
+            // The Filament Tour asset can dispatch its first load request before
+            // this Livewire component's Alpine initialiser has registered the
+            // listener above. Request the registry again so a redirected tour
+            // start cannot lose its open event to that race.
+            queueMicrotask(() => Livewire.dispatch('filament-tour::load-elements', { request: window.location }));
+        }
         document.addEventListener('click', (event) => {
             if (event.target.closest('.driver-popover-close-btn')) dismiss();
         }, { capture: true, signal: controller.signal });
