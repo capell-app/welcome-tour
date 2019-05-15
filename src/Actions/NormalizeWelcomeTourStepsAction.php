@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace Capell\WelcomeTour\Actions;
 
+use Lorisleiva\Actions\Concerns\AsFake;
 use Lorisleiva\Actions\Concerns\AsObject;
 
 final class NormalizeWelcomeTourStepsAction
 {
+    use AsFake;
     use AsObject;
 
     /**

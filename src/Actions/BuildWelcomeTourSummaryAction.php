@@ -9,10 +9,12 @@ use Capell\WelcomeTour\Actions\Users\CanShowWelcomeTourAction;
 use Capell\WelcomeTour\Data\WelcomeTourSummaryData;
 use Capell\WelcomeTour\Data\WelcomeTourUserStateData;
 use Illuminate\Database\Eloquent\Model;
+use Lorisleiva\Actions\Concerns\AsFake;
 use Lorisleiva\Actions\Concerns\AsObject;
 
 final class BuildWelcomeTourSummaryAction
 {
+    use AsFake;
     use AsObject;
 
     public function handle(): WelcomeTourSummaryData

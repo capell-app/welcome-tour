@@ -61,9 +61,11 @@ final class WelcomeTourServiceProvider extends AbstractPackageServiceProvider
 
         $this->app->singleton(ContextualWelcomeTourRegistry::class);
 
-        if (config('capell-welcome-tour.enabled', true)) {
-            $this->app->tag([WelcomeTourPanelExtender::class], AdminPanelExtender::TAG);
-        }
+        $this->app->booted(function (): void {
+            if ($this->shouldRegisterRuntime()) {
+                $this->app->tag([WelcomeTourPanelExtender::class], AdminPanelExtender::TAG);
+            }
+        });
     }
 
     #[Override]

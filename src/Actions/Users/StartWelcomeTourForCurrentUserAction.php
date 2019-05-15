@@ -10,10 +10,12 @@ use Capell\WelcomeTour\Actions\ResolveWelcomeTourEnabledAction;
 use Capell\WelcomeTour\Support\WelcomeTourStateStoreResolver;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\ValidationException;
+use Lorisleiva\Actions\Concerns\AsFake;
 use Lorisleiva\Actions\Concerns\AsObject;
 
 final class StartWelcomeTourForCurrentUserAction
 {
+    use AsFake;
     use AsObject;
 
     public function handle(bool $preview = false): string

@@ -3,7 +3,7 @@
     data-tour-settings-summary
 >
     <p class="text-sm text-gray-600 dark:text-gray-400">
-        {{ __('capell-welcome-tour::welcome_tour.summary_helper') }} {{ __($summary->eligible ? 'capell-welcome-tour::welcome_tour.eligible' : 'capell-welcome-tour::welcome_tour.ineligible') }}
+        {{ __('capell-welcome-tour::welcome_tour.summary_helper') }} {{ $summary->eligible ? __('capell-welcome-tour::welcome_tour.eligible') : __('capell-welcome-tour::welcome_tour.ineligible') }}
     </p>
     <div class="grid gap-4 md:grid-cols-2">
         <div>
