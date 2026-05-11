@@ -103,7 +103,7 @@ abstract class WelcomeTourTestCase extends PackagesTestCase
     }
 
     #[Override]
-    protected function getEnvironmentSetUp($app): void
+    protected function getEnvironmentSetUp(mixed $app): void
     {
         parent::getEnvironmentSetUp($app);
 
