@@ -1,0 +1,47 @@
+{
+    "manifest-version": 2,
+    "name": "capell-app/welcome-tour",
+    "kind": "package",
+    "capell-version": "^4.0",
+    "productGroup": "Capell Foundation",
+    "tier": "free",
+    "bundle": "foundation",
+    "description": "Welcome Tour provides optional guided onboarding for the Capell admin panel.",
+    "namespace": "Capell\\WelcomeTour",
+    "surfaces": ["admin"],
+    "dependencies": {
+        "requires": ["capell-app/admin"],
+        "optional": [],
+        "conflicts": []
+    },
+    "lifecycle": {
+        "activation": "automatic",
+        "defaultStatus": "available",
+        "requiresInstallCommand": false
+    },
+    "providers": {
+        "metadata": [],
+        "install": [],
+        "runtime": [],
+        "admin": ["Capell\\WelcomeTour\\Providers\\WelcomeTourServiceProvider"],
+        "frontend": []
+    },
+    "database": {
+        "migrations": false,
+        "settings": true,
+        "requiredTables": []
+    },
+    "commands": {
+        "install": null,
+        "setup": null,
+        "setupParams": [],
+        "demo": null,
+        "demoParams": [],
+        "health": null
+    },
+    "settings": ["welcome-tour"],
+    "permissions": [],
+    "capabilities": [],
+    "assets": [],
+    "healthChecks": []
+}
