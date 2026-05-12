@@ -43,16 +43,6 @@ class WelcomeTourServiceProvider extends AbstractPackageServiceProvider
 
     public function registeringPackage(): void
     {
-        CapellCore::registerPackage(
-            static::$packageName,
-            type: static::getType(),
-            serviceProviderClass: static::class,
-            path: realpath(__DIR__ . '/../..'),
-            version: $this->getVersion(),
-            setting: WelcomeTourSettings::class,
-            description: fn (): string => __('capell-welcome-tour::package.description'),
-        );
-
         $this->booted(function (): void {
             if ($this->isDiscoveringPackages()) {
                 return;
