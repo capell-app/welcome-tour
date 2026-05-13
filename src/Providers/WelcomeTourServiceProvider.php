@@ -16,7 +16,6 @@ use Capell\WelcomeTour\Filament\Pages\WelcomeTourDashboard;
 use Capell\WelcomeTour\Filament\Settings\WelcomeTourSettingsSchema;
 use Capell\WelcomeTour\Settings\WelcomeTourSettings;
 use Capell\WelcomeTour\Support\WelcomeTourUserResourceBridge;
-use Composer\InstalledVersions;
 use Filament\Support\Icons\Heroicon;
 use Spatie\LaravelPackageTools\Package;
 
@@ -95,18 +94,5 @@ class WelcomeTourServiceProvider extends AbstractPackageServiceProvider
         if ($this->app->resolved(SettingsSchemaRegistry::class)) {
             $registerSettings($this->app->make(SettingsSchemaRegistry::class));
         }
-    }
-
-    private function getVersion(): string
-    {
-        if (! class_exists(InstalledVersions::class)) {
-            return 'dev';
-        }
-
-        if (! InstalledVersions::isInstalled(static::$packageName)) {
-            return 'dev';
-        }
-
-        return InstalledVersions::getPrettyVersion(static::$packageName) ?? 'dev';
     }
 }

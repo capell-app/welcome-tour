@@ -13,13 +13,9 @@
         "bundle": "foundation"
     },
     "namespace": "Capell\\WelcomeTour",
-    "surfaces": [
-        "admin"
-    ],
+    "surfaces": ["admin"],
     "dependencies": {
-        "requires": [
-            "capell-app/admin"
-        ],
+        "requires": ["capell-app/admin"],
         "optional": [],
         "conflicts": []
     },
@@ -27,9 +23,7 @@
         "metadata": [],
         "install": [],
         "runtime": [],
-        "admin": [
-            "Capell\\WelcomeTour\\Providers\\WelcomeTourServiceProvider"
-        ],
+        "admin": ["Capell\\WelcomeTour\\Providers\\WelcomeTourServiceProvider"],
         "frontend": []
     },
     "contributes": [],
@@ -44,9 +38,7 @@
         "demo": null,
         "doctor": null
     },
-    "settings": [
-        "Capell\\WelcomeTour\\Settings\\WelcomeTourSettings"
-    ],
+    "settings": ["Capell\\WelcomeTour\\Settings\\WelcomeTourSettings"],
     "permissions": [],
     "capabilities": [],
     "performance": {
@@ -71,9 +63,6 @@
     "marketplace": {
         "summary": "Welcome Tour provides optional guided onboarding for the Capell admin panel.",
         "screenshots": [],
-        "categories": [
-            "admin",
-            "foundation"
-        ]
+        "categories": ["admin", "foundation"]
     }
 }
