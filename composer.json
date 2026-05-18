@@ -21,7 +21,7 @@
         }
     },
     "require": {
-        "php": "^8.2",
+        "php": "^8.3",
         "capell-app/admin": "*",
         "jibaymcs/filament-tour": "^5.0",
         "laravel/framework": "^11.44.2|^12.0|^13.0",
