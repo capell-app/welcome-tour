@@ -61,6 +61,7 @@ abstract class WelcomeTourTestCase extends PackagesTestCase
         );
     }
 
+    #[Override]
     protected function getPackageServiceName(): string
     {
         return 'capell-welcome-tour';

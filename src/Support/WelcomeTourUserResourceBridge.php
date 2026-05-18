@@ -14,12 +14,14 @@ use Filament\Schemas\Components\Component;
 use Filament\Schemas\Schema;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Schema as SchemaFacade;
+use Override;
 
 final class WelcomeTourUserResourceBridge extends AbstractUserResourceBridge
 {
     /**
      * @return array<int, Component>
      */
+    #[Override]
     public function extendComponentsForHook(Schema $schema, UserSchemaHookEnum $hook, UserSchemaContextData $context): array
     {
         if ($hook !== UserSchemaHookEnum::AfterIdentity) {
@@ -48,6 +50,7 @@ final class WelcomeTourUserResourceBridge extends AbstractUserResourceBridge
      * @param  array<string, mixed>  $data
      * @return array<string, mixed>
      */
+    #[Override]
     public function mutateDataBeforeCreate(array $data): array
     {
         unset($data['welcome_tour_enabled']);
@@ -59,6 +62,7 @@ final class WelcomeTourUserResourceBridge extends AbstractUserResourceBridge
      * @param  array<string, mixed>  $data
      * @return array<string, mixed>
      */
+    #[Override]
     public function mutateDataBeforeSave(Model $record, array $data): array
     {
         if (! array_key_exists('welcome_tour_enabled', $data)) {

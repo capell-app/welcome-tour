@@ -22,7 +22,7 @@ class WelcomeTourDashboard extends CapellDashboard
 {
     use HasTour;
 
-    private const DISMISS_EVENT = 'capell-welcome-tour::dismiss';
+    private const string DISMISS_EVENT = 'capell-welcome-tour::dismiss';
 
     /**
      * @return array<int, Tour>

@@ -15,7 +15,7 @@ final class CanShowWelcomeTourAction
 {
     use AsObject;
 
-    public const DISMISSED_HINT_KEY = 'capell-welcome-tour.welcome-tour';
+    public const string DISMISSED_HINT_KEY = 'capell-welcome-tour.welcome-tour';
 
     public function handle(?Model $user): bool
     {
