@@ -13,6 +13,7 @@ use Capell\Core\Support\Settings\SettingsGroupMetadata;
 use Capell\Core\Support\Settings\SettingsSchemaRegistry;
 use Capell\WelcomeTour\Filament\Extenders\WelcomeTourPanelExtender;
 use Capell\WelcomeTour\Filament\Pages\WelcomeTourDashboard;
+use Capell\WelcomeTour\Filament\Pages\WelcomeTourSettingsPage;
 use Capell\WelcomeTour\Filament\Settings\WelcomeTourSettingsSchema;
 use Capell\WelcomeTour\Settings\WelcomeTourSettings;
 use Capell\WelcomeTour\Support\WelcomeTourUserResourceBridge;
@@ -61,6 +62,7 @@ class WelcomeTourServiceProvider extends AbstractPackageServiceProvider
         $this->app->tag([WelcomeTourUserResourceBridge::class], UserResourceBridge::TAG);
 
         CapellAdmin::useDashboardPage(WelcomeTourDashboard::class);
+        CapellAdmin::registerExtensionPage(static::$packageName, WelcomeTourSettingsPage::class);
 
         $this->registerSettings();
     }
