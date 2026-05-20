@@ -1,0 +1,57 @@
+{
+    "package": "welcome-tour",
+    "composerName": "capell-app/welcome-tour",
+    "generatedFor": "deployment-screenshot-runner",
+    "requiresInstalledPackage": true,
+    "outputDirectory": "public/docs/screenshots/packages/welcome-tour",
+    "entries": [
+        {
+            "id": "welcome-tour-dashboard",
+            "title": "Admin dashboard rendered through WelcomeTourDashboard.",
+            "package": "welcome-tour",
+            "surface": "admin",
+            "targetType": "admin-route",
+            "target": "/admin",
+            "required": true,
+            "notes": "Capture after installing only the core Capell stack and capell-app/welcome-tour, with capell-app/login-audit and its direct authentication-log dependency removed from the disposable harness.",
+            "useCase": "A first-time administrator lands on the dashboard replacement that can launch onboarding.",
+            "screenshotPath": "public/docs/screenshots/packages/welcome-tour/welcome-tour-dashboard.png"
+        },
+        {
+            "id": "welcome-tour-overlay",
+            "title": "Welcome tour overlay showing the first configured onboarding step.",
+            "package": "welcome-tour",
+            "surface": "admin",
+            "targetType": "admin-overlay",
+            "target": "/admin",
+            "required": true,
+            "notes": "Use an admin account that has not dismissed the tour.",
+            "useCase": "A first-time administrator sees the first configured tour step overlay.",
+            "screenshotPath": "public/docs/screenshots/packages/welcome-tour/welcome-tour-overlay.png"
+        },
+        {
+            "id": "welcome-tour-settings",
+            "title": "Welcome tour settings group with enabled toggle and step repeater.",
+            "package": "welcome-tour",
+            "surface": "admin",
+            "targetType": "admin-route",
+            "target": "/admin/extensions/welcome-tour/settings",
+            "required": true,
+            "notes": "Open the Welcome Tour package settings page after publishing and running the package settings migration.",
+            "useCase": "A site owner configures the enabled state and tour step repeater from the package settings page.",
+            "screenshotPath": "public/docs/screenshots/packages/welcome-tour/welcome-tour-settings.png"
+        },
+        {
+            "id": "welcome-tour-user-toggle",
+            "title": "User edit form with Show welcome tour toggle.",
+            "package": "welcome-tour",
+            "surface": "admin",
+            "targetType": "admin-resource-form",
+            "target": "/admin/users/{record}/edit",
+            "required": true,
+            "notes": "Requires a users table with the dismissed_hints column so the bridge contributes the field.",
+            "useCase": "An administrator toggles whether a user should see the welcome tour again from the user edit form.",
+            "screenshotPath": "public/docs/screenshots/packages/welcome-tour/welcome-tour-user-toggle.png"
+        }
+    ]
+}
