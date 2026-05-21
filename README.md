@@ -14,6 +14,8 @@ Optional Filament welcome tour for Capell Admin.
 ## What It Adds
 
 - Optional Filament welcome tour for Capell Admin.
+- Package settings for controlling tour availability.
+- A user edit form bridge for per-user tour state when the host user table supports it.
 
 ## Code Map
 
