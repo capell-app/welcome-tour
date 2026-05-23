@@ -11,6 +11,18 @@ Optional Filament welcome tour for Capell Admin.
 - Capell dependencies: `capell-app/admin`
 - Third-party dependencies: `jibaymcs/filament-tour`, `laravel/framework`, `lorisleiva/laravel-actions`, `spatie/laravel-package-tools`, `spatie/laravel-settings`
 
+## Why It Helps Your Capell Workflow
+
+- Adds optional guided onboarding for Capell Admin so new users can learn the panel from inside the product.
+- Helps owners introduce editors to key admin workflows without maintaining a separate onboarding checklist.
+- Gives developers configurable tour steps and settings while keeping the tour optional for host apps.
+
+## Best Used With
+
+- [Translation Manager](../translation-manager/README.md)
+- [Diagnostics](../diagnostics/README.md)
+- [Notes](../notes/README.md)
+
 ## What It Adds
 
 - Optional Filament welcome tour for Capell Admin.
@@ -53,6 +65,7 @@ Optional Filament welcome tour for Capell Admin.
 
 ## Docs
 
+- [docs index](docs/README.md)
 - [overview.md](docs/overview.md)
 - [screenshots.json](docs/screenshots.json)
 - [steps-and-settings.md](docs/steps-and-settings.md)
