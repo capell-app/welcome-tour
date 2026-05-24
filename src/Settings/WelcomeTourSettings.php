@@ -13,9 +13,6 @@ class WelcomeTourSettings extends Settings implements SettingsContract, Settings
 {
     public bool $enabled = true;
 
-    /**
-     * @var array<array-key, mixed>
-     */
     public array $steps = [];
 
     public static function group(): string
