@@ -26,6 +26,9 @@ class WelcomeTourServiceProvider extends AbstractPackageServiceProvider
 
     public static string $packageName = 'capell-app/welcome-tour';
 
+    /**
+     * @return array<array-key, mixed>
+     */
     public static function getSettingMigrations(): array
     {
         return [
