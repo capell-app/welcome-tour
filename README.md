@@ -45,7 +45,7 @@ Optional Filament welcome tour for Capell Admin.
 ## Admin Surface
 
 - Pages: `WelcomeTourDashboard`.
-- Settings page: `WelcomeTourSettingsPage` at `/admin/extensions/welcome-tour/settings`.
+- Settings: Extensions page modal surface for `welcome-tour`.
 - User edit form bridge: `welcome_tour_enabled`, when the host users table has `dismissed_hints`.
 
 ## Data And Persistence
@@ -61,7 +61,7 @@ Optional Filament welcome tour for Capell Admin.
 
 - Install with `composer require capell-app/welcome-tour` in the host Capell application.
 - In this repository, verify package changes with `vendor/bin/pest`; do not use `php artisan`.
-- In a disposable host app, publish and run the package settings migration before opening the settings page.
+- In a disposable host app, publish and run the package settings migration before opening the extension settings modal.
 
 ## Docs
 
@@ -82,4 +82,4 @@ vendor/bin/pest packages/welcome-tour/tests --configuration=phpunit.xml
 
 - Put behaviour changes in `src/Actions/`; UI classes, commands, and controllers should call actions instead of owning domain logic.
 - Use package `Data` classes at boundaries instead of passing anonymous arrays between layers.
-- Keep package settings out of the global Settings page; extension settings should live on the package settings page.
+- Keep package settings out of the global Settings page; extension settings should live in the Extensions page modal surface.

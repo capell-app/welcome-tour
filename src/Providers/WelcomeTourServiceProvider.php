@@ -6,6 +6,7 @@ namespace Capell\WelcomeTour\Providers;
 
 use Capell\Admin\Contracts\Bridges\UserResourceBridge;
 use Capell\Admin\Contracts\Extenders\AdminPanelExtender;
+use Capell\Admin\Data\Extensions\ExtensionManagementSurfaceData;
 use Capell\Admin\Facades\CapellAdmin;
 use Capell\Core\Facades\CapellCore;
 use Capell\Core\Support\Packages\AbstractPackageServiceProvider;
@@ -13,7 +14,6 @@ use Capell\Core\Support\Settings\SettingsGroupMetadata;
 use Capell\Core\Support\Settings\SettingsSchemaRegistry;
 use Capell\WelcomeTour\Filament\Extenders\WelcomeTourPanelExtender;
 use Capell\WelcomeTour\Filament\Pages\WelcomeTourDashboard;
-use Capell\WelcomeTour\Filament\Pages\WelcomeTourSettingsPage;
 use Capell\WelcomeTour\Filament\Settings\WelcomeTourSettingsSchema;
 use Capell\WelcomeTour\Settings\WelcomeTourSettings;
 use Capell\WelcomeTour\Support\WelcomeTourUserResourceBridge;
@@ -65,7 +65,12 @@ class WelcomeTourServiceProvider extends AbstractPackageServiceProvider
         $this->app->tag([WelcomeTourUserResourceBridge::class], UserResourceBridge::TAG);
 
         CapellAdmin::useDashboardPage(WelcomeTourDashboard::class);
-        CapellAdmin::registerExtensionPage(static::$packageName, WelcomeTourSettingsPage::class);
+        CapellAdmin::registerExtensionManagementSurface(ExtensionManagementSurfaceData::settings(
+            packageName: static::$packageName,
+            label: 'capell-welcome-tour::welcome_tour.settings_label',
+            settingsGroup: WelcomeTourSettings::group(),
+            icon: Heroicon::OutlinedSparkles,
+        ));
 
         $this->registerSettings();
     }
