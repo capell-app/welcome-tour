@@ -13,6 +13,7 @@ class WelcomeTourSettings extends Settings implements SettingsContract, Settings
 {
     public bool $enabled = true;
 
+    /** @phpstan-var list<array<string, string|int|bool|null>> */
     public array $steps = [];
 
     public static function group(): string
