@@ -13,7 +13,6 @@ use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Component;
 use Filament\Schemas\Schema;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Schema as SchemaFacade;
 use Override;
 
 final class WelcomeTourUserResourceBridge extends AbstractUserResourceBridge
@@ -32,7 +31,7 @@ final class WelcomeTourUserResourceBridge extends AbstractUserResourceBridge
             return [];
         }
 
-        if (! SchemaFacade::hasTable('users') || ! SchemaFacade::hasColumn('users', 'dismissed_hints')) {
+        if (! WelcomeTourSchema::hasDismissedHintsColumn()) {
             return [];
         }
 
