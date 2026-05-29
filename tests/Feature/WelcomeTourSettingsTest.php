@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
-use Capell\Admin\Support\Extensions\ExtensionPageRegistry;
+use Capell\Admin\Support\Extensions\ExtensionManagementSurfaceRegistry;
 use Capell\Core\Support\Settings\SettingsSchemaRegistry;
-use Capell\WelcomeTour\Filament\Pages\WelcomeTourSettingsPage;
 use Capell\WelcomeTour\Filament\Settings\WelcomeTourSettingsSchema;
 use Capell\WelcomeTour\Providers\WelcomeTourServiceProvider;
 use Capell\WelcomeTour\Settings\WelcomeTourSettings;
@@ -17,11 +16,11 @@ it('registers welcome tour settings for the extension settings page', function (
         ->and($registry->getMetadata('welcome-tour')?->packageName)->toBe(WelcomeTourServiceProvider::$packageName);
 });
 
-it('registers welcome tour settings as an extension page', function (): void {
-    $extensionPages = collect(resolve(ExtensionPageRegistry::class)->entries())
-        ->pluck('page');
+it('registers welcome tour settings as an extension management surface', function (): void {
+    $settingsSurfaces = resolve(ExtensionManagementSurfaceRegistry::class)
+        ->surfacesForPackage(WelcomeTourServiceProvider::$packageName);
 
-    expect($extensionPages)->toContain(WelcomeTourSettingsPage::class);
+    expect($settingsSurfaces[0]->settingsGroup ?? null)->toBe(WelcomeTourSettings::group());
 });
 
 it('stores configurable tour steps with translation keys', function (): void {

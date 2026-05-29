@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Capell\WelcomeTour\Actions\Users;
 
 use Capell\WelcomeTour\Settings\WelcomeTourSettings;
+use Capell\WelcomeTour\Support\WelcomeTourSchema;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
 use Lorisleiva\Actions\Concerns\AsObject;
 use Throwable;
 
@@ -27,7 +27,7 @@ final class CanShowWelcomeTourAction
             return false;
         }
 
-        if (! Schema::hasTable($user->getTable()) || ! Schema::hasColumn($user->getTable(), 'dismissed_hints')) {
+        if (! WelcomeTourSchema::hasDismissedHintsColumn($user->getTable())) {
             return true;
         }
 

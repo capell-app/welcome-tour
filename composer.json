@@ -22,7 +22,7 @@
     },
     "require": {
         "php": "^8.3",
-        "capell-app/admin": "*",
+        "capell-app/admin": "^4.0 || 4.x-dev",
         "jibaymcs/filament-tour": "^5.0",
         "laravel/framework": "^11.44.2|^12.0|^13.0",
         "lorisleiva/laravel-actions": "^2.8",
@@ -44,5 +44,23 @@
     "prefer-stable": true,
     "scripts": {
         "test": "bin/pest --colors=always"
+    },
+    "homepage": "https://github.com/capell-app/welcome-tour",
+    "keywords": [
+        "capell",
+        "cms",
+        "laravel",
+        "onboarding"
+    ],
+    "authors": [
+        {
+            "name": "Capell Team",
+            "email": "team@capell.app",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "source": "https://github.com/capell-app/capell-packages",
+        "docs": "https://docs.capell.app/packages/welcome-tour"
     }
 }

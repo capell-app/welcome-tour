@@ -11,9 +11,23 @@ Optional Filament welcome tour for Capell Admin.
 - Capell dependencies: `capell-app/admin`
 - Third-party dependencies: `jibaymcs/filament-tour`, `laravel/framework`, `lorisleiva/laravel-actions`, `spatie/laravel-package-tools`, `spatie/laravel-settings`
 
+## Why It Helps Your Capell Workflow
+
+- Adds optional guided onboarding for Capell Admin so new users can learn the panel from inside the product.
+- Helps owners introduce editors to key admin workflows without maintaining a separate onboarding checklist.
+- Gives developers configurable tour steps and settings while keeping the tour optional for host apps.
+
+## Best Used With
+
+- [Translation Manager](../translation-manager/README.md)
+- [Diagnostics](../diagnostics/README.md)
+- [Notes](../notes/README.md)
+
 ## What It Adds
 
 - Optional Filament welcome tour for Capell Admin.
+- Package settings for controlling tour availability.
+- A user edit form bridge for per-user tour state when the host user table supports it.
 
 ## Code Map
 
@@ -31,7 +45,7 @@ Optional Filament welcome tour for Capell Admin.
 ## Admin Surface
 
 - Pages: `WelcomeTourDashboard`.
-- Settings page: `WelcomeTourSettingsPage` at `/admin/extensions/welcome-tour/settings`.
+- Settings: Extensions page modal surface for `welcome-tour`.
 - User edit form bridge: `welcome_tour_enabled`, when the host users table has `dismissed_hints`.
 
 ## Data And Persistence
@@ -47,10 +61,11 @@ Optional Filament welcome tour for Capell Admin.
 
 - Install with `composer require capell-app/welcome-tour` in the host Capell application.
 - In this repository, verify package changes with `vendor/bin/pest`; do not use `php artisan`.
-- In a disposable host app, publish and run the package settings migration before opening the settings page.
+- In a disposable host app, publish and run the package settings migration before opening the extension settings modal.
 
 ## Docs
 
+- [docs index](docs/README.md)
 - [overview.md](docs/overview.md)
 - [screenshots.json](docs/screenshots.json)
 - [steps-and-settings.md](docs/steps-and-settings.md)
@@ -67,4 +82,4 @@ vendor/bin/pest packages/welcome-tour/tests --configuration=phpunit.xml
 
 - Put behaviour changes in `src/Actions/`; UI classes, commands, and controllers should call actions instead of owning domain logic.
 - Use package `Data` classes at boundaries instead of passing anonymous arrays between layers.
-- Keep package settings out of the global Settings page; extension settings should live on the package settings page.
+- Keep package settings out of the global Settings page; extension settings should live in the Extensions page modal surface.

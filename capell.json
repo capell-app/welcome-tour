@@ -16,7 +16,7 @@
     "surfaces": ["admin"],
     "dependencies": {
         "requires": ["capell-app/admin"],
-        "optional": [],
+        "supports": [],
         "conflicts": []
     },
     "providers": {
@@ -70,7 +70,13 @@
     },
     "marketplace": {
         "summary": "Welcome Tour provides optional guided onboarding for the Capell admin panel.",
-        "screenshots": [],
+        "screenshots": [
+            {
+                "path": "docs/assets/marketplace/extension-card.jpg",
+                "alt": "Welcome Tour extension preview image",
+                "caption": "Welcome Tour extension preview"
+            }
+        ],
         "categories": ["admin", "foundation"]
     }
 }
