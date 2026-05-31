@@ -16,6 +16,8 @@ use Capell\WelcomeTour\Support\WelcomeTourUserResourceBridge;
 use Filament\Panel;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\HtmlString;
+use Illuminate\View\View;
 
 beforeEach(function (): void {
     CapellAdmin::clearWelcomeTourSteps();
@@ -39,8 +41,8 @@ it('registers default welcome tour steps from configured translation keys', func
     expect($steps)->toHaveCount(4)
         ->and($steps[0]->key)->toBe('capell-welcome-tour.introduction')
         ->and($steps[1]->element)->toBeNull()
-        ->and(($steps[0]->title)())->toBe('Welcome to Capell')
-        ->and(($steps[0]->description)())->toBe('This quick tour highlights the main admin areas you will use to manage sites and content.');
+        ->and(welcomeTourText($steps[0]->title))->toBe('Welcome to Capell')
+        ->and(welcomeTourText($steps[0]->description))->toBe('This quick tour highlights the main admin areas you will use to manage sites and content.');
 });
 
 it('does not fall back to default steps when settings are explicitly empty', function (): void {
@@ -70,10 +72,27 @@ it('escapes configured step descriptions before passing them to the tour package
 
     $steps = CapellAdmin::getWelcomeTourSteps();
 
-    expect(($steps[0]->description)())
+    expect(welcomeTourText($steps[0]->description))
         ->toBe('&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;')
         ->not->toContain('<script>');
 });
+
+function welcomeTourText(Closure|string|HtmlString|View $value): string
+{
+    if ($value instanceof Closure) {
+        $value = $value();
+    }
+
+    if ($value instanceof HtmlString) {
+        return $value->toHtml();
+    }
+
+    if ($value instanceof View) {
+        return $value->render();
+    }
+
+    return (string) $value;
+}
 
 it('builds the dashboard welcome tour for users who have it enabled', function (): void {
     $user = User::factory()->create();

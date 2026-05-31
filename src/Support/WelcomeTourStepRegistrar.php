@@ -54,10 +54,10 @@ final class WelcomeTourStepRegistrar
      */
     private function normalizeSteps(array $steps): array
     {
-        return collect($steps)
+        return array_values(collect($steps)
             ->filter(fn (mixed $step): bool => is_array($step))
             ->values()
-            ->all();
+            ->all());
     }
 
     /**

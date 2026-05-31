@@ -48,9 +48,9 @@ final class SetUserWelcomeTourPreferenceAction
 
         $dismissedHints = is_string($raw) ? json_decode($raw, true) : [];
 
-        return collect(is_array($dismissedHints) ? $dismissedHints : [])
+        return array_values(collect(is_array($dismissedHints) ? $dismissedHints : [])
             ->filter(fn (mixed $hint): bool => is_string($hint) && $hint !== '')
             ->values()
-            ->all();
+            ->all());
     }
 }
