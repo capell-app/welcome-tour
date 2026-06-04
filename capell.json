@@ -6,7 +6,7 @@
     "kind": "package",
     "capellApiVersion": "^4.0",
     "version": "4.x-dev",
-    "description": "Welcome Tour provides optional guided onboarding for the Capell admin panel.",
+    "description": "Configurable Filament onboarding tours and per-user welcome flow for the Capell admin panel.",
     "product": {
         "group": "Capell Foundation",
         "tier": "free",
@@ -69,7 +69,8 @@
         "privateDocsRequested": false
     },
     "marketplace": {
-        "summary": "Welcome Tour provides optional guided onboarding for the Capell admin panel.",
+        "summary": "Guided, in-product onboarding for Capell Admin — configurable multi-step tours that introduce new editors to sites, pages, media, and settings, with per-user dismiss and resume.",
+        "description": "Configurable Filament onboarding tours and per-user welcome flow for the Capell admin panel.",
         "screenshots": [
             {
                 "path": "docs/assets/marketplace/extension-card.jpg",
