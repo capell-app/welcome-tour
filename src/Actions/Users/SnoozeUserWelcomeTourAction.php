@@ -7,7 +7,7 @@ namespace Capell\WelcomeTour\Actions\Users;
 use Capell\WelcomeTour\Events\WelcomeTourSnoozed;
 use Capell\WelcomeTour\Support\WelcomeTourSchema;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Lorisleiva\Actions\Concerns\AsObject;
 
@@ -21,7 +21,7 @@ final class SnoozeUserWelcomeTourAction
             return;
         }
 
-        $snoozedUntil = Carbon::now()->addHours(max(1, $hours));
+        $snoozedUntil = Date::now()->addHours(max(1, $hours));
 
         DB::table('welcome_tour_user_states')->updateOrInsert(
             [
@@ -31,7 +31,7 @@ final class SnoozeUserWelcomeTourAction
             ],
             [
                 'snoozed_until' => $snoozedUntil,
-                'updated_at' => Carbon::now(),
+                'updated_at' => Date::now(),
             ],
         );
 

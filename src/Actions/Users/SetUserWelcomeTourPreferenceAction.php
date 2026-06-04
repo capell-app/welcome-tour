@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Capell\WelcomeTour\Actions\Users;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Lorisleiva\Actions\Concerns\AsObject;
@@ -52,9 +52,9 @@ final class SetUserWelcomeTourPreferenceAction
                 'tour_key' => $tourKey,
             ],
             [
-                'dismissed_at' => $enabled ? null : Carbon::now(),
+                'dismissed_at' => $enabled ? null : Date::now(),
                 'snoozed_until' => null,
-                'updated_at' => Carbon::now(),
+                'updated_at' => Date::now(),
             ],
         );
     }

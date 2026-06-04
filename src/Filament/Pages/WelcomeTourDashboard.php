@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Capell\WelcomeTour\Filament\Pages;
 
-use Capell\Admin\Data\WelcomeTourStepData;
 use Capell\Admin\Facades\CapellAdmin;
 use Capell\Admin\Filament\Pages\CapellDashboard;
 use Capell\Admin\Support\AdminPanelEntrypoint;
@@ -22,9 +21,9 @@ use Filament\Notifications\Notification;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Database\Eloquent\Model;
 use JibayMcs\FilamentTour\Tour\HasTour;
-use JibayMcs\FilamentTour\Tour\Step;
 use JibayMcs\FilamentTour\Tour\Tour;
 use Livewire\Attributes\On;
+use Override;
 
 class WelcomeTourDashboard extends CapellDashboard
 {
@@ -58,7 +57,7 @@ class WelcomeTourDashboard extends CapellDashboard
         );
 
         $steps = array_map(
-            fn (WelcomeTourStepData $step): Step => WelcomeTourStepFactory::make($step),
+            WelcomeTourStepFactory::make(...),
             $tourSteps,
         );
 
@@ -148,6 +147,7 @@ class WelcomeTourDashboard extends CapellDashboard
     /**
      * @return array<int, Action>
      */
+    #[Override]
     protected function getHeaderActions(): array
     {
         return [

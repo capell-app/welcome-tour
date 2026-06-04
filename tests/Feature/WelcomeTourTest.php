@@ -105,6 +105,7 @@ it('passes plain translated step descriptions to the tour package once', functio
 it('accepts literal step titles and filters configured steps by role and first-run window', function (): void {
     $recentAdmin = User::factory()->create(['created_at' => now()->subDay()]);
     $recentAdmin->setAttribute('role', 'admin');
+
     test()->actingAs($recentAdmin);
 
     $settings = WelcomeTourSettings::instance();

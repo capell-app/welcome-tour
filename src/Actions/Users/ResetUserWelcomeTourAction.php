@@ -7,7 +7,7 @@ namespace Capell\WelcomeTour\Actions\Users;
 use Capell\WelcomeTour\Events\WelcomeTourRestarted;
 use Capell\WelcomeTour\Support\WelcomeTourSchema;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Lorisleiva\Actions\Concerns\AsObject;
 
@@ -36,7 +36,7 @@ final class ResetUserWelcomeTourAction
                 'last_completed_step_key' => null,
                 'snoozed_until' => null,
                 'dismissed_at' => null,
-                'updated_at' => Carbon::now(),
+                'updated_at' => Date::now(),
             ],
         );
 

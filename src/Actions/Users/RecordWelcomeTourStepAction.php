@@ -7,7 +7,7 @@ namespace Capell\WelcomeTour\Actions\Users;
 use Capell\WelcomeTour\Events\WelcomeTourStepCompleted;
 use Capell\WelcomeTour\Support\WelcomeTourSchema;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Lorisleiva\Actions\Concerns\AsObject;
 
@@ -22,7 +22,7 @@ final class RecordWelcomeTourStepAction
         }
 
         DB::transaction(function () use ($user, $stepKey, $tourKey): void {
-            $now = Carbon::now();
+            $now = Date::now();
             $existing = DB::table('welcome_tour_user_states')
                 ->where('user_type', $user->getMorphClass())
                 ->where('user_id', $user->getKey())
