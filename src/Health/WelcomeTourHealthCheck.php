@@ -108,17 +108,19 @@ final class WelcomeTourHealthCheck implements ChecksExtensionHealth
      */
     public function userDismissalStorageCheck(): DoctorCheckResultData
     {
-        $available = WelcomeTourSchema::hasDismissedHintsColumn();
+        $hasLegacyColumn = WelcomeTourSchema::hasDismissedHintsColumn();
+        $hasPackageState = WelcomeTourSchema::hasUserStateTable();
+        $available = $hasLegacyColumn || $hasPackageState;
 
         return new DoctorCheckResultData(
             label: 'Welcome Tour user dismissal storage',
             passed: $available,
             message: $available
-                ? 'The users.dismissed_hints column is available for per-user tour dismissal state.'
-                : 'The users.dismissed_hints column is missing, so tour dismissal cannot persist per user.',
+                ? 'Per-user tour dismissal storage is available through host user hints or package-owned state.'
+                : 'No host user hints column or package-owned state table is available for tour dismissal.',
             remediation: $available
                 ? null
-                : 'Add the users.dismissed_hints JSON column or provide a package-owned dismissal store.',
+                : 'Run the Welcome Tour package migration or add the users.dismissed_hints JSON column.',
         );
     }
 

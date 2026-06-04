@@ -13,6 +13,11 @@ final class WelcomeTourSchema
         return self::hasTable($table) && self::hasColumn($table, 'dismissed_hints');
     }
 
+    public static function hasUserStateTable(): bool
+    {
+        return self::hasTable('welcome_tour_user_states');
+    }
+
     public static function hasTable(string $table): bool
     {
         return resolve(RuntimeSchemaState::class)->hasTable($table);

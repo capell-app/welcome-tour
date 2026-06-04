@@ -20,30 +20,32 @@ Welcome Tour replaces the default admin dashboard with `WelcomeTourDashboard`, r
 'steps' => [
     [
         'key' => 'host-app.first-page',
-        'title' => 'host-app::welcome_tour.first_page_title',
+        'title' => 'host-app::welcome_tour.first_page_title', // or literal owner-authored copy
         'description' => 'host-app::welcome_tour.first_page_description',
         'element' => '#first-page-button',
         'icon' => 'heroicon-o-document-plus',
         'icon_color' => 'primary',
         'sort' => 50,
         'visible' => true,
+        'roles' => ['admin'],
+        'user_created_within_days' => 14,
     ],
 ],
 ```
 
-`WelcomeTourStepRegistrar` translates `title` and `description`, escapes the description, and skips rows without a key.
+`WelcomeTourStepRegistrar` translates `title` and `description` when the values are real translation keys, accepts literal strings otherwise, and skips rows without a key. Do not pre-escape descriptions in config; keep them plain text.
 
 ## Register a Step From Code
 
-Use `CapellAdmin::registerWelcomeTourStep()` when the step belongs to another package and should only exist when that package is installed.
+Use `WelcomeTourStepContributor::dashboardStep()` when the step belongs to another package and should only exist when that package is installed.
 
 ```php
-use Capell\Admin\Facades\CapellAdmin;
+use Capell\WelcomeTour\Support\WelcomeTourStepContributor;
 
-CapellAdmin::registerWelcomeTourStep(
+WelcomeTourStepContributor::dashboardStep(
     key: 'demo-kit.example-site',
     title: static fn (): string => __('capell-demo-kit::welcome_tour.example_site_title'),
-    description: static fn (): string => e(__('capell-demo-kit::welcome_tour.example_site_description')),
+    description: static fn (): string => __('capell-demo-kit::welcome_tour.example_site_description'),
     element: '#demo-kit-example-site',
     icon: 'heroicon-o-sparkles',
     iconColor: 'success',
@@ -53,6 +55,42 @@ CapellAdmin::registerWelcomeTourStep(
 ```
 
 Keep selectors stable. A missing selector means the step cannot anchor to the UI element.
+
+## Targeting
+
+Configured steps can be limited by:
+
+- `roles`: array or comma-separated role names.
+- `user_created_within_days`: first-run window based on the authenticated user's `created_at`.
+
+Code-side contributors can pass a `visible` closure to `WelcomeTourStepContributor::dashboardStep()` for package-specific targeting.
+
+The shipped default sequence includes anchored dashboard steps for the admin menu, header tools, Sites, Pages, and Media so new editors see the main Capell work areas without another package contributing steps.
+
+## Checklist
+
+The dashboard checklist is configured through `capell-welcome-tour.checklist`. Supported completion conditions are:
+
+- `table-exists:{table}`
+- `table-has-rows:{table}`
+
+Checklist items are admin-only dashboard data and do not affect public frontend output.
+
+## Analytics Events
+
+Listen for these events to feed activation analytics:
+
+- `Capell\WelcomeTour\Events\WelcomeTourStarted`
+- `Capell\WelcomeTour\Events\WelcomeTourStepCompleted`
+- `Capell\WelcomeTour\Events\WelcomeTourSnoozed`
+- `Capell\WelcomeTour\Events\WelcomeTourCompleted`
+- `Capell\WelcomeTour\Events\WelcomeTourRestarted`
+
+## Per-User State
+
+Welcome Tour stores dismissal in the host `users.dismissed_hints` column when that column exists. Hosts without that column use the package-owned `welcome_tour_user_states` table instead.
+
+The package table also records completed step keys and snooze state. When a user leaves part-way through the tour, the dashboard resumes at the first incomplete step. The dashboard header includes Remind me later and Restart tour actions for the current user.
 
 ## Verification
 

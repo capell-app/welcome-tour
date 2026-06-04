@@ -50,7 +50,17 @@
         "capell",
         "cms",
         "laravel",
-        "onboarding"
+        "filament",
+        "onboarding",
+        "user-onboarding",
+        "product-tour",
+        "guided-tour",
+        "walkthrough",
+        "tooltips",
+        "admin-ux",
+        "activation",
+        "checklist",
+        "telemetry"
     ],
     "authors": [
         {

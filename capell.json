@@ -26,11 +26,17 @@
         "admin": ["Capell\\WelcomeTour\\Providers\\WelcomeTourServiceProvider"],
         "frontend": []
     },
-    "contributes": [],
+    "contributes": [
+        {
+            "type": "dashboard-widget",
+            "class": "Capell\\WelcomeTour\\Filament\\Widgets\\WelcomeTourChecklistWidget",
+            "dashboard": "main"
+        }
+    ],
     "database": {
-        "migrations": false,
+        "migrations": true,
         "settings": true,
-        "requiredTables": []
+        "requiredTables": ["welcome_tour_user_states"]
     },
     "commands": {
         "install": null,
@@ -38,9 +44,38 @@
         "demo": null,
         "doctor": null
     },
+    "actions": {
+        "buildWelcomeTourChecklist": "Capell\\WelcomeTour\\Actions\\BuildWelcomeTourChecklistAction",
+        "canShowWelcomeTourStep": "Capell\\WelcomeTour\\Actions\\CanShowWelcomeTourStepAction",
+        "canShowWelcomeTour": "Capell\\WelcomeTour\\Actions\\Users\\CanShowWelcomeTourAction",
+        "getUserWelcomeTourState": "Capell\\WelcomeTour\\Actions\\Users\\GetUserWelcomeTourStateAction",
+        "recordWelcomeTourStep": "Capell\\WelcomeTour\\Actions\\Users\\RecordWelcomeTourStepAction",
+        "resetUserWelcomeTour": "Capell\\WelcomeTour\\Actions\\Users\\ResetUserWelcomeTourAction",
+        "resolveWelcomeTourEnabled": "Capell\\WelcomeTour\\Actions\\ResolveWelcomeTourEnabledAction",
+        "resolveWelcomeTourStepsForUser": "Capell\\WelcomeTour\\Actions\\Users\\ResolveWelcomeTourStepsForUserAction",
+        "setUserWelcomeTourPreference": "Capell\\WelcomeTour\\Actions\\Users\\SetUserWelcomeTourPreferenceAction",
+        "snoozeUserWelcomeTour": "Capell\\WelcomeTour\\Actions\\Users\\SnoozeUserWelcomeTourAction"
+    },
     "settings": ["Capell\\WelcomeTour\\Settings\\WelcomeTourSettings"],
     "permissions": [],
-    "capabilities": [],
+    "capabilities": [
+        "admin-guided-tour",
+        "admin-dashboard-tour",
+        "anchored-tour-steps",
+        "configurable-tour-steps",
+        "extension-contributed-tour-steps",
+        "per-user-dismissal",
+        "package-owned-tour-state",
+        "tour-progress-resume",
+        "restart-tour",
+        "snooze-tour",
+        "onboarding-checklist-widget",
+        "role-targeted-tour-steps",
+        "first-run-tour-steps",
+        "literal-or-translated-step-copy",
+        "tour-lifecycle-events",
+        "settings-managed-onboarding"
+    ],
     "performance": {
         "frontendRenderBudgetMs": 0,
         "adminQueryBudget": 40,
@@ -76,6 +111,31 @@
                 "path": "docs/assets/marketplace/extension-card.jpg",
                 "alt": "Welcome Tour extension preview image",
                 "caption": "Welcome Tour extension preview"
+            },
+            {
+                "path": "docs/screenshots/welcome-tour-dashboard.png",
+                "alt": "Welcome Tour dashboard with restart tour action",
+                "caption": "Welcome Tour dashboard"
+            },
+            {
+                "path": "docs/screenshots/welcome-tour-overlay.png",
+                "alt": "Welcome Tour overlay anchored to the Capell admin sidebar",
+                "caption": "Anchored welcome tour overlay"
+            },
+            {
+                "path": "docs/screenshots/welcome-tour-settings.png",
+                "alt": "Welcome Tour settings with enabled toggle and configurable steps",
+                "caption": "Welcome Tour settings"
+            },
+            {
+                "path": "docs/screenshots/welcome-tour-user-toggle.png",
+                "alt": "User edit form with Show welcome tour toggle",
+                "caption": "Per-user tour visibility"
+            },
+            {
+                "path": "docs/screenshots/welcome-tour-tour-advance.gif",
+                "alt": "Welcome Tour overlay advancing through onboarding steps",
+                "caption": "Tour advance animation"
             }
         ],
         "categories": ["admin", "foundation"]

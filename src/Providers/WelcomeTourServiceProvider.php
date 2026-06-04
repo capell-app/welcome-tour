@@ -7,6 +7,7 @@ namespace Capell\WelcomeTour\Providers;
 use Capell\Admin\Contracts\Bridges\UserResourceBridge;
 use Capell\Admin\Contracts\Extenders\AdminPanelExtender;
 use Capell\Admin\Data\Extensions\ExtensionManagementSurfaceData;
+use Capell\Admin\Enums\DashboardEnum;
 use Capell\Admin\Facades\CapellAdmin;
 use Capell\Core\Facades\CapellCore;
 use Capell\Core\Support\Packages\AbstractPackageServiceProvider;
@@ -15,7 +16,9 @@ use Capell\Core\Support\Settings\SettingsSchemaRegistry;
 use Capell\WelcomeTour\Filament\Extenders\WelcomeTourPanelExtender;
 use Capell\WelcomeTour\Filament\Pages\WelcomeTourDashboard;
 use Capell\WelcomeTour\Filament\Settings\WelcomeTourSettingsSchema;
+use Capell\WelcomeTour\Filament\Widgets\WelcomeTourChecklistWidget;
 use Capell\WelcomeTour\Settings\WelcomeTourSettings;
+use Capell\WelcomeTour\Support\WelcomeTourStepRegistrar;
 use Capell\WelcomeTour\Support\WelcomeTourUserResourceBridge;
 use Filament\Support\Icons\Heroicon;
 use Spatie\LaravelPackageTools\Package;
@@ -41,6 +44,7 @@ class WelcomeTourServiceProvider extends AbstractPackageServiceProvider
         $package
             ->name(self::$name)
             ->hasConfigFile()
+            ->hasMigration('2026_06_04_000001_create_welcome_tour_user_states_table')
             ->hasTranslations();
     }
 
@@ -65,6 +69,7 @@ class WelcomeTourServiceProvider extends AbstractPackageServiceProvider
         $this->app->tag([WelcomeTourUserResourceBridge::class], UserResourceBridge::TAG);
 
         CapellAdmin::useDashboardPage(WelcomeTourDashboard::class);
+        CapellAdmin::registerDashboardWidget(WelcomeTourChecklistWidget::class, DashboardEnum::Main);
         CapellAdmin::registerExtensionManagementSurface(ExtensionManagementSurfaceData::settings(
             packageName: static::$packageName,
             label: 'capell-welcome-tour::welcome_tour.settings_label',
@@ -73,6 +78,7 @@ class WelcomeTourServiceProvider extends AbstractPackageServiceProvider
         ));
 
         $this->registerSettings();
+        resolve(WelcomeTourStepRegistrar::class)->register();
     }
 
     private function shouldRegisterRuntime(): bool

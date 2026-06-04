@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace Capell\WelcomeTour\Actions\Users;
 
-use Capell\WelcomeTour\Settings\WelcomeTourSettings;
+use Capell\WelcomeTour\Actions\ResolveWelcomeTourEnabledAction;
 use Capell\WelcomeTour\Support\WelcomeTourSchema;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Lorisleiva\Actions\Concerns\AsObject;
-use Throwable;
 
 final class CanShowWelcomeTourAction
 {
@@ -17,13 +16,19 @@ final class CanShowWelcomeTourAction
 
     public const string DISMISSED_HINT_KEY = 'capell-welcome-tour.welcome-tour';
 
-    public function handle(?Model $user): bool
+    public function handle(?Model $user, string $tourKey = 'capell_admin_welcome'): bool
     {
-        if (! $this->isGloballyEnabled()) {
+        if (! ResolveWelcomeTourEnabledAction::run()) {
             return false;
         }
 
         if (! $user instanceof Model) {
+            return false;
+        }
+
+        $state = GetUserWelcomeTourStateAction::run($user, $tourKey);
+
+        if ($state->dismissed || $state->isSnoozed()) {
             return false;
         }
 
@@ -49,14 +54,5 @@ final class CanShowWelcomeTourAction
             ->filter(fn (mixed $hint): bool => is_string($hint) && $hint !== '')
             ->values()
             ->all());
-    }
-
-    private function isGloballyEnabled(): bool
-    {
-        try {
-            return resolve(WelcomeTourSettings::class)->enabled;
-        } catch (Throwable) {
-            return config('capell-welcome-tour.enabled', true);
-        }
     }
 }

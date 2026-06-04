@@ -9,6 +9,7 @@ use Filament\Forms\Components\Repeater;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema as SchemaFacade;
 
 it('declares welcome tour settings metadata and schema structure', function (): void {
@@ -31,7 +32,10 @@ it('reports real welcome tour health diagnostics', function (): void {
 });
 
 it('fails welcome tour health when per-user dismissal storage is missing', function (): void {
-    SchemaFacade::drop('users');
+    SchemaFacade::drop('welcome_tour_user_states');
+    SchemaFacade::table('users', function (Blueprint $table): void {
+        $table->dropColumn('dismissed_hints');
+    });
 
     $check = new WelcomeTourHealthCheck;
 
@@ -47,8 +51,17 @@ it('declares benefit-led welcome tour marketplace copy', function (): void {
     );
 
     expect($manifest['description'])->toBe('Configurable Filament onboarding tours and per-user welcome flow for the Capell admin panel.')
+        ->and($manifest['database']['migrations'])->toBeTrue()
+        ->and($manifest['database']['requiredTables'])->toBe(['welcome_tour_user_states'])
+        ->and($manifest['capabilities'])->toContain('package-owned-tour-state')
+        ->and($manifest['capabilities'])->toContain('tour-progress-resume')
+        ->and($manifest['capabilities'])->toContain('restart-tour')
+        ->and($manifest['capabilities'])->toContain('snooze-tour')
+        ->and($manifest['capabilities'])->toContain('onboarding-checklist-widget')
+        ->and($manifest['capabilities'])->toContain('tour-lifecycle-events')
         ->and($manifest['marketplace']['summary'])->toBe('Guided, in-product onboarding for Capell Admin — configurable multi-step tours that introduce new editors to sites, pages, media, and settings, with per-user dismiss and resume.')
-        ->and($manifest['marketplace']['description'])->toBe('Configurable Filament onboarding tours and per-user welcome flow for the Capell admin panel.');
+        ->and($manifest['marketplace']['description'])->toBe('Configurable Filament onboarding tours and per-user welcome flow for the Capell admin panel.')
+        ->and($manifest['marketplace']['screenshots'])->toHaveCount(6);
 });
 
 /**
