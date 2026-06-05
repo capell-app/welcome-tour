@@ -1,6 +1,6 @@
 # Welcome Tour — Improvement & Growth Plan
 
-> Package: capell-app/welcome-tour · Kind: package · Tier: free · Product group: Capell Foundation · Bundle: foundation · Status: Draft
+> Package: capell-app/welcome-tour · Kind: package · Tier: free · Product group: Capell Foundation · Bundle: foundation · Status: Shipped slice 2026-06-05
 
 ## 1. Snapshot
 
@@ -63,11 +63,11 @@ Welcome Tour is foundation/bundled and free — correctly so. Its real job is **
 | Item                                                                                   | Bucket | Effort | Impact | Section ref |
 | -------------------------------------------------------------------------------------- | ------ | ------ | ------ | ----------- |
 | Resilient persistence when `dismissed_hints` absent (migration or package-owned store) | Now    | M      | High   | §2, §4      |
-| Implement real `WelcomeTourHealthCheck` or fix severity/label                          | Now    | S      | High   | §4          |
-| Register steps once at boot, not per render                                            | Now    | S      | Med    | §2          |
-| Fix README `src/Data` + generic "Extension Points" doc rot                             | Now    | S      | Med    | §4          |
-| Remove description double-escape; single escape rule                                   | Now    | S      | Med    | §2          |
-| Populate `capabilities[]` in capell.json                                               | Now    | S      | Med    | §3          |
+| Done 2026-06-05: real `WelcomeTourHealthCheck` verifies plugin/extender availability, dashboard registration, settings/schema resolution, and dismissal storage; manifest label now matches those checks. Evidence: `src/Health/WelcomeTourHealthCheck.php`, `capell.json`, `tests/Unit/WelcomeTourSchemaCoverageTest.php`. | Done | S | High | §4 |
+| Done 2026-06-05: configured steps register from `WelcomeTourServiceProvider::bootInstalledPackage()` and `WelcomeTourDashboard::tours()` only reads `CapellAdmin::getWelcomeTourSteps()`. Evidence: `src/Providers/WelcomeTourServiceProvider.php`, `src/Filament/Pages/WelcomeTourDashboard.php`, `tests/Feature/WelcomeTourTest.php`. | Done | S | Med | §2 |
+| Done 2026-06-05: README now reflects real `src/Data` classes and package-specific extension points. Evidence: `README.md`. | Done | S | Med | §4 |
+| Done 2026-06-05: step titles/descriptions are translated as plain strings and docs require a single escape rule at render boundary. Evidence: `src/Support/WelcomeTourStepRegistrar.php`, `docs/steps-and-settings.md`, `tests/Feature/WelcomeTourTest.php`. | Done | S | Med | §2 |
+| Done 2026-06-05: `capabilities[]` is populated with the shipped admin tour, per-user state, checklist, targeting, lifecycle event, and settings capabilities. Evidence: `capell.json`, `tests/Unit/WelcomeTourSchemaCoverageTest.php`. | Done | S | Med | §3 |
 | Ship ≥1 anchored default step (real tooltip)                                           | Next   | S      | Med    | §2          |
 | Rewrite marketplace summary + composer description; expand keywords                    | Next   | S      | High   | §5          |
 | Promote 3–4 screenshots (and a GIF) into marketplace media                             | Next   | S      | High   | §5          |

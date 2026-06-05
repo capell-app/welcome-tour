@@ -195,6 +195,28 @@ it('builds the dashboard welcome tour for users who have it enabled', function (
     Event::assertDispatched(WelcomeTourStarted::class);
 });
 
+it('reads already registered steps when building the dashboard tour', function (): void {
+    $this->app->instance(WelcomeTourStepRegistrar::class, new class
+    {
+        public function register(): void
+        {
+            throw new LogicException('The dashboard should not register configured steps while rendering tours.');
+        }
+    });
+
+    $user = User::factory()->create();
+    test()->actingAs($user);
+
+    CapellAdmin::registerWelcomeTourStep(
+        key: 'capell-welcome-tour.menu',
+        title: 'Menu',
+        description: 'Use the menu',
+        element: '.fi-sidebar-nav',
+    );
+
+    expect((new WelcomeTourDashboard)->tours())->toHaveCount(1);
+});
+
 it('records tour progress and resumes at the first incomplete step', function (): void {
     Event::fake([WelcomeTourStepCompleted::class]);
 
