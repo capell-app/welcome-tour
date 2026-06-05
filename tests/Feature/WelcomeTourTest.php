@@ -198,7 +198,7 @@ it('builds the dashboard welcome tour for users who have it enabled', function (
 it('reads already registered steps when building the dashboard tour', function (): void {
     $this->app->instance(WelcomeTourStepRegistrar::class, new class
     {
-        public function register(): void
+        public function register(): never
         {
             throw new LogicException('The dashboard should not register configured steps while rendering tours.');
         }
