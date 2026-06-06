@@ -13,9 +13,13 @@
         "bundle": "foundation"
     },
     "namespace": "Capell\\WelcomeTour",
-    "surfaces": ["admin"],
+    "surfaces": [
+        "admin"
+    ],
     "dependencies": {
-        "requires": ["capell-app/admin"],
+        "requires": [
+            "capell-app/admin"
+        ],
         "supports": [],
         "conflicts": []
     },
@@ -23,7 +27,9 @@
         "metadata": [],
         "install": [],
         "runtime": [],
-        "admin": ["Capell\\WelcomeTour\\Providers\\WelcomeTourServiceProvider"],
+        "admin": [
+            "Capell\\WelcomeTour\\Providers\\WelcomeTourServiceProvider"
+        ],
         "frontend": []
     },
     "contributes": [
@@ -36,7 +42,9 @@
     "database": {
         "migrations": true,
         "settings": true,
-        "requiredTables": ["welcome_tour_user_states"]
+        "requiredTables": [
+            "welcome_tour_user_states"
+        ]
     },
     "commands": {
         "install": null,
@@ -56,13 +64,15 @@
         "setUserWelcomeTourPreference": "Capell\\WelcomeTour\\Actions\\Users\\SetUserWelcomeTourPreferenceAction",
         "snoozeUserWelcomeTour": "Capell\\WelcomeTour\\Actions\\Users\\SnoozeUserWelcomeTourAction"
     },
-    "settings": ["Capell\\WelcomeTour\\Settings\\WelcomeTourSettings"],
+    "settings": [
+        "Capell\\WelcomeTour\\Settings\\WelcomeTourSettings"
+    ],
     "permissions": [],
     "capabilities": [
-    "admin-guided-tour",
-    "admin-dashboard-tour",
-    "contextual-page-tours",
-    "anchored-tour-steps",
+        "admin-guided-tour",
+        "admin-dashboard-tour",
+        "contextual-page-tours",
+        "anchored-tour-steps",
         "configurable-tour-steps",
         "extension-contributed-tour-steps",
         "per-user-dismissal",
@@ -112,28 +122,11 @@
                 "path": "docs/assets/marketplace/extension-card.jpg",
                 "alt": "Welcome Tour extension preview image",
                 "caption": "Welcome Tour extension preview"
-            },
-            {
-                "path": "docs/screenshots/welcome-tour-dashboard.png",
-                "alt": "Welcome Tour dashboard with restart tour action",
-                "caption": "Welcome Tour dashboard"
-            },
-            {
-                "path": "docs/screenshots/welcome-tour-overlay.png",
-                "alt": "Welcome Tour overlay anchored to the Capell admin sidebar",
-                "caption": "Anchored welcome tour overlay"
-            },
-            {
-                "path": "docs/screenshots/welcome-tour-settings.png",
-                "alt": "Welcome Tour settings with enabled toggle and configurable steps",
-                "caption": "Welcome Tour settings"
-            },
-            {
-                "path": "docs/screenshots/welcome-tour-user-toggle.png",
-                "alt": "User edit form with Show welcome tour toggle",
-                "caption": "Per-user tour visibility"
             }
         ],
-        "categories": ["admin", "foundation"]
+        "categories": [
+            "admin",
+            "foundation"
+        ]
     }
 }

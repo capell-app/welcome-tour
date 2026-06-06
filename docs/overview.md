@@ -84,7 +84,7 @@ The package dispatches these Laravel events for analytics integrations:
 
 ## Screenshot Coverage
 
-See [screenshots.json](screenshots.json) for the screenshot contract. The verified capture covers the dashboard, first-step overlay, extension settings page, and user-level toggle.
+See [screenshots.json](screenshots.json) for the screenshot contract. The dashboard, first-step overlay, extension settings page, and user-level toggle captures need recapture through styled Capell UI before marketplace promotion.
 
 ## Disposable Harness Notes
 

@@ -61,7 +61,7 @@ it('declares benefit-led welcome tour marketplace copy', function (): void {
         ->and($manifest['capabilities'])->toContain('tour-lifecycle-events')
         ->and($manifest['marketplace']['summary'])->toBe('Guided, in-product onboarding for Capell Admin — configurable multi-step tours that introduce new editors to sites, pages, media, and settings, with per-user dismiss and resume.')
         ->and($manifest['marketplace']['description'])->toBe('Configurable Filament onboarding tours and per-user welcome flow for the Capell admin panel.')
-        ->and($manifest['marketplace']['screenshots'])->toHaveCount(6);
+        ->and($manifest['marketplace']['screenshots'])->toHaveCount(1);
 });
 
 /**
