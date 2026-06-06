@@ -131,11 +131,6 @@
                 "path": "docs/screenshots/welcome-tour-user-toggle.png",
                 "alt": "User edit form with Show welcome tour toggle",
                 "caption": "Per-user tour visibility"
-            },
-            {
-                "path": "docs/screenshots/welcome-tour-tour-advance.gif",
-                "alt": "Welcome Tour overlay advancing through onboarding steps",
-                "caption": "Tour advance animation"
             }
         ],
         "categories": ["admin", "foundation"]
