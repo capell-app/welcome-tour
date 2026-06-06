@@ -18,6 +18,7 @@ use Capell\WelcomeTour\Filament\Pages\WelcomeTourDashboard;
 use Capell\WelcomeTour\Filament\Settings\WelcomeTourSettingsSchema;
 use Capell\WelcomeTour\Filament\Widgets\WelcomeTourChecklistWidget;
 use Capell\WelcomeTour\Settings\WelcomeTourSettings;
+use Capell\WelcomeTour\Support\ContextualWelcomeTourRegistry;
 use Capell\WelcomeTour\Support\WelcomeTourStepRegistrar;
 use Capell\WelcomeTour\Support\WelcomeTourUserResourceBridge;
 use Filament\Support\Icons\Heroicon;
@@ -79,6 +80,11 @@ class WelcomeTourServiceProvider extends AbstractPackageServiceProvider
 
         $this->registerSettings();
         resolve(WelcomeTourStepRegistrar::class)->register();
+        $contextualTours = config('capell-welcome-tour.contextual_tours', []);
+
+        app(ContextualWelcomeTourRegistry::class)->registerConfiguredTours(
+            is_array($contextualTours) ? $contextualTours : [],
+        );
     }
 
     private function shouldRegisterRuntime(): bool

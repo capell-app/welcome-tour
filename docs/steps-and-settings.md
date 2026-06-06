@@ -8,6 +8,7 @@ Welcome Tour replaces the default admin dashboard with `WelcomeTourDashboard`, r
 | -------------------- | ------------------------------- |
 | Enabled flag         | `capell-welcome-tour.enabled`   |
 | Default steps        | `capell-welcome-tour.steps`     |
+| Contextual tours     | `capell-welcome-tour.contextual_tours` |
 | Settings group       | `welcome-tour`                  |
 | Admin panel extender | `WelcomeTourPanelExtender`      |
 | User resource bridge | `WelcomeTourUserResourceBridge` |
@@ -56,6 +57,47 @@ WelcomeTourStepContributor::dashboardStep(
 
 Keep selectors stable. A missing selector means the step cannot anchor to the UI element.
 
+## Contextual Page Tours
+
+Dashboard steps introduce the main admin areas. Contextual tours guide editors once they are already on a specific Filament page or resource surface. The package ships default scoped tours for Sites, Pages, and Media under:
+
+- `capell_admin_sites`
+- `capell_admin_pages`
+- `capell_admin_media`
+
+Add `Capell\WelcomeTour\Filament\Concerns\HasContextualWelcomeTour` to the Filament page that should render a scoped tour, then set its `$welcomeTourKey` to one of those keys or a host/package-owned key.
+
+```php
+use Capell\WelcomeTour\Filament\Concerns\HasContextualWelcomeTour;
+use Filament\Resources\Pages\ListRecords;
+
+class ListPages extends ListRecords
+{
+    use HasContextualWelcomeTour;
+
+    protected string $welcomeTourKey = 'capell_admin_pages';
+}
+```
+
+Packages can contribute contextual steps without taking over the dashboard:
+
+```php
+use Capell\WelcomeTour\Support\WelcomeTourStepContributor;
+
+WelcomeTourStepContributor::contextualStep(
+    tourKey: 'capell_admin_pages',
+    key: 'demo-kit.page-example',
+    title: static fn (): string => __('capell-demo-kit::welcome_tour.page_example_title'),
+    description: static fn (): string => __('capell-demo-kit::welcome_tour.page_example_description'),
+    element: '#demo-kit-page-example',
+    icon: 'heroicon-o-sparkles',
+    iconColor: 'success',
+    sort: 80,
+);
+```
+
+Contextual tours use the same package-owned per-user state table as the dashboard tour, keyed by tour key, so progress and dismissal remain independent per page surface.
+
 ## Targeting
 
 Configured steps can be limited by:
@@ -63,9 +105,9 @@ Configured steps can be limited by:
 - `roles`: array or comma-separated role names.
 - `user_created_within_days`: first-run window based on the authenticated user's `created_at`.
 
-Code-side contributors can pass a `visible` closure to `WelcomeTourStepContributor::dashboardStep()` for package-specific targeting.
+Code-side contributors can pass a `visible` closure to `WelcomeTourStepContributor::dashboardStep()` or `WelcomeTourStepContributor::contextualStep()` for package-specific targeting.
 
-The shipped default sequence includes anchored dashboard steps for the admin menu, header tools, Sites, Pages, and Media so new editors see the main Capell work areas without another package contributing steps.
+The shipped default sequence includes anchored dashboard steps for the admin menu, header tools, Sites, Pages, and Media so new editors see the main Capell work areas without another package contributing steps. The contextual defaults then add page-scoped guidance for the Sites, Pages, and Media admin surfaces when those Filament pages opt into `HasContextualWelcomeTour`.
 
 ## Checklist
 

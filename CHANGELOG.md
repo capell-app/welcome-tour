@@ -13,6 +13,7 @@ All notable changes to `capell-app/welcome-tour` will be documented in this file
 - Added role and first-run targeting for configured steps.
 - Added lifecycle events for activation analytics, including snooze.
 - Added `WelcomeTourStepContributor` for sibling package step contribution.
+- Added contextual page-tour registration, default scoped Sites/Pages/Media steps, and an opt-in Filament trait for resource/page tours beyond the dashboard.
 - Allowed configured step copy to be literal text or translation keys.
 - Registered configured tour steps at package boot instead of during dashboard render.
 - Added anchored default menu and topbar tour steps.

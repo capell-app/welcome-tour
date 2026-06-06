@@ -10,6 +10,7 @@
 - Adds package settings for enabling the tour and editing the step list.
 - Adds package-owned per-user tour state for dismissal, snooze, progress, resume, and restart.
 - Adds a dashboard getting-started checklist for the first activation tasks.
+- Provides an opt-in contextual tour trait plus default scoped steps for Sites, Pages, and Media admin surfaces.
 - Emits lifecycle events for start, step completion, snooze, completion, and restart.
 - Adds a user resource bridge for per-user tour visibility.
 
@@ -29,6 +30,7 @@ The verified pass added and captured `Capell\WelcomeTour\Filament\Pages\WelcomeT
 
 - Dashboard route: `/admin`, rendered by `WelcomeTourDashboard`
 - Welcome tour overlay on the dashboard when enabled and visible for the current user
+- Contextual page-tour support for Sites, Pages, and Media via `HasContextualWelcomeTour`
 - Restart tour and Remind me later dashboard actions
 - Getting-started dashboard checklist widget
 - Settings page: `/admin/extensions/welcome-tour/settings`, with enabled toggle and editable step repeater
@@ -50,6 +52,8 @@ The default step configuration lives in `config/capell-welcome-tour.php`. Each s
 - `user_created_within_days`
 
 Use translation keys for `title` and `description` when the text should be site-localized, or literal strings for one-off owner-authored copy. Descriptions are passed to the Filament tour package as plain translated text; do not pre-escape copy in configuration or code-side contributions. The default menu, header-tool, Sites, Pages, and Media steps target admin selectors so the shipped tour demonstrates anchored tooltips across the core admin areas.
+
+Contextual page tours live in `capell-welcome-tour.contextual_tours`, keyed by tour key. The package ships defaults for `capell_admin_sites`, `capell_admin_pages`, and `capell_admin_media`. Filament pages that use `Capell\WelcomeTour\Filament\Concerns\HasContextualWelcomeTour` render the matching scoped steps and persist progress independently by tour key.
 
 `roles` accepts an array or comma-separated list of role names. `user_created_within_days` limits a step to first-run users created within that many days.
 

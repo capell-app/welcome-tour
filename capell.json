@@ -59,9 +59,10 @@
     "settings": ["Capell\\WelcomeTour\\Settings\\WelcomeTourSettings"],
     "permissions": [],
     "capabilities": [
-        "admin-guided-tour",
-        "admin-dashboard-tour",
-        "anchored-tour-steps",
+    "admin-guided-tour",
+    "admin-dashboard-tour",
+    "contextual-page-tours",
+    "anchored-tour-steps",
         "configurable-tour-steps",
         "extension-contributed-tour-steps",
         "per-user-dismissal",

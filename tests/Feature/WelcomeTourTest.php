@@ -21,9 +21,12 @@ use Capell\WelcomeTour\Events\WelcomeTourRestarted;
 use Capell\WelcomeTour\Events\WelcomeTourSnoozed;
 use Capell\WelcomeTour\Events\WelcomeTourStarted;
 use Capell\WelcomeTour\Events\WelcomeTourStepCompleted;
+use Capell\WelcomeTour\Filament\Concerns\HasContextualWelcomeTour;
 use Capell\WelcomeTour\Filament\Pages\WelcomeTourDashboard;
 use Capell\WelcomeTour\Filament\Widgets\WelcomeTourChecklistWidget;
 use Capell\WelcomeTour\Settings\WelcomeTourSettings;
+use Capell\WelcomeTour\Support\ContextualWelcomeTourRegistry;
+use Capell\WelcomeTour\Support\WelcomeTourStepContributor;
 use Capell\WelcomeTour\Support\WelcomeTourStepRegistrar;
 use Capell\WelcomeTour\Support\WelcomeTourUserResourceBridge;
 use Filament\Panel;
@@ -37,6 +40,7 @@ use Illuminate\View\View;
 
 beforeEach(function (): void {
     CapellAdmin::clearWelcomeTourSteps();
+    app(ContextualWelcomeTourRegistry::class)->clear();
 });
 
 it('uses the package dashboard page and registers the filament tour plugin', function (): void {
@@ -146,6 +150,66 @@ it('builds the onboarding checklist from configured setup conditions', function 
     expect($items)->toHaveCount(3)
         ->and($items[0]->key)->toBe('create-site')
         ->and($items[0]->complete)->toBeFalse();
+});
+
+it('registers configured contextual tours for pages, media, and sites', function (): void {
+    app(ContextualWelcomeTourRegistry::class)->registerConfiguredTours(config('capell-welcome-tour.contextual_tours'));
+
+    $registry = app(ContextualWelcomeTourRegistry::class);
+
+    expect($registry->stepsFor('capell_admin_sites'))->toHaveCount(2)
+        ->and($registry->stepsFor('capell_admin_pages'))->toHaveCount(2)
+        ->and($registry->stepsFor('capell_admin_media'))->toHaveCount(2)
+        ->and(welcomeTourText($registry->stepsFor('capell_admin_pages')[0]->title))->toBe('Organise the page tree');
+});
+
+it('allows packages to contribute contextual page steps by tour key', function (): void {
+    WelcomeTourStepContributor::contextualStep(
+        tourKey: 'capell_admin_pages',
+        key: 'demo-kit.pages.helper',
+        title: 'Demo page helper',
+        description: 'Use this package-specific page helper.',
+        element: '#demo-page-helper',
+        sort: 5,
+    );
+
+    $steps = app(ContextualWelcomeTourRegistry::class)->stepsFor('capell_admin_pages');
+
+    expect($steps)->toHaveCount(1)
+        ->and($steps[0]->key)->toBe('demo-kit.pages.helper')
+        ->and($steps[0]->element)->toBe('#demo-page-helper');
+});
+
+it('builds contextual tours from the opt-in filament trait', function (): void {
+    Event::fake([WelcomeTourStarted::class]);
+
+    $user = User::factory()->create();
+    test()->actingAs($user);
+    request()->server->set('REQUEST_URI', '/admin/pages');
+    request()->server->set('PATH_INFO', '/admin/pages');
+
+    WelcomeTourStepContributor::contextualStep(
+        tourKey: 'capell_admin_pages',
+        key: 'capell-welcome-tour.pages.context.tree',
+        title: 'Pages',
+        description: 'Use the page tree.',
+        element: '.fi-ta',
+    );
+
+    $page = new class
+    {
+        use HasContextualWelcomeTour;
+
+        protected string $welcomeTourKey = 'capell_admin_pages';
+    };
+
+    $tours = $page->tours();
+
+    expect($tours)->toHaveCount(1)
+        ->and($tours[0]->getId())->toBe('capell_admin_pages')
+        ->and($tours[0]->getSteps())->toHaveCount(1);
+
+    Event::assertDispatched(WelcomeTourStarted::class);
 });
 
 function welcomeTourText(Closure|string|HtmlString|View $value): string
