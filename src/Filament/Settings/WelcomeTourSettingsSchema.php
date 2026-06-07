@@ -53,6 +53,14 @@ class WelcomeTourSettingsSchema implements HasSchema
                                         TextInput::make('element')
                                             ->label(__('capell-welcome-tour::welcome_tour.step_element'))
                                             ->nullable(),
+                                        TextInput::make('roles')
+                                            ->label(__('capell-welcome-tour::welcome_tour.step_roles'))
+                                            ->helperText(__('capell-welcome-tour::welcome_tour.step_roles_helper'))
+                                            ->nullable(),
+                                        TextInput::make('user_created_within_days')
+                                            ->label(__('capell-welcome-tour::welcome_tour.step_user_created_within_days'))
+                                            ->numeric()
+                                            ->nullable(),
                                         IconPicker::make('icon')
                                             ->label(__('capell-welcome-tour::welcome_tour.step_icon'))
                                             ->nullable(),

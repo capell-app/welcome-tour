@@ -1,6 +1,6 @@
 {
     "name": "capell-app/welcome-tour",
-    "description": "Optional Filament welcome tour for Capell Admin.",
+    "description": "Configurable Filament onboarding tours and per-user welcome flow for the Capell admin panel.",
     "type": "library",
     "license": "proprietary",
     "autoload": {
@@ -50,7 +50,17 @@
         "capell",
         "cms",
         "laravel",
-        "onboarding"
+        "filament",
+        "onboarding",
+        "user-onboarding",
+        "product-tour",
+        "guided-tour",
+        "walkthrough",
+        "tooltips",
+        "admin-ux",
+        "activation",
+        "checklist",
+        "telemetry"
     ],
     "authors": [
         {

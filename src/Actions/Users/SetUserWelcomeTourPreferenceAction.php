@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Capell\WelcomeTour\Actions\Users;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Lorisleiva\Actions\Concerns\AsObject;
@@ -13,9 +14,11 @@ final class SetUserWelcomeTourPreferenceAction
 {
     use AsObject;
 
-    public function handle(Model $user, bool $enabled): void
+    public function handle(Model $user, bool $enabled, string $tourKey = 'capell_admin_welcome'): void
     {
         if (! Schema::hasTable($user->getTable()) || ! Schema::hasColumn($user->getTable(), 'dismissed_hints')) {
+            $this->storePreferenceInPackageState($user, $enabled, $tourKey);
+
             return;
         }
 
@@ -34,6 +37,26 @@ final class SetUserWelcomeTourPreferenceAction
                     'dismissed_hints' => json_encode($dismissedHints->unique()->values()->all(), JSON_THROW_ON_ERROR),
                 ]);
         });
+    }
+
+    private function storePreferenceInPackageState(Model $user, bool $enabled, string $tourKey): void
+    {
+        if (! Schema::hasTable('welcome_tour_user_states')) {
+            return;
+        }
+
+        DB::table('welcome_tour_user_states')->updateOrInsert(
+            [
+                'user_type' => $user->getMorphClass(),
+                'user_id' => $user->getKey(),
+                'tour_key' => $tourKey,
+            ],
+            [
+                'dismissed_at' => $enabled ? null : Date::now(),
+                'snoozed_until' => null,
+                'updated_at' => Date::now(),
+            ],
+        );
     }
 
     /**

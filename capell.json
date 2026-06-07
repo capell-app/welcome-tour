@@ -6,16 +6,20 @@
     "kind": "package",
     "capellApiVersion": "^4.0",
     "version": "4.x-dev",
-    "description": "Welcome Tour provides optional guided onboarding for the Capell admin panel.",
+    "description": "Configurable Filament onboarding tours and per-user welcome flow for the Capell admin panel.",
     "product": {
         "group": "Capell Foundation",
         "tier": "free",
         "bundle": "foundation"
     },
     "namespace": "Capell\\WelcomeTour",
-    "surfaces": ["admin"],
+    "surfaces": [
+        "admin"
+    ],
     "dependencies": {
-        "requires": ["capell-app/admin"],
+        "requires": [
+            "capell-app/admin"
+        ],
         "supports": [],
         "conflicts": []
     },
@@ -23,14 +27,24 @@
         "metadata": [],
         "install": [],
         "runtime": [],
-        "admin": ["Capell\\WelcomeTour\\Providers\\WelcomeTourServiceProvider"],
+        "admin": [
+            "Capell\\WelcomeTour\\Providers\\WelcomeTourServiceProvider"
+        ],
         "frontend": []
     },
-    "contributes": [],
+    "contributes": [
+        {
+            "type": "dashboard-widget",
+            "class": "Capell\\WelcomeTour\\Filament\\Widgets\\WelcomeTourChecklistWidget",
+            "dashboard": "main"
+        }
+    ],
     "database": {
-        "migrations": false,
+        "migrations": true,
         "settings": true,
-        "requiredTables": []
+        "requiredTables": [
+            "welcome_tour_user_states"
+        ]
     },
     "commands": {
         "install": null,
@@ -38,9 +52,41 @@
         "demo": null,
         "doctor": null
     },
-    "settings": ["Capell\\WelcomeTour\\Settings\\WelcomeTourSettings"],
+    "actions": {
+        "buildWelcomeTourChecklist": "Capell\\WelcomeTour\\Actions\\BuildWelcomeTourChecklistAction",
+        "canShowWelcomeTourStep": "Capell\\WelcomeTour\\Actions\\CanShowWelcomeTourStepAction",
+        "canShowWelcomeTour": "Capell\\WelcomeTour\\Actions\\Users\\CanShowWelcomeTourAction",
+        "getUserWelcomeTourState": "Capell\\WelcomeTour\\Actions\\Users\\GetUserWelcomeTourStateAction",
+        "recordWelcomeTourStep": "Capell\\WelcomeTour\\Actions\\Users\\RecordWelcomeTourStepAction",
+        "resetUserWelcomeTour": "Capell\\WelcomeTour\\Actions\\Users\\ResetUserWelcomeTourAction",
+        "resolveWelcomeTourEnabled": "Capell\\WelcomeTour\\Actions\\ResolveWelcomeTourEnabledAction",
+        "resolveWelcomeTourStepsForUser": "Capell\\WelcomeTour\\Actions\\Users\\ResolveWelcomeTourStepsForUserAction",
+        "setUserWelcomeTourPreference": "Capell\\WelcomeTour\\Actions\\Users\\SetUserWelcomeTourPreferenceAction",
+        "snoozeUserWelcomeTour": "Capell\\WelcomeTour\\Actions\\Users\\SnoozeUserWelcomeTourAction"
+    },
+    "settings": [
+        "Capell\\WelcomeTour\\Settings\\WelcomeTourSettings"
+    ],
     "permissions": [],
-    "capabilities": [],
+    "capabilities": [
+        "admin-guided-tour",
+        "admin-dashboard-tour",
+        "contextual-page-tours",
+        "anchored-tour-steps",
+        "configurable-tour-steps",
+        "extension-contributed-tour-steps",
+        "per-user-dismissal",
+        "package-owned-tour-state",
+        "tour-progress-resume",
+        "restart-tour",
+        "snooze-tour",
+        "onboarding-checklist-widget",
+        "role-targeted-tour-steps",
+        "first-run-tour-steps",
+        "literal-or-translated-step-copy",
+        "tour-lifecycle-events",
+        "settings-managed-onboarding"
+    ],
     "performance": {
         "frontendRenderBudgetMs": 0,
         "adminQueryBudget": 40,
@@ -56,7 +102,7 @@
     "healthChecks": [
         {
             "key": "welcome-tour.package-health",
-            "label": "Welcome Tour package surfaces, providers, and install health are discoverable by Diagnostics.",
+            "label": "Welcome Tour plugin, dashboard, settings, and user state storage are healthy.",
             "class": "Capell\\WelcomeTour\\Health\\WelcomeTourHealthCheck",
             "severity": "critical",
             "surface": "admin"
@@ -69,7 +115,8 @@
         "privateDocsRequested": false
     },
     "marketplace": {
-        "summary": "Welcome Tour provides optional guided onboarding for the Capell admin panel.",
+        "summary": "Guided, in-product onboarding for Capell Admin — configurable multi-step tours that introduce new editors to sites, pages, media, and settings, with per-user dismiss and resume.",
+        "description": "Configurable Filament onboarding tours and per-user welcome flow for the Capell admin panel.",
         "screenshots": [
             {
                 "path": "docs/assets/marketplace/extension-card.jpg",
@@ -77,6 +124,9 @@
                 "caption": "Welcome Tour extension preview"
             }
         ],
-        "categories": ["admin", "foundation"]
+        "categories": [
+            "admin",
+            "foundation"
+        ]
     }
 }

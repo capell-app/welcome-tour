@@ -59,6 +59,8 @@ abstract class WelcomeTourTestCase extends PackagesTestCase
             WelcomeTourServiceProvider::getSettingMigrations(),
             __DIR__ . '/../database/settings',
         );
+
+        $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
     }
 
     #[Override]

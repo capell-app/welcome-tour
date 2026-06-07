@@ -5,13 +5,21 @@ declare(strict_types=1);
 namespace Capell\WelcomeTour\Support;
 
 use Capell\Admin\Facades\CapellAdmin;
+use Capell\WelcomeTour\Actions\CanShowWelcomeTourStepAction;
+use Capell\WelcomeTour\Actions\ResolveWelcomeTourEnabledAction;
 use Capell\WelcomeTour\Settings\WelcomeTourSettings;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Lang;
 use Throwable;
 
 final class WelcomeTourStepRegistrar
 {
     public function register(): void
     {
+        if (! ResolveWelcomeTourEnabledAction::run()) {
+            return;
+        }
+
         foreach ($this->steps() as $step) {
             $key = $this->stringValue($step, 'key');
 
@@ -21,13 +29,13 @@ final class WelcomeTourStepRegistrar
 
             CapellAdmin::registerWelcomeTourStep(
                 key: $key,
-                title: fn (): string => __($this->stringValue($step, 'title')),
-                description: fn (): string => $this->safeDescription($step),
+                title: fn (): string => $this->translate($this->stringValue($step, 'title')),
+                description: fn (): string => $this->translate($this->stringValue($step, 'description')),
                 element: $this->nullableStringValue($step, 'element'),
                 icon: $this->nullableStringValue($step, 'icon'),
                 iconColor: $this->nullableStringValue($step, 'icon_color'),
                 sort: $this->integerValue($step, 'sort', 100),
-                visible: $this->booleanValue($step, 'visible', true),
+                visible: fn (): bool => $this->isVisible($step),
             );
         }
     }
@@ -93,30 +101,22 @@ final class WelcomeTourStepRegistrar
     /**
      * @param  array<string, mixed>  $step
      */
-    private function booleanValue(array $step, string $key, bool $default): bool
+    private function isVisible(array $step): bool
     {
-        $value = $step[$key] ?? $default;
+        $user = auth()->user();
 
-        if (is_bool($value)) {
-            return $value;
-        }
-
-        if (is_numeric($value)) {
-            return (bool) $value;
-        }
-
-        if (is_string($value) && in_array(strtolower($value), ['true', 'false'], true)) {
-            return strtolower($value) === 'true';
-        }
-
-        return $default;
+        return CanShowWelcomeTourStepAction::run(
+            $step,
+            $user instanceof Model ? $user : null,
+        );
     }
 
-    /**
-     * @param  array<string, mixed>  $step
-     */
-    private function safeDescription(array $step): string
+    private function translate(string $value): string
     {
-        return e((string) __($this->stringValue($step, 'description')));
+        if ($value === '') {
+            return '';
+        }
+
+        return Lang::has($value) ? (string) __($value) : $value;
     }
 }

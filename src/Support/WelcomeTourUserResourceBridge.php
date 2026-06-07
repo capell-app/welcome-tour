@@ -31,7 +31,7 @@ final class WelcomeTourUserResourceBridge extends AbstractUserResourceBridge
             return [];
         }
 
-        if (! WelcomeTourSchema::hasDismissedHintsColumn()) {
+        if (! WelcomeTourSchema::hasDismissedHintsColumn() && ! WelcomeTourSchema::hasUserStateTable()) {
             return [];
         }
 

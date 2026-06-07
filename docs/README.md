@@ -1,6 +1,6 @@
 # Welcome Tour Docs
 
-Welcome Tour provides optional guided onboarding for the Capell admin panel.
+Welcome Tour provides configurable guided onboarding for the Capell admin panel, with anchored steps, per-user progress, dismissal, snooze, resume, restart, a getting-started checklist, and lifecycle events.
 
 Start at the [package README](../README.md) when deciding whether to install this package. Use the docs below for setup, extension, debugging, and verification details.
 
