@@ -4,15 +4,15 @@ Welcome Tour replaces the default admin dashboard with `WelcomeTourDashboard`, r
 
 ## Runtime Surface
 
-| Surface              | Code                            |
-| -------------------- | ------------------------------- |
-| Enabled flag         | `capell-welcome-tour.enabled`   |
-| Default steps        | `capell-welcome-tour.steps`     |
+| Surface              | Code                                   |
+| -------------------- | -------------------------------------- |
+| Enabled flag         | `capell-welcome-tour.enabled`          |
+| Default steps        | `capell-welcome-tour.steps`            |
 | Contextual tours     | `capell-welcome-tour.contextual_tours` |
-| Settings group       | `welcome-tour`                  |
-| Admin panel extender | `WelcomeTourPanelExtender`      |
-| User resource bridge | `WelcomeTourUserResourceBridge` |
-| Dashboard page       | `WelcomeTourDashboard`          |
+| Settings group       | `welcome-tour`                         |
+| Admin panel extender | `WelcomeTourPanelExtender`             |
+| User resource bridge | `WelcomeTourUserResourceBridge`        |
+| Dashboard page       | `WelcomeTourDashboard`                 |
 
 ## Add a Step in Config
 
