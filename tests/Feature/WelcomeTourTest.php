@@ -153,7 +153,13 @@ it('builds the onboarding checklist from configured setup conditions', function 
 });
 
 it('registers configured contextual tours for pages, media, and sites', function (): void {
-    resolve(ContextualWelcomeTourRegistry::class)->registerConfiguredTours(config('capell-welcome-tour.contextual_tours'));
+    $configuredTours = config('capell-welcome-tour.contextual_tours');
+
+    if (! is_array($configuredTours)) {
+        throw new RuntimeException('Configured contextual welcome tours must be an array.');
+    }
+
+    resolve(ContextualWelcomeTourRegistry::class)->registerConfiguredTours($configuredTours);
 
     $registry = resolve(ContextualWelcomeTourRegistry::class);
 

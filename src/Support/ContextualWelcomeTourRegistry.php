@@ -37,11 +37,13 @@ final class ContextualWelcomeTourRegistry
             }
 
             foreach ($steps as $step) {
-                if (! is_array($step)) {
+                $configuredStep = $this->configuredStep($step);
+
+                if ($configuredStep === null) {
                     continue;
                 }
 
-                $this->registerConfiguredStep($tourKey, $step);
+                $this->registerConfiguredStep($tourKey, $configuredStep);
             }
         }
     }
@@ -171,5 +173,25 @@ final class ContextualWelcomeTourRegistry
         }
 
         return Lang::has($value) ? (string) __($value) : $value;
+    }
+
+    /**
+     * @return array<string, mixed>|null
+     */
+    private function configuredStep(mixed $step): ?array
+    {
+        if (! is_array($step)) {
+            return null;
+        }
+
+        $configuredStep = [];
+
+        foreach ($step as $key => $value) {
+            if (is_string($key)) {
+                $configuredStep[$key] = $value;
+            }
+        }
+
+        return $configuredStep;
     }
 }

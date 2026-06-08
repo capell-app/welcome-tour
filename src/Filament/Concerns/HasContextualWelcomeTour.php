@@ -94,8 +94,10 @@ trait HasContextualWelcomeTour
 
     protected function welcomeTourKey(): string
     {
-        return property_exists($this, 'welcomeTourKey') && is_string($this->welcomeTourKey) && $this->welcomeTourKey !== ''
-            ? $this->welcomeTourKey
+        $welcomeTourKey = get_object_vars($this)['welcomeTourKey'] ?? null;
+
+        return is_string($welcomeTourKey) && $welcomeTourKey !== ''
+            ? $welcomeTourKey
             : str_replace('\\', '.', static::class);
     }
 }

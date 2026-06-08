@@ -51,6 +51,8 @@ class WelcomeTourServiceProvider extends AbstractPackageServiceProvider
 
     public function registeringPackage(): void
     {
+        $this->app->singleton(ContextualWelcomeTourRegistry::class);
+
         $this->booted(function (): void {
             if ($this->isDiscoveringPackages()) {
                 return;

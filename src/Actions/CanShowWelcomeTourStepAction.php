@@ -9,6 +9,9 @@ use Illuminate\Database\Eloquent\Model;
 use Lorisleiva\Actions\Concerns\AsObject;
 use Throwable;
 
+/**
+ * @method static bool run(array<string, mixed> $step, ?Model $user = null)
+ */
 final class CanShowWelcomeTourStepAction
 {
     use AsObject;
