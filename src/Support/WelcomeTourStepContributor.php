@@ -44,7 +44,7 @@ final class WelcomeTourStepContributor
         int $sort = 100,
         bool|Closure $visible = true,
     ): void {
-        app(ContextualWelcomeTourRegistry::class)->registerStep(
+        resolve(ContextualWelcomeTourRegistry::class)->registerStep(
             tourKey: $tourKey,
             key: $key,
             title: $title,

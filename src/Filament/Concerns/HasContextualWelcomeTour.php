@@ -36,7 +36,7 @@ trait HasContextualWelcomeTour
             return [];
         }
 
-        $tourSteps = app(ContextualWelcomeTourRegistry::class)->stepsFor($tourKey);
+        $tourSteps = resolve(ContextualWelcomeTourRegistry::class)->stepsFor($tourKey);
 
         if ($tourSteps === []) {
             return [];

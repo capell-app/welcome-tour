@@ -40,7 +40,7 @@ use Illuminate\View\View;
 
 beforeEach(function (): void {
     CapellAdmin::clearWelcomeTourSteps();
-    app(ContextualWelcomeTourRegistry::class)->clear();
+    resolve(ContextualWelcomeTourRegistry::class)->clear();
 });
 
 it('uses the package dashboard page and registers the filament tour plugin', function (): void {
@@ -153,9 +153,9 @@ it('builds the onboarding checklist from configured setup conditions', function 
 });
 
 it('registers configured contextual tours for pages, media, and sites', function (): void {
-    app(ContextualWelcomeTourRegistry::class)->registerConfiguredTours(config('capell-welcome-tour.contextual_tours'));
+    resolve(ContextualWelcomeTourRegistry::class)->registerConfiguredTours(config('capell-welcome-tour.contextual_tours'));
 
-    $registry = app(ContextualWelcomeTourRegistry::class);
+    $registry = resolve(ContextualWelcomeTourRegistry::class);
 
     expect($registry->stepsFor('capell_admin_sites'))->toHaveCount(2)
         ->and($registry->stepsFor('capell_admin_pages'))->toHaveCount(2)
@@ -173,7 +173,7 @@ it('allows packages to contribute contextual page steps by tour key', function (
         sort: 5,
     );
 
-    $steps = app(ContextualWelcomeTourRegistry::class)->stepsFor('capell_admin_pages');
+    $steps = resolve(ContextualWelcomeTourRegistry::class)->stepsFor('capell_admin_pages');
 
     expect($steps)->toHaveCount(1)
         ->and($steps[0]->key)->toBe('demo-kit.pages.helper')

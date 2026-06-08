@@ -28,10 +28,12 @@ final class ContextualWelcomeTourRegistry
         }
 
         foreach ($configuredTours as $tourKey => $steps) {
-            if (! is_string($tourKey) || ! is_array($steps)) {
+            if (! is_string($tourKey)) {
                 continue;
             }
-
+            if (! is_array($steps)) {
+                continue;
+            }
             foreach ($steps as $step) {
                 if (! is_array($step)) {
                     continue;
