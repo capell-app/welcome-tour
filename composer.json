@@ -18,6 +18,9 @@
             "providers": [
                 "Capell\\WelcomeTour\\Providers\\WelcomeTourServiceProvider"
             ]
+        },
+        "branch-alias": {
+            "dev-main": "4.x-dev"
         }
     },
     "require": {
