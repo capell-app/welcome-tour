@@ -8,6 +8,9 @@ use Capell\WelcomeTour\Settings\WelcomeTourSettings;
 use Lorisleiva\Actions\Concerns\AsObject;
 use Throwable;
 
+/**
+ * @method static bool run()
+ */
 final class ResolveWelcomeTourEnabledAction
 {
     use AsObject;

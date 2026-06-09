@@ -35,6 +35,8 @@ class WelcomeTourDashboard extends CapellDashboard
 
     private const string TOUR_KEY = 'capell_admin_welcome';
 
+    protected static ?string $slug = 'welcome-tour/welcome-tour-dashboard';
+
     /**
      * @return array<int, Tour>
      */

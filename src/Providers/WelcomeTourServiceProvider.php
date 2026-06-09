@@ -51,6 +51,8 @@ class WelcomeTourServiceProvider extends AbstractPackageServiceProvider
 
     public function registeringPackage(): void
     {
+        $this->app->singleton(ContextualWelcomeTourRegistry::class);
+
         $this->booted(function (): void {
             if ($this->isDiscoveringPackages()) {
                 return;
@@ -82,7 +84,7 @@ class WelcomeTourServiceProvider extends AbstractPackageServiceProvider
         resolve(WelcomeTourStepRegistrar::class)->register();
         $contextualTours = config('capell-welcome-tour.contextual_tours', []);
 
-        app(ContextualWelcomeTourRegistry::class)->registerConfiguredTours(
+        resolve(ContextualWelcomeTourRegistry::class)->registerConfiguredTours(
             is_array($contextualTours) ? $contextualTours : [],
         );
     }
