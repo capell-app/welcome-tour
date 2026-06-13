@@ -12,7 +12,6 @@ use Capell\Admin\Facades\CapellAdmin;
 use Capell\Core\Facades\CapellCore;
 use Capell\Core\Support\Packages\AbstractPackageServiceProvider;
 use Capell\Core\Support\Settings\SettingsGroupMetadata;
-use Capell\Core\Support\Settings\SettingsSchemaRegistry;
 use Capell\WelcomeTour\Filament\Extenders\WelcomeTourPanelExtender;
 use Capell\WelcomeTour\Filament\Pages\WelcomeTourDashboard;
 use Capell\WelcomeTour\Filament\Settings\WelcomeTourSettingsSchema;
@@ -100,23 +99,16 @@ class WelcomeTourServiceProvider extends AbstractPackageServiceProvider
 
     private function registerSettings(): void
     {
-        $registerSettings = function (SettingsSchemaRegistry $registry): void {
-            $registry->registerSettingsClass(WelcomeTourSettings::group(), WelcomeTourSettings::class);
-            $registry->registerMetadata(new SettingsGroupMetadata(
-                group: WelcomeTourSettings::group(),
-                label: 'capell-welcome-tour::welcome_tour.settings_label',
-                icon: Heroicon::OutlinedSparkles,
-                navigationGroup: 'capell-admin::navigation.group_system',
-                navigationSort: 92,
-                packageName: static::$packageName,
-            ));
-            $registry->register(WelcomeTourSettings::group(), WelcomeTourSettingsSchema::class);
-        };
+        $this->surface()->settingsClass(WelcomeTourSettings::group(), WelcomeTourSettings::class);
+        $this->surface()->settingsSchema(WelcomeTourSettings::group(), WelcomeTourSettingsSchema::class);
 
-        $this->app->afterResolving(SettingsSchemaRegistry::class, $registerSettings);
-
-        if ($this->app->resolved(SettingsSchemaRegistry::class)) {
-            $registerSettings($this->app->make(SettingsSchemaRegistry::class));
-        }
+        $this->surface()->settingsMetadata(new SettingsGroupMetadata(
+            group: WelcomeTourSettings::group(),
+            label: 'capell-welcome-tour::welcome_tour.settings_label',
+            icon: Heroicon::OutlinedSparkles,
+            navigationGroup: 'capell-admin::navigation.group_system',
+            navigationSort: 92,
+            packageName: static::$packageName,
+        ));
     }
 }
