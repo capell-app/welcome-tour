@@ -1,100 +1,100 @@
 # Welcome Tour
 
-Optional Filament welcome tour for Capell Admin.
+<!-- prettier-ignore-start -->
 
-## At A Glance
+## What This Plugin Adds
 
-- Package: `capell-app/welcome-tour`
-- Namespace: `Capell\WelcomeTour\`
-- Surfaces: Filament admin
-- Service providers: `packages/welcome-tour/src/Providers/WelcomeTourServiceProvider.php`
-- Capell dependencies: `capell-app/admin`
-- Third-party dependencies: `jibaymcs/filament-tour`, `laravel/framework`, `lorisleiva/laravel-actions`, `spatie/laravel-package-tools`, `spatie/laravel-settings`
+Welcome Tour is an **Available**, **Schema-owning** Capell package in the **Capell Foundation** product group. It ships as `capell-app/welcome-tour` and extends these surfaces: admin.
 
-## Why It Helps Your Capell Workflow
+Configurable Filament onboarding tours and per-user welcome flow for the Capell admin panel.
 
-- Adds optional guided onboarding for Capell Admin so new users can learn the panel from inside the product.
-- Helps owners introduce editors to key admin workflows without maintaining a separate onboarding checklist.
-- Gives developers configurable tour steps and settings while keeping the tour optional for host apps.
+After install, admins get package-owned management or reporting surfaces inside Capell.
 
-## Best Used With
+Status details:
 
-- [Translation Manager](../translation-manager/README.md)
-- [Diagnostics](../diagnostics/README.md)
-- [Notes](../notes/README.md)
+- Status: Available
+- Tier: free
+- Bundle: foundation
+- Composer package: `capell-app/welcome-tour`
+- Namespace: `Capell\WelcomeTour`
+- Theme key: not applicable
 
-## What It Adds
+## Why It Matters
 
-- Optional Filament welcome tour for Capell Admin.
-- Package settings for controlling tour availability.
-- Package-owned per-user tour state, including dismissal, progress, and resume.
-- Restart and remind-me-later controls for the current admin.
-- Dashboard getting-started checklist backed by package configuration.
-- Role and first-run targeting for configured steps.
-- Lifecycle events for start, step completion, snooze, completion, and restart.
-- A reusable `WelcomeTourStepContributor` helper for sibling packages.
-- A user edit form bridge for per-user tour visibility when either the package state table or host `dismissed_hints` column is available.
+**For developers:** The package gives developers package-owned service providers, Actions, Data objects, Filament classes, and Blade views instead of pushing this behaviour into core or application code.
 
-## Code Map
+**For teams:** Guided, in-product onboarding for Capell Admin - configurable multi-step tours that introduce new editors to sites, pages, media, and settings, with per-user dismiss and resume.
 
-| Area      | Path                                  | Purpose                                                           |
-| --------- | ------------------------------------- | ----------------------------------------------------------------- |
-| Actions   | `packages/welcome-tour/src/Actions`   | Domain operations. Test these directly where possible.            |
-| Data      | `packages/welcome-tour/src/Data`      | Structured user tour state used across Actions and UI.            |
-| Filament  | `packages/welcome-tour/src/Filament`  | Admin resources, pages, widgets, and settings UI.                 |
-| Providers | `packages/welcome-tour/src/Providers` | Registration, extension hooks, routes, migrations, and resources. |
-| Resources | `packages/welcome-tour/resources`     | Views, translations, assets, and package resources.               |
-| Config    | `packages/welcome-tour/config`        | Package configuration and publishable config.                     |
-| Database  | `packages/welcome-tour/database`      | Migrations, seeders, and settings migrations.                     |
-| Tests     | `packages/welcome-tour/tests`         | Package-level Pest coverage.                                      |
+## Screens And Workflow
 
-## Admin Surface
+Screenshot contract: `docs/screenshots.json`.
 
-- Pages: `WelcomeTourDashboard`.
-- Settings: Extensions page modal surface for `welcome-tour`.
-- Header actions: Restart tour and Remind me later.
-- Dashboard widgets: `WelcomeTourChecklistWidget`.
-- User edit form bridge: `welcome_tour_enabled`, when per-user tour state can be persisted.
+- Admin dashboard rendered through WelcomeTourDashboard (admin, required).
+- Welcome tour overlay showing the first configured onboarding step (admin, required).
+- Welcome tour settings group with enabled toggle and step repeater (admin, required).
+- User edit form with Show welcome tour toggle (admin, required).
 
-## Data And Persistence
+## Technical Shape
 
-- Config: `packages/welcome-tour/config/capell-welcome-tour.php`.
-- Settings: `WelcomeTourSettings` stores the global enabled flag and configured steps.
-- User state: `welcome_tour_user_states` stores package-owned per-user progress, snooze, dismissal, and resume state.
-- Legacy compatibility: hosts with `users.dismissed_hints` keep using that column for binary dismissal.
-- Data objects live in `src/Data/`; use them for structured state at action boundaries.
+- Service providers: `Capell\WelcomeTour\Providers\WelcomeTourServiceProvider`.
+- Config files: `packages/welcome-tour/config/capell-welcome-tour.php`.
+- Migrations: `packages/welcome-tour/database/migrations/2026_06_04_000001_create_welcome_tour_user_states_table.php`.
+- Settings migrations: `packages/welcome-tour/database/settings/2026_05_10_190836_01_add_welcome_tour_settings.php`.
+- Settings classes: `WelcomeTourSettings`.
+- Filament classes: `HasContextualWelcomeTour`, `WelcomeTourPanelExtender`, `WelcomeTourDashboard`, `WelcomeTourSettingsPage`, `WelcomeTourSettingsSchema`, `WelcomeTourChecklistWidget`.
+- Events: `WelcomeTourCompleted`, `WelcomeTourRestarted`, `WelcomeTourSnoozed`, `WelcomeTourStarted`, `WelcomeTourStepCompleted`.
+- Actions: `BuildWelcomeTourChecklistAction`, `CanShowWelcomeTourStepAction`, `ResolveWelcomeTourEnabledAction`, `CanShowWelcomeTourAction`, `GetUserWelcomeTourStateAction`, `RecordWelcomeTourStepAction`, `ResetUserWelcomeTourAction`, `ResolveWelcomeTourStepsForUserAction`, `SetUserWelcomeTourPreferenceAction`, `SnoozeUserWelcomeTourAction`.
+- Data objects: `WelcomeTourChecklistItemData`, `WelcomeTourUserStateData`.
+- Manifest contributions: `dashboard-widget: Capell\WelcomeTour\Filament\Widgets\WelcomeTourChecklistWidget`.
+- Health checks: `Capell\WelcomeTour\Health\WelcomeTourHealthCheck`.
+- Blade views: `packages/welcome-tour/resources/views/filament/widgets/welcome-tour-checklist.blade.php`.
 
-## Extension Points
+## Data Model
 
-- Register package-owned or host-app tour steps with `CapellAdmin::registerWelcomeTourStep()`.
-- Prefer `WelcomeTourStepContributor::dashboardStep()` from sibling packages so step contribution stays consistent.
-- Keep configured/default step registration in the package service provider so dashboard rendering only reads registered steps.
-- Register package settings through `SettingsSchemaRegistry`; Welcome Tour does not expose public frontend render hooks.
+- Required tables: `welcome_tour_user_states`.
+- Migration files: `2026_06_04_000001_create_welcome_tour_user_states_table.php`.
+- Migration impact: run host migrations through the package install flow before opening package surfaces.
+- Deletion/retention behaviour: Docs gap unless the package has an explicit pruning command, retention setting, or tested cascade path.
 
-## Install And Setup
+## Install Impact
 
-- Install with `composer require capell-app/welcome-tour` in the host Capell application.
-- In this repository, verify package changes with `vendor/bin/pest`; do not use `php artisan`.
-- In a disposable host app, publish and run the package settings migration before opening the extension settings modal.
-- Run the package migration for `welcome_tour_user_states` when the host user model does not have `dismissed_hints`.
+- Admin navigation: adds package-owned Filament classes when registered.
+- Permissions: none declared in `capell.json`.
+- Public routes: none detected in package route files.
+- Database changes: package migrations are declared.
+- Settings: `Capell\WelcomeTour\Settings\WelcomeTourSettings`.
+- Queues or schedules: none detected in standard package paths.
+- Cache tags: none declared.
+- Commands: none declared.
 
-## Docs
+## Common Pitfalls
 
-- [docs index](docs/README.md)
-- [overview.md](docs/overview.md)
-- [screenshots.json](docs/screenshots.json)
-- [steps-and-settings.md](docs/steps-and-settings.md)
+- Run migrations before opening package resources or public routes.
+- Configure package settings before testing production-like workflows.
+- Keep `composer.json`, `composer.local.json`, `capell.json`, docs, screenshots, and tests aligned when the package surface changes.
 
-## Testing
+## Troubleshooting
 
-Run package tests from the repository root:
+| Symptom | Likely cause | Check | Fix |
+| --- | --- | --- | --- |
+| Package surface is missing after install | Provider or manifest is not loaded | Confirm `capell.json`, package `composer.json`, and provider registration | Reinstall the package, refresh Composer autoload, and clear host caches |
+| Admin screen or command fails on missing table | Package migrations have not run | Check the tables listed in `Data Model` | Run host migrations and rerun the focused package test |
 
-```bash
-vendor/bin/pest packages/welcome-tour/tests --configuration=phpunit.xml
-```
+## Quick Start
 
-## Maintenance Notes
+1. Install the package: `composer require capell-app/welcome-tour`.
+2. Run the required setup: `php artisan migrate`.
+3. Open the related Capell admin surface and verify Welcome Tour appears.
 
-- Put behaviour changes in `src/Actions/`; UI classes should call actions instead of owning domain logic.
-- Use package `Data` classes at boundaries instead of passing anonymous arrays between layers.
-- Keep package settings out of the global Settings page; extension settings should live in the Extensions page modal surface.
+## Next Steps
+
+- [Package docs](docs/README.md)
+- [Overview](docs/overview.md)
+- [Screenshot contract](docs/screenshots.json)
+- [Marketplace assets](docs/assets/marketplace/)
+- [Capell content language plan](../../docs/CONTENT_LANGUAGE_PLAN.md)
+- [Capell documentation design system](../../docs/DESIGN_SYSTEM.md)
+- [Capell and package ERD notes](../../docs/erd/capell-and-package-erds.md)
+- Focused tests: `vendor/bin/pest packages/welcome-tour/tests --configuration=phpunit.xml`.
+
+<!-- prettier-ignore-end -->
