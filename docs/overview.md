@@ -45,9 +45,10 @@ Screenshot contract: `screenshots.json`.
 - Events: `WelcomeTourCompleted`, `WelcomeTourRestarted`, `WelcomeTourSnoozed`, `WelcomeTourStarted`, `WelcomeTourStepCompleted`.
 - Actions: `BuildWelcomeTourChecklistAction`, `CanShowWelcomeTourStepAction`, `ResolveWelcomeTourEnabledAction`, `CanShowWelcomeTourAction`, `GetUserWelcomeTourStateAction`, `RecordWelcomeTourStepAction`, `ResetUserWelcomeTourAction`, `ResolveWelcomeTourStepsForUserAction`, `SetUserWelcomeTourPreferenceAction`, `SnoozeUserWelcomeTourAction`.
 - Data objects: `WelcomeTourChecklistItemData`, `WelcomeTourUserStateData`.
-- Manifest contributions: `dashboard-widget: Capell\WelcomeTour\Filament\Widgets\WelcomeTourChecklistWidget`.
+- Manifest contributions: `dashboard-widget: Capell\WelcomeTour\Manifest\WelcomeTourChecklistWidgetContribution`, `health-check: Capell\WelcomeTour\Manifest\WelcomeTourHealthContribution`, `setting: Capell\WelcomeTour\Manifest\WelcomeTourSettingsContribution`.
 - Health checks: `Capell\WelcomeTour\Health\WelcomeTourHealthCheck`.
 - Blade views: `packages/welcome-tour/resources/views/filament/widgets/welcome-tour-checklist.blade.php`.
+- Cache tags: `welcome-tour`.
 
 ## Data Model
 
@@ -64,7 +65,7 @@ Screenshot contract: `screenshots.json`.
 - Database changes: package migrations are declared.
 - Settings: `Capell\WelcomeTour\Settings\WelcomeTourSettings`.
 - Queues or schedules: none detected in standard package paths.
-- Cache tags: none declared.
+- Cache tags: `welcome-tour`.
 - Commands: none declared.
 
 ## Common Pitfalls
