@@ -29,8 +29,22 @@
     "contributes": [
         {
             "type": "dashboard-widget",
-            "class": "Capell\\WelcomeTour\\Filament\\Widgets\\WelcomeTourChecklistWidget",
+            "class": "Capell\\WelcomeTour\\Manifest\\WelcomeTourChecklistWidgetContribution",
+            "widgetClass": "Capell\\WelcomeTour\\Filament\\Widgets\\WelcomeTourChecklistWidget",
             "dashboard": "main"
+        },
+        {
+            "type": "setting",
+            "class": "Capell\\WelcomeTour\\Manifest\\WelcomeTourSettingsContribution",
+            "settingsClasses": [
+                "Capell\\WelcomeTour\\Settings\\WelcomeTourSettings"
+            ],
+            "settingsGroups": ["welcome-tour"]
+        },
+        {
+            "type": "health-check",
+            "class": "Capell\\WelcomeTour\\Manifest\\WelcomeTourHealthContribution",
+            "checkClass": "Capell\\WelcomeTour\\Health\\WelcomeTourHealthCheck"
         }
     ],
     "database": {
@@ -113,10 +127,10 @@
     "performance": {
         "frontendRenderBudgetMs": 0,
         "adminQueryBudget": 40,
-        "cacheTags": [],
+        "cacheTags": ["welcome-tour"],
         "cacheSafety": {
             "cacheable": false,
-            "variesBy": [],
+            "variesBy": ["user"],
             "sensitiveOutput": false,
             "invalidationSources": [],
             "queueInvalidation": false

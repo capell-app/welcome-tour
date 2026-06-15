@@ -45,7 +45,7 @@ Screenshot contract: `screenshots.json`.
 - Events: `WelcomeTourCompleted`, `WelcomeTourRestarted`, `WelcomeTourSnoozed`, `WelcomeTourStarted`, `WelcomeTourStepCompleted`.
 - Actions: `BuildWelcomeTourChecklistAction`, `CanShowWelcomeTourStepAction`, `ResolveWelcomeTourEnabledAction`, `CanShowWelcomeTourAction`, `GetUserWelcomeTourStateAction`, `RecordWelcomeTourStepAction`, `ResetUserWelcomeTourAction`, `ResolveWelcomeTourStepsForUserAction`, `SetUserWelcomeTourPreferenceAction`, `SnoozeUserWelcomeTourAction`.
 - Data objects: `WelcomeTourChecklistItemData`, `WelcomeTourUserStateData`.
-- Manifest contributions: `dashboard-widget: Capell\WelcomeTour\Filament\Widgets\WelcomeTourChecklistWidget`.
+- Manifest contributions: `dashboard-widget: Capell\WelcomeTour\Manifest\WelcomeTourChecklistWidgetContribution`, `setting: Capell\WelcomeTour\Manifest\WelcomeTourSettingsContribution`, `health-check: Capell\WelcomeTour\Manifest\WelcomeTourHealthContribution`.
 - Health checks: `Capell\WelcomeTour\Health\WelcomeTourHealthCheck`.
 - Blade views: `packages/welcome-tour/resources/views/filament/widgets/welcome-tour-checklist.blade.php`.
 
@@ -54,7 +54,7 @@ Screenshot contract: `screenshots.json`.
 - Required tables: `welcome_tour_user_states`.
 - Migration files: `2026_06_04_000001_create_welcome_tour_user_states_table.php`.
 - Migration impact: run host migrations through the package install flow before opening package surfaces.
-- Deletion/retention behaviour: Docs gap unless the package has an explicit pruning command, retention setting, or tested cascade path.
+- Deletion/retention behaviour: per-user tour state is retained until the host user or package-owned state row is removed.
 
 ## Install Impact
 
@@ -64,7 +64,7 @@ Screenshot contract: `screenshots.json`.
 - Database changes: package migrations are declared.
 - Settings: `Capell\WelcomeTour\Settings\WelcomeTourSettings`.
 - Queues or schedules: none detected in standard package paths.
-- Cache tags: none declared.
+- Cache tags: `welcome-tour`.
 - Commands: none declared.
 
 ## Common Pitfalls
@@ -83,7 +83,7 @@ Screenshot contract: `screenshots.json`.
 ## Quick Start
 
 1. Install the package: `composer require capell-app/welcome-tour`.
-2. Run the required setup: `php artisan migrate`.
+2. Run host migrations and settings migrations through the installed Capell app.
 3. Open the related Capell admin surface and verify Welcome Tour appears.
 
 ## Next Steps

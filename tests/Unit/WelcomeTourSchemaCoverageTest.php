@@ -2,8 +2,15 @@
 
 declare(strict_types=1);
 
+use Capell\Core\Contracts\Extensions\ChecksExtensionHealth;
+use Capell\Core\Contracts\Extensions\RegistersExtensionSetting;
+use Capell\Core\Contracts\Extensions\RegistersExtensionWidget;
 use Capell\WelcomeTour\Filament\Settings\WelcomeTourSettingsSchema;
+use Capell\WelcomeTour\Filament\Widgets\WelcomeTourChecklistWidget;
 use Capell\WelcomeTour\Health\WelcomeTourHealthCheck;
+use Capell\WelcomeTour\Manifest\WelcomeTourChecklistWidgetContribution;
+use Capell\WelcomeTour\Manifest\WelcomeTourHealthContribution;
+use Capell\WelcomeTour\Manifest\WelcomeTourSettingsContribution;
 use Capell\WelcomeTour\Settings\WelcomeTourSettings;
 use Filament\Forms\Components\Repeater;
 use Filament\Schemas\Components\Grid;
@@ -53,6 +60,23 @@ it('declares benefit-led welcome tour marketplace copy', function (): void {
     expect($manifest['description'])->toBe('Configurable Filament onboarding tours and per-user welcome flow for the Capell admin panel.')
         ->and($manifest['database']['migrations'])->toBeTrue()
         ->and($manifest['database']['requiredTables'])->toBe(['welcome_tour_user_states'])
+        ->and($manifest['contributes'])->toContain([
+            'type' => 'dashboard-widget',
+            'class' => WelcomeTourChecklistWidgetContribution::class,
+            'widgetClass' => WelcomeTourChecklistWidget::class,
+            'dashboard' => 'main',
+        ])
+        ->and($manifest['contributes'])->toContain([
+            'type' => 'setting',
+            'class' => WelcomeTourSettingsContribution::class,
+            'settingsClasses' => [WelcomeTourSettings::class],
+            'settingsGroups' => [WelcomeTourSettings::group()],
+        ])
+        ->and($manifest['contributes'])->toContain([
+            'type' => 'health-check',
+            'class' => WelcomeTourHealthContribution::class,
+            'checkClass' => WelcomeTourHealthCheck::class,
+        ])
         ->and($manifest['capabilities'])->toContain('package-owned-tour-state')
         ->and($manifest['capabilities'])->toContain('tour-progress-resume')
         ->and($manifest['capabilities'])->toContain('restart-tour')
@@ -61,7 +85,12 @@ it('declares benefit-led welcome tour marketplace copy', function (): void {
         ->and($manifest['capabilities'])->toContain('tour-lifecycle-events')
         ->and($manifest['marketplace']['summary'])->toBe('Guided, in-product onboarding for Capell Admin — configurable multi-step tours that introduce new editors to sites, pages, media, and settings, with per-user dismiss and resume.')
         ->and($manifest['marketplace']['description'])->toBe('Configurable Filament onboarding tours and per-user welcome flow for the Capell admin panel.')
-        ->and($manifest['marketplace']['screenshots'])->toHaveCount(1);
+        ->and($manifest['marketplace']['screenshots'])->toHaveCount(1)
+        ->and($manifest['performance']['cacheTags'])->toContain('welcome-tour')
+        ->and($manifest['performance']['cacheSafety']['variesBy'])->toContain('user')
+        ->and(class_implements(WelcomeTourChecklistWidgetContribution::class))->toContain(RegistersExtensionWidget::class)
+        ->and(class_implements(WelcomeTourSettingsContribution::class))->toContain(RegistersExtensionSetting::class)
+        ->and(class_implements(WelcomeTourHealthContribution::class))->toContain(ChecksExtensionHealth::class);
 });
 
 /**

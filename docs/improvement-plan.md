@@ -20,6 +20,8 @@ Welcome Tour ships an optional, admin-only guided onboarding overlay for Capell 
 
 - **Deferred: localize the dashboard tour ID / button copy fallbacks.** Button labels are translated and the first card can be configured through step settings; a separate per-tour title remains optional polish rather than a roadmap blocker. — `src/Filament/Pages/WelcomeTourDashboard.php`, `config/capell-welcome-tour.php` — S
 
+- **Shipped 2026-06-15: package operations metadata is complete.** `capell.json` now points dashboard-widget contributions at a real extension contribution class instead of the Filament widget class, declares settings and health-check contributions, records the `welcome-tour` cache tag and user variation, and the README/overview document package-owned state retention and host migration setup accurately. — `capell.json`, `src/Manifest/*Contribution.php`, `tests/Unit/WelcomeTourSchemaCoverageTest.php`, `README.md`, `docs/overview.md` — S
+
 ## 3. Missing Features (gaps)
 
 `capabilities: []` is empty, so the manifest advertises nothing the package actually does — every item below is currently unrepresented.
@@ -78,6 +80,7 @@ Welcome Tour is foundation/bundled and free — correctly so. Its real job is **
 | Done 2026-06-06: contextual tours on Pages/Media/Sites beyond dashboard-level contributed steps. Evidence: `config/capell-welcome-tour.php`, `src/Support/ContextualWelcomeTourRegistry.php`, `src/Filament/Concerns/HasContextualWelcomeTour.php`, `src/Support/WelcomeTourStepContributor.php`, `docs/steps-and-settings.md`.                                                                                                                                                        | Done   | L      | Med    | §3          |
 | Done 2026-06-06: tour lifecycle events are shipped for start, step completion, completion, snooze, and restart. Evidence: `src/Events/`, `src/Filament/Pages/WelcomeTourDashboard.php`, `src/Actions/Users/RecordWelcomeTourStepAction.php`.                                                                                                                                                                                                                                           | Done   | M      | Med    | §3          |
 | Done 2026-06-06: settings accept literal step copy as well as translation keys. Evidence: `src/Support/WelcomeTourStepRegistrar.php`, `docs/steps-and-settings.md`, `docs/overview.md`.                                                                                                                                                                                                                                                                                                | Done   | M      | Med    | §4          |
+| Shipped 2026-06-15: Complete operational manifest metadata and docs for widget, settings, health, cache tags, and package-owned state retention                                                                                                                                                                                                                                                                                                                                        | Done   | S      | Med    | §2          |
 
 ## Completion Review
 
