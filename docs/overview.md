@@ -34,6 +34,42 @@ Screenshot contract: `screenshots.json`.
 - Welcome tour settings group with enabled toggle and step repeater (admin, required).
 - User edit form with Show welcome tour toggle (admin, required).
 
+## Screenshot Evidence
+
+These captures are the package-owned visual contract for the admin pages, public pages, actions, workflows, and feature surfaces described above. Keep this section aligned with `docs/screenshots.json` whenever the package surface changes.
+
+### Admin dashboard rendered through WelcomeTourDashboard
+
+![Admin dashboard rendered through WelcomeTourDashboard](screenshots/welcome-tour-dashboard.png)
+
+- Surface: admin · Target: /admin.
+- Documents: A first-time administrator lands on the dashboard replacement that can launch onboarding.
+- Capture notes: Capture after installing only the core Capell stack and capell-app/welcome-tour, with capell-app/login-audit and its direct authentication-log dependency removed from the disposable harness.
+
+### Welcome tour overlay showing the first configured onboarding step
+
+![Welcome tour overlay showing the first configured onboarding step](screenshots/welcome-tour-overlay.png)
+
+- Surface: admin · Target: /admin.
+- Documents: A first-time administrator sees the first configured tour step overlay.
+- Capture notes: Use an admin account that has not dismissed the tour.
+
+### Welcome tour settings group with enabled toggle and step repeater
+
+![Welcome tour settings group with enabled toggle and step repeater](screenshots/welcome-tour-settings.png)
+
+- Surface: admin · Target: /admin/extensions/welcome-tour/settings.
+- Documents: A site owner configures the enabled state and tour step repeater from the package settings page.
+- Capture notes: Open the Welcome Tour package settings page after publishing and running the package settings migration.
+
+### User edit form with Show welcome tour toggle
+
+![User edit form with Show welcome tour toggle](screenshots/welcome-tour-user-toggle.png)
+
+- Surface: admin · Target: /admin/users/{record}/edit.
+- Documents: An administrator toggles whether a user should see the welcome tour again from the user edit form.
+- Capture notes: Requires a users table with the dismissed_hints column so the bridge contributes the field.
+
 ## Technical Shape
 
 - Service providers: `Capell\WelcomeTour\Providers\WelcomeTourServiceProvider`.
