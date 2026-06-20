@@ -15,7 +15,10 @@
             "required": true,
             "notes": "Capture after installing only the core Capell stack and capell-app/welcome-tour, with capell-app/login-audit and its direct authentication-log dependency removed from the disposable harness.",
             "useCase": "A first-time administrator lands on the dashboard replacement that can launch onboarding.",
-            "screenshotPath": "packages/welcome-tour/docs/screenshots/welcome-tour-dashboard.png"
+            "screenshotPath": "packages/welcome-tour/docs/screenshots/welcome-tour-dashboard.png",
+            "covers": [
+                "packages/welcome-tour/src/Filament/Pages/WelcomeTourDashboard.php"
+            ]
         },
         {
             "id": "welcome-tour-overlay",

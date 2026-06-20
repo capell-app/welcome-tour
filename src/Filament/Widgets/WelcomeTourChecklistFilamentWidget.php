@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace Capell\WelcomeTour\Filament\Widgets;
 
-use Capell\Admin\Contracts\CapellWidgetContract;
+use Capell\Admin\Contracts\CapellFilamentWidgetContract;
 use Capell\Admin\Filament\Concerns\GatedByRoleAndSettings;
-use Capell\Core\Contracts\Extensions\RegistersExtensionWidget;
+use Capell\Core\Contracts\Extensions\RegistersExtensionFilamentWidget;
 use Capell\WelcomeTour\Actions\BuildWelcomeTourChecklistAction;
 use Capell\WelcomeTour\Data\WelcomeTourChecklistItemData;
 use Filament\Widgets\Widget;
 use Livewire\Attributes\Computed;
 
-final class WelcomeTourChecklistWidget extends Widget implements CapellWidgetContract, RegistersExtensionWidget
+final class WelcomeTourChecklistFilamentWidget extends Widget implements CapellFilamentWidgetContract, RegistersExtensionFilamentWidget
 {
     use GatedByRoleAndSettings;
 

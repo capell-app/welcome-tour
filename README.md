@@ -41,7 +41,7 @@ Screenshot contract: `docs/screenshots.json`.
 - Migrations: `packages/welcome-tour/database/migrations/2026_06_04_000001_create_welcome_tour_user_states_table.php`.
 - Settings migrations: `packages/welcome-tour/database/settings/2026_05_10_190836_01_add_welcome_tour_settings.php`.
 - Settings classes: `WelcomeTourSettings`.
-- Filament classes: `HasContextualWelcomeTour`, `WelcomeTourPanelExtender`, `WelcomeTourDashboard`, `WelcomeTourSettingsPage`, `WelcomeTourSettingsSchema`, `WelcomeTourChecklistWidget`.
+- Filament classes: `HasContextualWelcomeTour`, `WelcomeTourPanelExtender`, `WelcomeTourDashboard`, `WelcomeTourSettingsPage`, `WelcomeTourSettingsSchema`, `WelcomeTourChecklistFilamentWidget`.
 - Events: `WelcomeTourCompleted`, `WelcomeTourRestarted`, `WelcomeTourSnoozed`, `WelcomeTourStarted`, `WelcomeTourStepCompleted`.
 - Actions: `BuildWelcomeTourChecklistAction`, `CanShowWelcomeTourStepAction`, `ResolveWelcomeTourEnabledAction`, `CanShowWelcomeTourAction`, `GetUserWelcomeTourStateAction`, `RecordWelcomeTourStepAction`, `ResetUserWelcomeTourAction`, `ResolveWelcomeTourStepsForUserAction`, `SetUserWelcomeTourPreferenceAction`, `SnoozeUserWelcomeTourAction`.
 - Data objects: `WelcomeTourChecklistItemData`, `WelcomeTourUserStateData`.

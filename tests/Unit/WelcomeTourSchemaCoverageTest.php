@@ -3,10 +3,10 @@
 declare(strict_types=1);
 
 use Capell\Core\Contracts\Extensions\ChecksExtensionHealth;
+use Capell\Core\Contracts\Extensions\RegistersExtensionFilamentWidget;
 use Capell\Core\Contracts\Extensions\RegistersExtensionSetting;
-use Capell\Core\Contracts\Extensions\RegistersExtensionWidget;
 use Capell\WelcomeTour\Filament\Settings\WelcomeTourSettingsSchema;
-use Capell\WelcomeTour\Filament\Widgets\WelcomeTourChecklistWidget;
+use Capell\WelcomeTour\Filament\Widgets\WelcomeTourChecklistFilamentWidget;
 use Capell\WelcomeTour\Health\WelcomeTourHealthCheck;
 use Capell\WelcomeTour\Manifest\WelcomeTourChecklistWidgetContribution;
 use Capell\WelcomeTour\Manifest\WelcomeTourHealthContribution;
@@ -62,7 +62,7 @@ it('declares benefit-led welcome tour marketplace copy', function (): void {
         ->and($contributes)->toContain([
             'type' => 'dashboard-widget',
             'class' => WelcomeTourChecklistWidgetContribution::class,
-            'widgetClass' => WelcomeTourChecklistWidget::class,
+            'widgetClass' => WelcomeTourChecklistFilamentWidget::class,
             'dashboard' => 'main',
         ])
         ->and($contributes)->toContain([
@@ -87,7 +87,7 @@ it('declares benefit-led welcome tour marketplace copy', function (): void {
         ->and(data_get($manifest, 'marketplace.screenshots'))->toHaveCount(1)
         ->and(data_get($manifest, 'performance.cacheTags'))->toContain('welcome-tour')
         ->and(data_get($manifest, 'performance.cacheSafety.variesBy'))->toContain('user')
-        ->and(class_implements(WelcomeTourChecklistWidgetContribution::class))->toContain(RegistersExtensionWidget::class)
+        ->and(class_implements(WelcomeTourChecklistWidgetContribution::class))->toContain(RegistersExtensionFilamentWidget::class)
         ->and(class_implements(WelcomeTourSettingsContribution::class))->toContain(RegistersExtensionSetting::class)
         ->and(class_implements(WelcomeTourHealthContribution::class))->toContain(ChecksExtensionHealth::class);
 });
