@@ -23,7 +23,7 @@ use Capell\WelcomeTour\Events\WelcomeTourStarted;
 use Capell\WelcomeTour\Events\WelcomeTourStepCompleted;
 use Capell\WelcomeTour\Filament\Concerns\HasContextualWelcomeTour;
 use Capell\WelcomeTour\Filament\Pages\WelcomeTourDashboard;
-use Capell\WelcomeTour\Filament\Widgets\WelcomeTourChecklistWidget;
+use Capell\WelcomeTour\Filament\Widgets\WelcomeTourChecklistFilamentWidget;
 use Capell\WelcomeTour\Settings\WelcomeTourSettings;
 use Capell\WelcomeTour\Support\ContextualWelcomeTourRegistry;
 use Capell\WelcomeTour\Support\WelcomeTourStepContributor;
@@ -54,8 +54,8 @@ it('uses the package dashboard page and registers the filament tour plugin', fun
 });
 
 it('registers the onboarding checklist dashboard widget', function (): void {
-    expect(CapellAdmin::getDashboardWidgets(DashboardEnum::Main))
-        ->toContain(WelcomeTourChecklistWidget::class);
+    expect(CapellAdmin::getDashboardFilamentWidgets(DashboardEnum::Main))
+        ->toContain(WelcomeTourChecklistFilamentWidget::class);
 });
 
 it('registers default welcome tour steps from configured translation keys', function (): void {

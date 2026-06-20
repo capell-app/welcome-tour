@@ -15,7 +15,7 @@ use Capell\Core\Support\Settings\SettingsGroupMetadata;
 use Capell\WelcomeTour\Filament\Extenders\WelcomeTourPanelExtender;
 use Capell\WelcomeTour\Filament\Pages\WelcomeTourDashboard;
 use Capell\WelcomeTour\Filament\Settings\WelcomeTourSettingsSchema;
-use Capell\WelcomeTour\Filament\Widgets\WelcomeTourChecklistWidget;
+use Capell\WelcomeTour\Filament\Widgets\WelcomeTourChecklistFilamentWidget;
 use Capell\WelcomeTour\Settings\WelcomeTourSettings;
 use Capell\WelcomeTour\Support\ContextualWelcomeTourRegistry;
 use Capell\WelcomeTour\Support\WelcomeTourStepRegistrar;
@@ -71,7 +71,7 @@ class WelcomeTourServiceProvider extends AbstractPackageServiceProvider
         $this->app->tag([WelcomeTourUserResourceBridge::class], UserResourceBridge::TAG);
 
         CapellAdmin::useDashboardPage(WelcomeTourDashboard::class);
-        CapellAdmin::registerDashboardWidget(WelcomeTourChecklistWidget::class, DashboardEnum::Main);
+        CapellAdmin::registerDashboardFilamentWidget(WelcomeTourChecklistFilamentWidget::class, DashboardEnum::Main);
         CapellAdmin::registerExtensionManagementSurface(ExtensionManagementSurfaceData::settings(
             packageName: static::$packageName,
             label: 'capell-welcome-tour::welcome_tour.settings_label',

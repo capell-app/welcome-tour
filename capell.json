@@ -30,7 +30,7 @@
         {
             "type": "dashboard-widget",
             "class": "Capell\\WelcomeTour\\Manifest\\WelcomeTourChecklistWidgetContribution",
-            "widgetClass": "Capell\\WelcomeTour\\Filament\\Widgets\\WelcomeTourChecklistWidget",
+            "widgetClass": "Capell\\WelcomeTour\\Filament\\Widgets\\WelcomeTourChecklistFilamentWidget",
             "dashboard": "main"
         },
         {
