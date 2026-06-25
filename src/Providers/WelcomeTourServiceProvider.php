@@ -23,7 +23,7 @@ use Capell\WelcomeTour\Support\WelcomeTourUserResourceBridge;
 use Filament\Support\Icons\Heroicon;
 use Spatie\LaravelPackageTools\Package;
 
-class WelcomeTourServiceProvider extends AbstractPackageServiceProvider
+final class WelcomeTourServiceProvider extends AbstractPackageServiceProvider
 {
     public static string $name = 'capell-welcome-tour';
 
@@ -73,7 +73,7 @@ class WelcomeTourServiceProvider extends AbstractPackageServiceProvider
         CapellAdmin::useDashboardPage(WelcomeTourDashboard::class);
         CapellAdmin::registerDashboardFilamentWidget(WelcomeTourChecklistFilamentWidget::class, DashboardEnum::Main);
         CapellAdmin::registerExtensionManagementSurface(ExtensionManagementSurfaceData::settings(
-            packageName: static::$packageName,
+            packageName: self::$packageName,
             label: 'capell-welcome-tour::welcome_tour.settings_label',
             settingsGroup: WelcomeTourSettings::group(),
             icon: Heroicon::OutlinedSparkles,
@@ -94,7 +94,7 @@ class WelcomeTourServiceProvider extends AbstractPackageServiceProvider
             return false;
         }
 
-        return CapellCore::isPackageInstalled(static::$packageName);
+        return CapellCore::isPackageInstalled(self::$packageName);
     }
 
     private function registerSettings(): void
@@ -108,7 +108,7 @@ class WelcomeTourServiceProvider extends AbstractPackageServiceProvider
             icon: Heroicon::OutlinedSparkles,
             navigationGroup: 'capell-admin::navigation.group_system',
             navigationSort: 92,
-            packageName: static::$packageName,
+            packageName: self::$packageName,
         ));
     }
 }
