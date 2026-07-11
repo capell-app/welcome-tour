@@ -20,12 +20,12 @@
             ]
         },
         "branch-alias": {
-            "dev-main": "4.x-dev"
+            "dev-main": "1.x-dev"
         }
     },
     "require": {
         "php": "^8.4",
-        "capell-app/admin": "^4.0 || 4.x-dev",
+        "capell-app/admin": "^1.0 || 1.x-dev",
         "jibaymcs/filament-tour": "^5.0",
         "laravel/framework": "^11.44.2|^12.0|^13.0",
         "lorisleiva/laravel-actions": "^2.8",
