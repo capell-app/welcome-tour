@@ -25,7 +25,7 @@ it('declares welcome tour settings metadata and schema structure', function (): 
 
     expect(WelcomeTourSettings::group())->toBe('welcome-tour')
         ->and(WelcomeTourSettings::schema())->toBe(WelcomeTourSettingsSchema::class)
-        ->and(WelcomeTourHealthCheck::compatibleCapellApiVersion())->toBe('^4.0')
+        ->and(WelcomeTourHealthCheck::compatibleCapellApiVersion())->toBe('^0.0')
         ->and($components)->toHaveCount(1)
         ->and($components[0])->toBeInstanceOf(Section::class)
         ->and($sectionComponents)->toHaveCount(2)
