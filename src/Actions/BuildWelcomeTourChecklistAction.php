@@ -41,9 +41,34 @@ final class BuildWelcomeTourChecklistAction
             key: $this->stringValue($item, 'key'),
             label: $this->translate($this->stringValue($item, 'label')),
             description: $this->translate($this->stringValue($item, 'description')),
-            url: $this->nullableStringValue($item, 'url'),
+            url: $this->internalAdminUrl($this->nullableStringValue($item, 'url')),
             complete: $this->isComplete($this->stringValue($item, 'complete_when')),
         );
+    }
+
+    private function internalAdminUrl(?string $url): ?string
+    {
+        if ($url === null || $url === '' || str_starts_with($url, '//')) {
+            return null;
+        }
+
+        $parts = parse_url($url);
+
+        if ($parts === false) {
+            return null;
+        }
+
+        $host = $parts['host'] ?? null;
+        $appHost = parse_url((string) config('app.url'), PHP_URL_HOST);
+
+        if ($host !== null && (! is_string($host) || ! is_string($appHost) || strcasecmp($host, $appHost) !== 0)) {
+            return null;
+        }
+
+        $path = '/' . ltrim((string) ($parts['path'] ?? ''), '/');
+        $adminPath = '/' . trim((string) config('filament.panels.admin.path', 'admin'), '/');
+
+        return $path === $adminPath || str_starts_with($path, $adminPath . '/') ? $url : null;
     }
 
     private function isComplete(string $condition): bool

@@ -16,6 +16,8 @@ final class SetUserWelcomeTourPreferenceAction
 
     public function handle(Model $user, bool $enabled, string $tourKey = 'capell_admin_welcome'): void
     {
+        AuthorizeWelcomeTourUserMutationAction::run($user);
+
         if (! Schema::hasTable($user->getTable()) || ! Schema::hasColumn($user->getTable(), 'dismissed_hints')) {
             $this->storePreferenceInPackageState($user, $enabled, $tourKey);
 

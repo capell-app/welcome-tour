@@ -17,6 +17,8 @@ final class ResetUserWelcomeTourAction
 
     public function handle(Model $user, string $tourKey = 'capell_admin_welcome'): void
     {
+        AuthorizeWelcomeTourUserMutationAction::run($user);
+
         SetUserWelcomeTourPreferenceAction::run($user, enabled: true, tourKey: $tourKey);
 
         if (! WelcomeTourSchema::hasUserStateTable()) {

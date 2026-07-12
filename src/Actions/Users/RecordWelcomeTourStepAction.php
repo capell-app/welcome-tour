@@ -17,6 +17,8 @@ final class RecordWelcomeTourStepAction
 
     public function handle(Model $user, string $stepKey, string $tourKey = 'capell_admin_welcome'): void
     {
+        AuthorizeWelcomeTourUserMutationAction::run($user);
+
         if ($stepKey === '' || ! WelcomeTourSchema::hasUserStateTable()) {
             return;
         }

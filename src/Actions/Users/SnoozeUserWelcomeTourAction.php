@@ -17,6 +17,8 @@ final class SnoozeUserWelcomeTourAction
 
     public function handle(Model $user, int $hours = 24, string $tourKey = 'capell_admin_welcome'): void
     {
+        AuthorizeWelcomeTourUserMutationAction::run($user);
+
         if (! WelcomeTourSchema::hasUserStateTable()) {
             return;
         }

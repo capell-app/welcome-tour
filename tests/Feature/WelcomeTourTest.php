@@ -39,6 +39,7 @@ use Illuminate\Support\HtmlString;
 use Illuminate\View\View;
 
 beforeEach(function (): void {
+    $this->actingAsAdmin();
     CapellAdmin::clearWelcomeTourSteps();
     resolve(ContextualWelcomeTourRegistry::class)->clear();
 });
