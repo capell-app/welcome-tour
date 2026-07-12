@@ -2,7 +2,7 @@
 
 <!-- prettier-ignore-start -->
 
-## What This Extension Adds
+## What This Plugin Adds
 
 Welcome Tour is an **Available**, **Schema-owning** Capell package in the **Capell Foundation** product group. It ships as `capell-app/welcome-tour` and extends these surfaces: admin.
 
@@ -28,6 +28,10 @@ Status details:
 ## Screens And Workflow
 
 Screenshot contract: `docs/screenshots.json`.
+
+![Admin dashboard rendered through WelcomeTourDashboard](docs/screenshots/welcome-tour-dashboard.png)
+
+![Welcome tour overlay showing the first configured onboarding step](docs/screenshots/welcome-tour-overlay.png)
 
 - Admin dashboard rendered through WelcomeTourDashboard (admin, required).
 - Welcome tour overlay showing the first configured onboarding step (admin, required).
