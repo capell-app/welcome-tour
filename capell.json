@@ -4,7 +4,7 @@
     "slug": "welcome-tour",
     "displayName": "Welcome Tour",
     "kind": "package",
-    "capellApiVersion": "^4.0",
+    "capellApiVersion": "^0.0",
     "version": "0.0.x-dev",
     "description": "Configurable Filament onboarding tours and per-user welcome flow for the Capell admin panel.",
     "product": {
