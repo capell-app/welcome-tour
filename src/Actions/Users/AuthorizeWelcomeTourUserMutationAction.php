@@ -26,9 +26,7 @@ final class AuthorizeWelcomeTourUserMutationAction
             return;
         }
 
-        if ($actor instanceof Model
-            && $actor->getMorphClass() === $user->getMorphClass()
-            && (string) $actor->getKey() === (string) $user->getKey()) {
+        if ($actor instanceof Model && $actor->is($user)) {
             return;
         }
 

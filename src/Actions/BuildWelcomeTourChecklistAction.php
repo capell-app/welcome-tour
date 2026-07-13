@@ -59,14 +59,16 @@ final class BuildWelcomeTourChecklistAction
         }
 
         $host = $parts['host'] ?? null;
-        $appHost = parse_url((string) config('app.url'), PHP_URL_HOST);
+        $appUrl = config('app.url');
+        $appHost = is_string($appUrl) ? parse_url($appUrl, PHP_URL_HOST) : null;
 
         if ($host !== null && (! is_string($host) || ! is_string($appHost) || strcasecmp($host, $appHost) !== 0)) {
             return null;
         }
 
         $path = '/' . ltrim((string) ($parts['path'] ?? ''), '/');
-        $adminPath = '/' . trim((string) config('filament.panels.admin.path', 'admin'), '/');
+        $configuredAdminPath = config('filament.panels.admin.path', 'admin');
+        $adminPath = '/' . trim(is_string($configuredAdminPath) ? $configuredAdminPath : 'admin', '/');
 
         return $path === $adminPath || str_starts_with($path, $adminPath . '/') ? $url : null;
     }
