@@ -29,7 +29,7 @@ final class WelcomeTourChecklistFilamentWidget extends Widget implements CapellF
 
     public static function compatibleCapellApiVersion(): string
     {
-        return '^4.0';
+        return '^1.0';
     }
 
     /**
