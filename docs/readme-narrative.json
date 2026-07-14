@@ -1,0 +1,37 @@
+{
+    "whatThisPluginAdds": {
+        "text": "Welcome Tour adds a contextual admin checklist with per-user step state, preferences, snoozing, and reset behavior. The checklist is exposed as a Filament dashboard widget.",
+        "evidence": [
+            "src/Filament/Widgets/WelcomeTourChecklistFilamentWidget.php",
+            "src/Actions/BuildWelcomeTourChecklistAction.php",
+            "src/Support/ContextualWelcomeTourRegistry.php",
+            "tests/Feature/WelcomeTourTest.php"
+        ]
+    },
+    "surfaceOutcome": {
+        "text": "Administrators see relevant setup steps on the dashboard and can complete, snooze, or reset their own tour state.",
+        "evidence": [
+            "src/Filament/Widgets/WelcomeTourChecklistFilamentWidget.php",
+            "src/Filament/Extenders/WelcomeTourPanelExtender.php",
+            "tests/Feature/WelcomeTourTest.php"
+        ]
+    },
+    "whyItMatters": {
+        "developers": {
+            "text": "A contextual registry and focused Actions keep checklist composition separate from the Filament widget and persisted user state.",
+            "evidence": [
+                "src/Support/ContextualWelcomeTourRegistry.php",
+                "src/Actions/BuildWelcomeTourChecklistAction.php",
+                "tests/Unit/WelcomeTourSchemaCoverageTest.php"
+            ]
+        },
+        "teams": {
+            "text": "Teams can give each administrator a repeatable setup path without forcing every user through the same uninterrupted sequence.",
+            "evidence": [
+                "src/Filament/Widgets/WelcomeTourChecklistFilamentWidget.php",
+                "tests/Feature/WelcomeTourTest.php",
+                "tests/Feature/WelcomeTourSettingsTest.php"
+            ]
+        }
+    }
+}

@@ -6,9 +6,11 @@
 
 Welcome Tour is an **Available**, **Schema-owning** Capell package in the **Capell Foundation** product group. It ships as `capell-app/welcome-tour` and extends these surfaces: admin.
 
-Configurable Filament onboarding tours and per-user welcome flow for the Capell admin panel.
+Welcome Tour adds a contextual admin checklist with per-user step state, preferences, snoozing, and reset behavior. The checklist is exposed as a Filament dashboard widget.
 
-After install, admins get package-owned management or reporting surfaces inside Capell.
+Administrators see relevant setup steps on the dashboard and can complete, snooze, or reset their own tour state.
+
+Evidence: [`src/Filament/Widgets/WelcomeTourChecklistFilamentWidget.php`](src/Filament/Widgets/WelcomeTourChecklistFilamentWidget.php), [`src/Actions/BuildWelcomeTourChecklistAction.php`](src/Actions/BuildWelcomeTourChecklistAction.php), [`src/Support/ContextualWelcomeTourRegistry.php`](src/Support/ContextualWelcomeTourRegistry.php), [`tests/Feature/WelcomeTourTest.php`](tests/Feature/WelcomeTourTest.php), [`src/Filament/Extenders/WelcomeTourPanelExtender.php`](src/Filament/Extenders/WelcomeTourPanelExtender.php).
 
 Status details:
 
@@ -21,9 +23,11 @@ Status details:
 
 ## Why It Matters
 
-**For developers:** The package gives developers package-owned service providers, Actions, Data objects, Filament classes, and Blade views instead of pushing this behaviour into core or application code.
+**For developers:** A contextual registry and focused Actions keep checklist composition separate from the Filament widget and persisted user state.
 
-**For teams:** Guided, in-product onboarding for Capell Admin - configurable multi-step tours that introduce new editors to sites, pages, media, and settings, with per-user dismiss and resume.
+**For teams:** Teams can give each administrator a repeatable setup path without forcing every user through the same uninterrupted sequence.
+
+Evidence: [`src/Support/ContextualWelcomeTourRegistry.php`](src/Support/ContextualWelcomeTourRegistry.php), [`src/Actions/BuildWelcomeTourChecklistAction.php`](src/Actions/BuildWelcomeTourChecklistAction.php), [`tests/Unit/WelcomeTourSchemaCoverageTest.php`](tests/Unit/WelcomeTourSchemaCoverageTest.php), [`src/Filament/Widgets/WelcomeTourChecklistFilamentWidget.php`](src/Filament/Widgets/WelcomeTourChecklistFilamentWidget.php), [`tests/Feature/WelcomeTourTest.php`](tests/Feature/WelcomeTourTest.php), [`tests/Feature/WelcomeTourSettingsTest.php`](tests/Feature/WelcomeTourSettingsTest.php).
 
 ## Screens And Workflow
 
@@ -49,6 +53,7 @@ Screenshot contract: `docs/screenshots.json`.
 - Events: `WelcomeTourCompleted`, `WelcomeTourRestarted`, `WelcomeTourSnoozed`, `WelcomeTourStarted`, `WelcomeTourStepCompleted`.
 - Actions: `BuildWelcomeTourChecklistAction`, `CanShowWelcomeTourStepAction`, `ResolveWelcomeTourEnabledAction`, `AuthorizeWelcomeTourUserMutationAction`, `CanShowWelcomeTourAction`, `GetUserWelcomeTourStateAction`, `RecordWelcomeTourStepAction`, `ResetUserWelcomeTourAction`, `ResolveWelcomeTourStepsForUserAction`, `SetUserWelcomeTourPreferenceAction`, `SnoozeUserWelcomeTourAction`.
 - Data objects: `WelcomeTourChecklistItemData`, `WelcomeTourUserStateData`.
+- Manifest action API: `buildWelcomeTourChecklist: Capell\WelcomeTour\Actions\BuildWelcomeTourChecklistAction`, `canShowWelcomeTour: Capell\WelcomeTour\Actions\Users\CanShowWelcomeTourAction`, `canShowWelcomeTourStep: Capell\WelcomeTour\Actions\CanShowWelcomeTourStepAction`, `getUserWelcomeTourState: Capell\WelcomeTour\Actions\Users\GetUserWelcomeTourStateAction`, `recordWelcomeTourStep: Capell\WelcomeTour\Actions\Users\RecordWelcomeTourStepAction`, `resetUserWelcomeTour: Capell\WelcomeTour\Actions\Users\ResetUserWelcomeTourAction`, `resolveWelcomeTourEnabled: Capell\WelcomeTour\Actions\ResolveWelcomeTourEnabledAction`, `resolveWelcomeTourStepsForUser: Capell\WelcomeTour\Actions\Users\ResolveWelcomeTourStepsForUserAction`, `setUserWelcomeTourPreference: Capell\WelcomeTour\Actions\Users\SetUserWelcomeTourPreferenceAction`, `snoozeUserWelcomeTour: Capell\WelcomeTour\Actions\Users\SnoozeUserWelcomeTourAction`.
 - Manifest contributions: `dashboard-widget: Capell\WelcomeTour\Manifest\WelcomeTourChecklistWidgetContribution`, `health-check: Capell\WelcomeTour\Manifest\WelcomeTourHealthContribution`, `setting: Capell\WelcomeTour\Manifest\WelcomeTourSettingsContribution`.
 - Health checks: `Capell\WelcomeTour\Health\WelcomeTourHealthCheck`.
 - Blade views: `packages/welcome-tour/resources/views/filament/widgets/welcome-tour-checklist.blade.php`.
@@ -57,26 +62,31 @@ Screenshot contract: `docs/screenshots.json`.
 ## Data Model
 
 - Required tables: `welcome_tour_user_states`.
+- Core record references in migrations: `users via user_id`.
 - Migration files: `2026_06_04_000001_create_welcome_tour_user_states_table.php`.
 - Migration impact: run host migrations through the package install flow before opening package surfaces.
-- Deletion/retention behaviour: Docs gap unless the package has an explicit pruning command, retention setting, or tested cascade path.
+- Deletion/retention behaviour: Docs gap: migrations and manifest contributions do not prove a cascade, pruning command, or timed retention policy.
 
 ## Install Impact
 
-- Admin navigation: adds package-owned Filament classes when registered.
+- Required packages: `capell-app/admin`.
+- Admin navigation: no admin page or resource contribution is declared.
+- Admin/editor extensions: `dashboard-widget: WelcomeTourChecklistWidgetContribution`.
 - Permissions: none declared in `capell.json`.
-- Public routes: none detected in package route files.
+- Public routes: none declared.
 - Database changes: package migrations are declared.
+- Config: `config/capell-welcome-tour.php`.
 - Settings: `Capell\WelcomeTour\Settings\WelcomeTourSettings`.
-- Queues or schedules: none detected in standard package paths.
+- Queues or schedules: none declared.
 - Cache tags: `welcome-tour`.
 - Commands: none declared.
 
 ## Common Pitfalls
 
+- Keep required Capell packages on compatible v4 releases: `capell-app/admin`.
 - Run migrations before opening package resources or public routes.
-- Configure package settings before testing production-like workflows.
-- Keep `composer.json`, `composer.local.json`, `capell.json`, docs, screenshots, and tests aligned when the package surface changes.
+- Review package configuration before production-like verification: `config/capell-welcome-tour.php`, `Capell\WelcomeTour\Settings\WelcomeTourSettings`.
+- Custom write integrations must preserve invalidation for `welcome-tour` cache tags.
 
 ## Troubleshooting
 
@@ -89,12 +99,15 @@ Screenshot contract: `docs/screenshots.json`.
 
 1. Install the package: `composer require capell-app/welcome-tour`.
 2. Run the required setup: `php artisan migrate`.
-3. Open the related Capell admin surface and verify Welcome Tour appears.
+3. Open the Admin dashboard rendered through WelcomeTourDashboard and confirm the admin workflow loads.
 
 ## Next Steps
 
 - [Package docs](docs/README.md)
 - [Overview](docs/overview.md)
+- [Admin guide](docs/admin-guide.md)
+- Configuration files: [`config/capell-welcome-tour.php`](config/capell-welcome-tour.php).
+- [Troubleshooting](#troubleshooting)
 - [Screenshot contract](docs/screenshots.json)
 - [Marketplace assets](docs/assets/marketplace/)
 - [Capell content language plan](../../docs/CONTENT_LANGUAGE_PLAN.md)
