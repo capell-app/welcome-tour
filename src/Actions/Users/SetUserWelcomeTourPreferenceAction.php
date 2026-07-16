@@ -8,10 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Lorisleiva\Actions\Concerns\AsFake;
 use Lorisleiva\Actions\Concerns\AsObject;
 
 final class SetUserWelcomeTourPreferenceAction
 {
+    use AsFake;
     use AsObject;
 
     public function handle(Model $user, bool $enabled, string $tourKey = 'capell_admin_welcome'): void

@@ -6,10 +6,12 @@ namespace Capell\WelcomeTour\Actions\Users;
 
 use Capell\Admin\Data\WelcomeTourStepData;
 use Illuminate\Database\Eloquent\Model;
+use Lorisleiva\Actions\Concerns\AsFake;
 use Lorisleiva\Actions\Concerns\AsObject;
 
 final class ResolveWelcomeTourStepsForUserAction
 {
+    use AsFake;
     use AsObject;
 
     /**

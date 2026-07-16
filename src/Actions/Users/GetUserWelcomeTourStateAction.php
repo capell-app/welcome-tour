@@ -8,10 +8,12 @@ use Capell\WelcomeTour\Data\WelcomeTourUserStateData;
 use Capell\WelcomeTour\Support\WelcomeTourSchema;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Lorisleiva\Actions\Concerns\AsFake;
 use Lorisleiva\Actions\Concerns\AsObject;
 
 final class GetUserWelcomeTourStateAction
 {
+    use AsFake;
     use AsObject;
 
     public function handle(Model $user, string $tourKey = 'capell_admin_welcome'): WelcomeTourUserStateData

@@ -6,6 +6,7 @@ namespace Capell\WelcomeTour\Actions;
 
 use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Model;
+use Lorisleiva\Actions\Concerns\AsFake;
 use Lorisleiva\Actions\Concerns\AsObject;
 use Throwable;
 
@@ -14,6 +15,7 @@ use Throwable;
  */
 final class CanShowWelcomeTourStepAction
 {
+    use AsFake;
     use AsObject;
 
     /**

@@ -8,10 +8,12 @@ use Capell\WelcomeTour\Actions\ResolveWelcomeTourEnabledAction;
 use Capell\WelcomeTour\Support\WelcomeTourSchema;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Lorisleiva\Actions\Concerns\AsFake;
 use Lorisleiva\Actions\Concerns\AsObject;
 
 final class CanShowWelcomeTourAction
 {
+    use AsFake;
     use AsObject;
 
     public const string DISMISSED_HINT_KEY = 'capell-welcome-tour.welcome-tour';

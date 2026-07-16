@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Capell\WelcomeTour\Actions;
 
 use Capell\WelcomeTour\Settings\WelcomeTourSettings;
+use Lorisleiva\Actions\Concerns\AsFake;
 use Lorisleiva\Actions\Concerns\AsObject;
 use Throwable;
 
@@ -13,6 +14,7 @@ use Throwable;
  */
 final class ResolveWelcomeTourEnabledAction
 {
+    use AsFake;
     use AsObject;
 
     public function handle(): bool

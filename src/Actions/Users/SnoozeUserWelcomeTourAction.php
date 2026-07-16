@@ -9,10 +9,12 @@ use Capell\WelcomeTour\Support\WelcomeTourSchema;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
+use Lorisleiva\Actions\Concerns\AsFake;
 use Lorisleiva\Actions\Concerns\AsObject;
 
 final class SnoozeUserWelcomeTourAction
 {
+    use AsFake;
     use AsObject;
 
     public function handle(Model $user, int $hours = 24, string $tourKey = 'capell_admin_welcome'): void

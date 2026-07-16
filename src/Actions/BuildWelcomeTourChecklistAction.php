@@ -8,10 +8,12 @@ use Capell\WelcomeTour\Data\WelcomeTourChecklistItemData;
 use Capell\WelcomeTour\Support\WelcomeTourSchema;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Lang;
+use Lorisleiva\Actions\Concerns\AsFake;
 use Lorisleiva\Actions\Concerns\AsObject;
 
 final class BuildWelcomeTourChecklistAction
 {
+    use AsFake;
     use AsObject;
 
     /**

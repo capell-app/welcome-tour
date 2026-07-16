@@ -8,10 +8,12 @@ use Capell\Admin\Support\SiteScope;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
+use Lorisleiva\Actions\Concerns\AsFake;
 use Lorisleiva\Actions\Concerns\AsObject;
 
 final class AuthorizeWelcomeTourUserMutationAction
 {
+    use AsFake;
     use AsObject;
 
     public function handle(Model $user): void
