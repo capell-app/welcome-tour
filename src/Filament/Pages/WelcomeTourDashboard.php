@@ -69,7 +69,7 @@ class WelcomeTourDashboard extends CapellDashboard
 
         event(new WelcomeTourStarted($user, self::TOUR_KEY));
 
-        foreach (array_values($tourSteps) as $index => $tourStep) {
+        foreach ($tourSteps as $index => $tourStep) {
             $eventName = $index === array_key_last($tourSteps) ? self::DISMISS_EVENT : self::STEP_COMPLETED_EVENT;
 
             $steps[$index]->dispatchOnNext($eventName, stepKey: $tourStep->key);
