@@ -16,7 +16,7 @@ final class CanShowWelcomeTourAction
     use AsFake;
     use AsObject;
 
-    public const string DISMISSED_HINT_KEY = 'capell-welcome-tour.welcome-tour';
+    public const string DISMISSED_HINT_KEY = 'welcome.tour.v1';
 
     public function handle(?Model $user, string $tourKey = 'capell_admin_welcome'): bool
     {
@@ -32,6 +32,10 @@ final class CanShowWelcomeTourAction
 
         if ($state->dismissed || $state->isSnoozed()) {
             return false;
+        }
+
+        if (config('capell-welcome-tour.presentation_mode', false)) {
+            return true;
         }
 
         if (! WelcomeTourSchema::hasDismissedHintsColumn($user->getTable())) {

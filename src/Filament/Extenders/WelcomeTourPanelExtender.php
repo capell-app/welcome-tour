@@ -6,6 +6,8 @@ namespace Capell\WelcomeTour\Filament\Extenders;
 
 use Capell\Admin\Contracts\Extenders\AdminPanelExtender;
 use Filament\Panel;
+use Filament\View\PanelsRenderHook;
+use Illuminate\Support\Facades\Blade;
 use JibayMcs\FilamentTour\FilamentTourPlugin;
 
 final class WelcomeTourPanelExtender implements AdminPanelExtender
@@ -16,6 +18,11 @@ final class WelcomeTourPanelExtender implements AdminPanelExtender
             return;
         }
 
-        $panel->plugin(FilamentTourPlugin::make());
+        $panel
+            ->plugin(FilamentTourPlugin::make()->onlyVisibleOnce(false))
+            ->renderHook(
+                PanelsRenderHook::BODY_START,
+                fn (): string => Blade::render("@livewire('capell-welcome-tour.orchestrator')"),
+            );
     }
 }

@@ -29,6 +29,7 @@ final class BuildWelcomeTourChecklistAction
 
         return array_values(collect($items)
             ->filter(fn (mixed $item): bool => is_array($item))
+            ->filter(fn (array $item): bool => $this->isVisible($item))
             ->map(fn (array $item): WelcomeTourChecklistItemData => $this->itemData($item))
             ->values()
             ->all());
@@ -88,8 +89,24 @@ final class BuildWelcomeTourChecklistAction
                 && WelcomeTourSchema::hasTable($value)
                 && DB::table($value)->exists(),
             'table-exists' => $value !== '' && WelcomeTourSchema::hasTable($value),
+            'non-default-theme' => WelcomeTourSchema::hasTable('themes')
+                && DB::table('themes')->where('default', false)->where('status', true)->exists(),
             default => false,
         };
+    }
+
+    /** @param array<string, mixed> $item */
+    private function isVisible(array $item): bool
+    {
+        $resource = $item['resource'] ?? null;
+
+        if (! is_string($resource) || $resource === '') {
+            return true;
+        }
+
+        return class_exists($resource)
+            && method_exists($resource, 'canAccess')
+            && $resource::canAccess();
     }
 
     /**

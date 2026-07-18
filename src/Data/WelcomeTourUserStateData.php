@@ -44,6 +44,25 @@ final readonly class WelcomeTourUserStateData
         );
     }
 
+    /** @param array<string, mixed> $state */
+    public static function fromArray(array $state): self
+    {
+        $completedStepKeys = $state['completed_step_keys'] ?? [];
+
+        return new self(
+            completedStepKeys: array_values(collect(is_array($completedStepKeys) ? $completedStepKeys : [])
+                ->filter(fn (mixed $key): bool => is_string($key) && $key !== '')
+                ->unique()
+                ->values()
+                ->all()),
+            lastCompletedStepKey: is_string($state['last_completed_step_key'] ?? null)
+                ? $state['last_completed_step_key']
+                : null,
+            snoozedUntil: self::carbonValue($state['snoozed_until'] ?? null),
+            dismissed: ($state['dismissed'] ?? false) === true,
+        );
+    }
+
     public function isSnoozed(?CarbonInterface $now = null): bool
     {
         if (! $this->snoozedUntil instanceof CarbonImmutable) {

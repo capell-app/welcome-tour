@@ -50,6 +50,6 @@ it('seeds default settings from package configuration', function (): void {
     $settings = WelcomeTourSettings::instance();
 
     expect($settings->enabled)->toBeTrue()
-        ->and($settings->steps)->toHaveCount(7)
-        ->and($settings->steps[0]['key'])->toBe('capell-welcome-tour.introduction');
+        ->and($settings->steps)->toHaveCount(6)
+        ->and($settings->steps[0]['key'])->toBe('capell-welcome-tour.dashboard');
 });

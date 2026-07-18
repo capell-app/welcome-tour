@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Lorisleiva\Actions\Concerns\AsFake;
 use Lorisleiva\Actions\Concerns\AsObject;
 
-final class ResetUserWelcomeTourAction
+final class RestartWelcomeTourProgressAction
 {
     use AsFake;
     use AsObject;
@@ -18,9 +18,7 @@ final class ResetUserWelcomeTourAction
     public function handle(Model $user, string $tourKey = 'capell_admin_welcome'): void
     {
         AuthorizeWelcomeTourUserMutationAction::run($user);
-
-        resolve(WelcomeTourStateStoreResolver::class)->resolve()->reset($user, $tourKey);
-
+        resolve(WelcomeTourStateStoreResolver::class)->resolve()->restartProgress($user, $tourKey);
         event(new WelcomeTourRestarted($user, $tourKey));
     }
 }

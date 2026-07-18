@@ -7,10 +7,11 @@ namespace Capell\WelcomeTour\Filament\Pages;
 use Capell\Admin\Facades\CapellAdmin;
 use Capell\Admin\Filament\Pages\CapellDashboard;
 use Capell\Admin\Support\AdminPanelEntrypoint;
+use Capell\WelcomeTour\Actions\ResolveWelcomeTourChaptersAction;
 use Capell\WelcomeTour\Actions\Users\CanShowWelcomeTourAction;
+use Capell\WelcomeTour\Actions\Users\GetUserWelcomeTourStateAction;
 use Capell\WelcomeTour\Actions\Users\RecordWelcomeTourStepAction;
-use Capell\WelcomeTour\Actions\Users\ResetUserWelcomeTourAction;
-use Capell\WelcomeTour\Actions\Users\ResolveWelcomeTourStepsForUserAction;
+use Capell\WelcomeTour\Actions\Users\RestartWelcomeTourProgressAction;
 use Capell\WelcomeTour\Actions\Users\SetUserWelcomeTourPreferenceAction;
 use Capell\WelcomeTour\Actions\Users\SnoozeUserWelcomeTourAction;
 use Capell\WelcomeTour\Events\WelcomeTourCompleted;
@@ -22,16 +23,11 @@ use Filament\Support\Icons\Heroicon;
 use Illuminate\Database\Eloquent\Model;
 use JibayMcs\FilamentTour\Tour\HasTour;
 use JibayMcs\FilamentTour\Tour\Tour;
-use Livewire\Attributes\On;
 use Override;
 
 class WelcomeTourDashboard extends CapellDashboard
 {
     use HasTour;
-
-    private const string DISMISS_EVENT = 'capell-welcome-tour::dismiss';
-
-    private const string STEP_COMPLETED_EVENT = 'capell-welcome-tour::step-completed';
 
     private const string TOUR_KEY = 'capell_admin_welcome';
 
@@ -48,56 +44,66 @@ class WelcomeTourDashboard extends CapellDashboard
             return [];
         }
 
-        if (CanShowWelcomeTourAction::run($user) !== true) {
+        if (! $this->isTourActive() || (! (bool) session()->get('capell_welcome_tour.active', false) && CanShowWelcomeTourAction::run($user) !== true)) {
             return [];
         }
 
-        $tourSteps = ResolveWelcomeTourStepsForUserAction::run(
-            $user,
+        $chapters = ResolveWelcomeTourChaptersAction::run(
             CapellAdmin::getWelcomeTourSteps(),
-            self::TOUR_KEY,
+            GetUserWelcomeTourStateAction::run($user, self::TOUR_KEY),
         );
 
-        $steps = array_map(
-            WelcomeTourStepFactory::make(...),
-            $tourSteps,
-        );
-
-        if ($steps === []) {
+        if ($chapters === []) {
             return [];
         }
 
         event(new WelcomeTourStarted($user, self::TOUR_KEY));
 
-        foreach ($tourSteps as $index => $tourStep) {
-            $eventName = $index === array_key_last($tourSteps) ? self::DISMISS_EVENT : self::STEP_COMPLETED_EVENT;
+        return array_map(function ($chapter): Tour {
+            $steps = array_map(WelcomeTourStepFactory::make(...), $chapter->steps);
+            $steps[count($steps) - 1]->dispatchOnNext(
+                'capell-welcome-tour::complete-chapter',
+                chapterKey: $chapter->key,
+            );
 
-            $steps[$index]->dispatchOnNext($eventName, stepKey: $tourStep->key);
-        }
-
-        return [
-            Tour::make(self::TOUR_KEY)
-                ->route('/' . trim(AdminPanelEntrypoint::path(), '/'))
+            return Tour::make(self::TOUR_KEY . '.' . $chapter->key)
+                ->route($chapter->route)
+                ->alwaysShow()
                 ->nextButtonLabel(__('capell-admin::button.next'))
                 ->previousButtonLabel(__('capell-admin::button.previous'))
                 ->doneButtonLabel(__('capell-admin::button.done'))
-                ->steps(...$steps),
-        ];
+                ->steps(...$steps);
+        }, $chapters);
     }
 
-    #[On(self::STEP_COMPLETED_EVENT)]
+    public function restartWelcomeTour(): null
+    {
+        $user = auth()->user();
+
+        if ($user instanceof Model) {
+            RestartWelcomeTourProgressAction::run($user, self::TOUR_KEY);
+            session()->put('capell_welcome_tour.active', true);
+        }
+
+        Notification::make()
+            ->title(__('capell-welcome-tour::welcome_tour.restart_tour_notification'))
+            ->success()
+            ->send();
+
+        $this->redirect('/' . trim(AdminPanelEntrypoint::path(), '/'));
+
+        return null;
+    }
+
     public function recordWelcomeTourStep(string $stepKey): void
     {
         $user = auth()->user();
 
-        if (! $user instanceof Model) {
-            return;
+        if ($user instanceof Model) {
+            RecordWelcomeTourStepAction::run($user, $stepKey, self::TOUR_KEY);
         }
-
-        RecordWelcomeTourStepAction::run($user, $stepKey, self::TOUR_KEY);
     }
 
-    #[On(self::DISMISS_EVENT)]
     public function dismissWelcomeTour(?string $stepKey = null): void
     {
         $user = auth()->user();
@@ -111,23 +117,8 @@ class WelcomeTourDashboard extends CapellDashboard
         }
 
         SetUserWelcomeTourPreferenceAction::run($user, enabled: false);
+        session()->forget('capell_welcome_tour.active');
         event(new WelcomeTourCompleted($user, self::TOUR_KEY));
-    }
-
-    public function restartWelcomeTour(): null
-    {
-        $user = auth()->user();
-
-        if ($user instanceof Model) {
-            ResetUserWelcomeTourAction::run($user, self::TOUR_KEY);
-        }
-
-        Notification::make()
-            ->title(__('capell-welcome-tour::welcome_tour.restart_tour_notification'))
-            ->success()
-            ->send();
-
-        return null;
     }
 
     public function snoozeWelcomeTour(): null
@@ -165,5 +156,11 @@ class WelcomeTourDashboard extends CapellDashboard
                 ->color('gray')
                 ->action(fn (): null => $this->restartWelcomeTour()),
         ];
+    }
+
+    private function isTourActive(): bool
+    {
+        return config('capell-welcome-tour.presentation_mode', false)
+            || (bool) session()->get('capell_welcome_tour.active', false);
     }
 }

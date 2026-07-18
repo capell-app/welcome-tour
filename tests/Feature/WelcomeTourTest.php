@@ -39,6 +39,7 @@ use Illuminate\Support\HtmlString;
 use Illuminate\View\View;
 
 beforeEach(function (): void {
+    config()->set('capell-welcome-tour.presentation_mode', false);
     $this->actingAsAdmin();
     CapellAdmin::clearWelcomeTourSteps();
     resolve(ContextualWelcomeTourRegistry::class)->clear();
@@ -59,19 +60,37 @@ it('registers the onboarding checklist dashboard widget', function (): void {
         ->toContain(WelcomeTourChecklistFilamentWidget::class);
 });
 
+it('lets users hide the checklist and reveal it again when replaying the tour', function (): void {
+    $user = User::factory()->create();
+    test()->actingAs($user);
+    $widget = new WelcomeTourChecklistFilamentWidget;
+
+    expect($widget->shouldShowChecklist())->toBeTrue();
+
+    $widget->dismissChecklist();
+
+    expect($widget->shouldShowChecklist())->toBeFalse();
+
+    $widget->startTour();
+
+    expect($widget->shouldShowChecklist())->toBeTrue();
+});
+
 it('registers default welcome tour steps from configured translation keys', function (): void {
     resolve(WelcomeTourStepRegistrar::class)->register();
 
     $steps = CapellAdmin::getWelcomeTourSteps();
 
-    expect($steps)->toHaveCount(7)
-        ->and($steps[0]->key)->toBe('capell-welcome-tour.introduction')
-        ->and($steps[1]->element)->toBe('.fi-sidebar-nav')
-        ->and($steps[3]->key)->toBe('capell-welcome-tour.sites')
-        ->and($steps[4]->key)->toBe('capell-welcome-tour.pages')
-        ->and($steps[5]->key)->toBe('capell-welcome-tour.media')
-        ->and(welcomeTourText($steps[0]->title))->toBe('Welcome to Capell')
-        ->and(welcomeTourText($steps[0]->description))->toBe('This quick tour highlights the main admin areas you will use to manage sites and content.');
+    expect($steps)->toHaveCount(6)
+        ->and($steps[0]->key)->toBe('capell-welcome-tour.dashboard')
+        ->and($steps[0]->chapter)->toBe('dashboard')
+        ->and($steps[0]->route)->toBe('/admin')
+        ->and($steps[1]->key)->toBe('capell-welcome-tour.sites')
+        ->and($steps[2]->key)->toBe('capell-welcome-tour.pages')
+        ->and($steps[3]->key)->toBe('capell-welcome-tour.themes')
+        ->and($steps[4]->key)->toBe('capell-welcome-tour.media')
+        ->and($steps[5]->key)->toBe('capell-welcome-tour.publish')
+        ->and(welcomeTourText($steps[0]->title))->toBe('Dashboard');
 });
 
 it('does not fall back to default steps when settings are explicitly empty', function (): void {
@@ -148,8 +167,8 @@ it('accepts literal step titles and filters configured steps by role and first-r
 it('builds the onboarding checklist from configured setup conditions', function (): void {
     $items = BuildWelcomeTourChecklistAction::run();
 
-    expect($items)->toHaveCount(3)
-        ->and($items[0]->key)->toBe('create-site')
+    expect($items)->toHaveCount(4)
+        ->and($items[0]->key)->toBe('create-page')
         ->and($items[0]->complete)->toBeFalse();
 });
 
@@ -251,16 +270,20 @@ it('builds the dashboard welcome tour for users who have it enabled', function (
         title: 'Menu',
         description: 'Use the menu',
         element: '.fi-sidebar-nav',
+        chapter: 'dashboard',
+        route: '/admin',
     );
+
+    session()->put('capell_welcome_tour.active', true);
 
     $tours = (new WelcomeTourDashboard)->tours();
 
     expect($tours)->toHaveCount(1)
-        ->and($tours[0]->getId())->toBe('capell_admin_welcome')
+        ->and($tours[0]->getId())->toBe('capell_admin_welcome.dashboard')
         ->and($tours[0]->getSteps())->toHaveCount(1)
         ->and($tours[0]->getSteps()[0]->getDispatchOnNext())->toBe([
-            'name' => 'capell-welcome-tour::dismiss',
-            'params' => ['stepKey' => 'capell-welcome-tour.menu'],
+            'name' => 'capell-welcome-tour::complete-chapter',
+            'params' => ['chapterKey' => 'dashboard'],
         ]);
 
     Event::assertDispatched(WelcomeTourStarted::class);
@@ -283,7 +306,11 @@ it('reads already registered steps when building the dashboard tour', function (
         title: 'Menu',
         description: 'Use the menu',
         element: '.fi-sidebar-nav',
+        chapter: 'dashboard',
+        route: '/admin',
     );
+
+    session()->put('capell_welcome_tour.active', true);
 
     expect((new WelcomeTourDashboard)->tours())->toHaveCount(1);
 });

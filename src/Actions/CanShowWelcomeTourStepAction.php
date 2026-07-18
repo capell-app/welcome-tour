@@ -28,7 +28,8 @@ final class CanShowWelcomeTourStepAction
         }
 
         return $this->matchesRoles($step, $user)
-            && $this->matchesFirstRunWindow($step, $user);
+            && $this->matchesFirstRunWindow($step, $user)
+            && $this->canAccessResource($step);
     }
 
     /**
@@ -82,6 +83,20 @@ final class CanShowWelcomeTourStepAction
 
         return $createdAt instanceof CarbonInterface
             && $createdAt->greaterThanOrEqualTo(now()->subDays($days));
+    }
+
+    /** @param array<string, mixed> $step */
+    private function canAccessResource(array $step): bool
+    {
+        $resource = $step['resource'] ?? null;
+
+        if (! is_string($resource) || $resource === '') {
+            return true;
+        }
+
+        return class_exists($resource)
+            && method_exists($resource, 'canAccess')
+            && $resource::canAccess();
     }
 
     /**

@@ -36,6 +36,8 @@ final class WelcomeTourStepRegistrar
                 iconColor: $this->nullableStringValue($step, 'icon_color'),
                 sort: $this->integerValue($step, 'sort', 100),
                 visible: fn (): bool => $this->isVisible($step),
+                chapter: $this->nullableStringValue($step, 'chapter') ?? 'dashboard',
+                route: $this->nullableStringValue($step, 'route'),
             );
         }
     }

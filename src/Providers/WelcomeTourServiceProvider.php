@@ -16,11 +16,14 @@ use Capell\WelcomeTour\Filament\Extenders\WelcomeTourPanelExtender;
 use Capell\WelcomeTour\Filament\Pages\WelcomeTourDashboard;
 use Capell\WelcomeTour\Filament\Settings\WelcomeTourSettingsSchema;
 use Capell\WelcomeTour\Filament\Widgets\WelcomeTourChecklistFilamentWidget;
+use Capell\WelcomeTour\Livewire\WelcomeTourOrchestrator;
 use Capell\WelcomeTour\Settings\WelcomeTourSettings;
 use Capell\WelcomeTour\Support\ContextualWelcomeTourRegistry;
 use Capell\WelcomeTour\Support\WelcomeTourStepRegistrar;
 use Capell\WelcomeTour\Support\WelcomeTourUserResourceBridge;
 use Filament\Support\Icons\Heroicon;
+use Livewire\Livewire;
+use Override;
 use Spatie\LaravelPackageTools\Package;
 
 final class WelcomeTourServiceProvider extends AbstractPackageServiceProvider
@@ -50,23 +53,19 @@ final class WelcomeTourServiceProvider extends AbstractPackageServiceProvider
 
     public function registeringPackage(): void
     {
+        parent::registeringPackage();
+
         $this->app->singleton(ContextualWelcomeTourRegistry::class);
-
-        $this->booted(function (): void {
-            if ($this->isDiscoveringPackages()) {
-                return;
-            }
-
-            if (! $this->shouldRegisterRuntime()) {
-                return;
-            }
-
-            $this->bootInstalledPackage();
-        });
     }
 
-    private function bootInstalledPackage(): void
+    #[Override]
+    protected function bootInstalledPackage(): self
     {
+        if (! $this->shouldRegisterRuntime()) {
+            return $this;
+        }
+
+        Livewire::component('capell-welcome-tour.orchestrator', WelcomeTourOrchestrator::class);
         $this->app->tag([WelcomeTourPanelExtender::class], AdminPanelExtender::TAG);
         $this->app->tag([WelcomeTourUserResourceBridge::class], UserResourceBridge::TAG);
 
@@ -86,6 +85,8 @@ final class WelcomeTourServiceProvider extends AbstractPackageServiceProvider
         resolve(ContextualWelcomeTourRegistry::class)->registerConfiguredTours(
             is_array($contextualTours) ? $contextualTours : [],
         );
+
+        return $this;
     }
 
     private function shouldRegisterRuntime(): bool
