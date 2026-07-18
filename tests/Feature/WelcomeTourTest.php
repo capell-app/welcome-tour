@@ -45,6 +45,10 @@ beforeEach(function (): void {
     resolve(ContextualWelcomeTourRegistry::class)->clear();
 });
 
+it('registers its package view namespace', function (): void {
+    expect(view()->exists('capell-welcome-tour::livewire.welcome-tour-orchestrator'))->toBeTrue();
+});
+
 it('uses the package dashboard page and registers the filament tour plugin', function (): void {
     expect(CapellAdmin::getDashboardPage())->toBe(WelcomeTourDashboard::class);
 
