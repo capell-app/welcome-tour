@@ -24,6 +24,7 @@ use Capell\WelcomeTour\Events\WelcomeTourStepCompleted;
 use Capell\WelcomeTour\Filament\Concerns\HasContextualWelcomeTour;
 use Capell\WelcomeTour\Filament\Pages\WelcomeTourDashboard;
 use Capell\WelcomeTour\Filament\Widgets\WelcomeTourChecklistFilamentWidget;
+use Capell\WelcomeTour\Livewire\WelcomeTourOrchestrator;
 use Capell\WelcomeTour\Settings\WelcomeTourSettings;
 use Capell\WelcomeTour\Support\ContextualWelcomeTourRegistry;
 use Capell\WelcomeTour\Support\WelcomeTourStepContributor;
@@ -31,7 +32,9 @@ use Capell\WelcomeTour\Support\WelcomeTourStepRegistrar;
 use Capell\WelcomeTour\Support\WelcomeTourUserResourceBridge;
 use Filament\Panel;
 use Filament\Schemas\Schema;
+use Illuminate\Contracts\Session\Session;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Schema as SchemaFacade;
@@ -46,18 +49,45 @@ beforeEach(function (): void {
 });
 
 it('uses the package dashboard page and registers the filament tour plugin', function (): void {
-    expect(CapellAdmin::getDashboardPage())->toBe(WelcomeTourDashboard::class);
-
     $panel = Panel::make();
 
     CapellAdminPlugin::make()->register($panel);
 
-    expect($panel->hasPlugin('filament-tour'))->toBeTrue();
+    expect(CapellAdmin::getDashboardPage())->not->toBe(WelcomeTourDashboard::class)
+        ->and($panel->getPages())->toContain(WelcomeTourDashboard::class)
+        ->and($panel->hasPlugin('filament-tour'))->toBeTrue();
 });
 
 it('registers the onboarding checklist dashboard widget', function (): void {
     expect(CapellAdmin::getDashboardFilamentWidgets(DashboardEnum::Main))
-        ->toContain(WelcomeTourChecklistFilamentWidget::class);
+        ->toContain(WelcomeTourChecklistFilamentWidget::class)
+        ->and(WelcomeTourChecklistFilamentWidget::canView())->toBeTrue();
+});
+
+it('activates a presentation tour before the renderer resolves its chapters', function (): void {
+    config()->set('capell-welcome-tour.presentation_mode', true);
+
+    $user = User::factory()->create();
+    test()->actingAs($user);
+
+    CapellAdmin::registerWelcomeTourStep(
+        key: 'capell-welcome-tour.dashboard',
+        title: 'Dashboard',
+        description: 'Start here',
+        chapter: 'dashboard',
+        route: '/admin',
+    );
+
+    $request = Request::create('/admin');
+    $session = app('session')->driver();
+    throw_unless($session instanceof Session, RuntimeException::class, 'Expected a Laravel session driver.');
+    $request->setLaravelSession($session);
+    app()->instance('request', $request);
+
+    (new WelcomeTourOrchestrator)->render();
+
+    expect(session()->get('capell_welcome_tour.active'))->toBeTrue()
+        ->and((new WelcomeTourDashboard)->tours())->toHaveCount(1);
 });
 
 it('lets users hide the checklist and reveal it again when replaying the tour', function (): void {

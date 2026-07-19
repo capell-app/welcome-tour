@@ -24,4 +24,8 @@ interface WelcomeTourStateStore
     public function hasAutoStarted(Model $user, string $tourKey): bool;
 
     public function markAutoStarted(Model $user, string $tourKey): void;
+
+    public function setChecklistDismissed(Model $user, bool $dismissed, string $tourKey): void;
+
+    public function setChecklistItemCompleted(Model $user, string $itemKey, bool $completed, string $tourKey): void;
 }

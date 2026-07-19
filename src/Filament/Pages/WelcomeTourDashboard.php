@@ -13,9 +13,11 @@ use Capell\WelcomeTour\Actions\Users\GetUserWelcomeTourStateAction;
 use Capell\WelcomeTour\Actions\Users\RecordWelcomeTourStepAction;
 use Capell\WelcomeTour\Actions\Users\RestartWelcomeTourProgressAction;
 use Capell\WelcomeTour\Actions\Users\SetUserWelcomeTourPreferenceAction;
+use Capell\WelcomeTour\Actions\Users\SetWelcomeTourChecklistVisibilityAction;
 use Capell\WelcomeTour\Actions\Users\SnoozeUserWelcomeTourAction;
 use Capell\WelcomeTour\Events\WelcomeTourCompleted;
 use Capell\WelcomeTour\Events\WelcomeTourStarted;
+use Capell\WelcomeTour\Support\WelcomeTourStateStoreResolver;
 use Capell\WelcomeTour\Support\WelcomeTourStepFactory;
 use Filament\Actions\Action;
 use Filament\Notifications\Notification;
@@ -31,7 +33,11 @@ class WelcomeTourDashboard extends CapellDashboard
 
     private const string TOUR_KEY = 'capell_admin_welcome';
 
+    protected static bool $shouldRegisterNavigation = false;
+
     protected static ?string $slug = 'welcome-tour/welcome-tour-dashboard';
+
+    protected static string $routePath = '/welcome-tour/welcome-tour-dashboard';
 
     /**
      * @return array<int, Tour>
@@ -44,7 +50,7 @@ class WelcomeTourDashboard extends CapellDashboard
             return [];
         }
 
-        if (! $this->isTourActive() || (! (bool) session()->get('capell_welcome_tour.active', false) && CanShowWelcomeTourAction::run($user) !== true)) {
+        if (! $this->isTourActive($user) || CanShowWelcomeTourAction::run($user) !== true) {
             return [];
         }
 
@@ -59,21 +65,17 @@ class WelcomeTourDashboard extends CapellDashboard
 
         event(new WelcomeTourStarted($user, self::TOUR_KEY));
 
-        return array_map(function ($chapter): Tour {
-            $steps = array_map(WelcomeTourStepFactory::make(...), $chapter->steps);
-            $steps[count($steps) - 1]->dispatchOnNext(
-                'capell-welcome-tour::complete-chapter',
-                chapterKey: $chapter->key,
-            );
+        $chapter = $chapters[0];
+        $steps = array_map(WelcomeTourStepFactory::make(...), $chapter->steps);
+        $steps[count($steps) - 1]->dispatchOnNext('capell-welcome-tour::complete-chapter', chapterKey: $chapter->key);
 
-            return Tour::make(self::TOUR_KEY . '.' . $chapter->key)
-                ->route($chapter->route)
-                ->alwaysShow()
-                ->nextButtonLabel(__('capell-admin::button.next'))
-                ->previousButtonLabel(__('capell-admin::button.previous'))
-                ->doneButtonLabel(__('capell-admin::button.done'))
-                ->steps(...$steps);
-        }, $chapters);
+        return [Tour::make(self::TOUR_KEY . '.' . $chapter->key)
+            ->route($chapter->route)
+            ->alwaysShow()
+            ->nextButtonLabel(__('capell-admin::button.next'))
+            ->previousButtonLabel(__('capell-admin::button.previous'))
+            ->doneButtonLabel(__('capell-admin::button.done'))
+            ->steps(...$steps)];
     }
 
     public function restartWelcomeTour(): null
@@ -82,6 +84,7 @@ class WelcomeTourDashboard extends CapellDashboard
 
         if ($user instanceof Model) {
             RestartWelcomeTourProgressAction::run($user, self::TOUR_KEY);
+            SetWelcomeTourChecklistVisibilityAction::run($user, visible: true, tourKey: self::TOUR_KEY);
             session()->put('capell_welcome_tour.active', true);
         }
 
@@ -158,9 +161,28 @@ class WelcomeTourDashboard extends CapellDashboard
         ];
     }
 
-    private function isTourActive(): bool
+    private function isTourActive(Model $user): bool
     {
-        return config('capell-welcome-tour.presentation_mode', false)
-            || (bool) session()->get('capell_welcome_tour.active', false);
+        if ((bool) session()->get('capell_welcome_tour.active', false)) {
+            return true;
+        }
+
+        $dashboardPath = trim(AdminPanelEntrypoint::path(), '/');
+
+        if (! config('capell-welcome-tour.presentation_mode', false)
+            || trim(request()->path(), '/') !== $dashboardPath) {
+            return false;
+        }
+
+        $store = resolve(WelcomeTourStateStoreResolver::class)->resolve();
+
+        if ($store->hasAutoStarted($user, self::TOUR_KEY)) {
+            return false;
+        }
+
+        $store->markAutoStarted($user, self::TOUR_KEY);
+        session()->put('capell_welcome_tour.active', true);
+
+        return true;
     }
 }

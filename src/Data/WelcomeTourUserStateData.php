@@ -11,12 +11,15 @@ final readonly class WelcomeTourUserStateData
 {
     /**
      * @param  list<string>  $completedStepKeys
+     * @param  list<string>  $completedChecklistItemKeys
      */
     public function __construct(
         public array $completedStepKeys,
         public ?string $lastCompletedStepKey,
         public ?CarbonImmutable $snoozedUntil,
         public bool $dismissed,
+        public array $completedChecklistItemKeys = [],
+        public bool $checklistDismissed = false,
     ) {}
 
     /**
@@ -28,7 +31,10 @@ final readonly class WelcomeTourUserStateData
             return new self([], null, null, false);
         }
 
-        $completedStepKeys = json_decode((string) ($row['completed_step_keys'] ?? '[]'), true);
+        $completedStepKeysJson = $row['completed_step_keys'] ?? '[]';
+        $completedChecklistItemKeysJson = $row['completed_checklist_item_keys'] ?? '[]';
+        $completedStepKeys = is_string($completedStepKeysJson) ? json_decode($completedStepKeysJson, true) : [];
+        $completedChecklistItemKeys = is_string($completedChecklistItemKeysJson) ? json_decode($completedChecklistItemKeysJson, true) : [];
 
         return new self(
             completedStepKeys: array_values(collect(is_array($completedStepKeys) ? $completedStepKeys : [])
@@ -41,6 +47,8 @@ final readonly class WelcomeTourUserStateData
                 : null,
             snoozedUntil: self::carbonValue($row['snoozed_until'] ?? null),
             dismissed: ($row['dismissed_at'] ?? null) !== null,
+            completedChecklistItemKeys: self::stringList($completedChecklistItemKeys),
+            checklistDismissed: ($row['checklist_dismissed_at'] ?? null) !== null,
         );
     }
 
@@ -48,6 +56,7 @@ final readonly class WelcomeTourUserStateData
     public static function fromArray(array $state): self
     {
         $completedStepKeys = $state['completed_step_keys'] ?? [];
+        $completedChecklistItemKeys = $state['completed_checklist_item_keys'] ?? [];
 
         return new self(
             completedStepKeys: array_values(collect(is_array($completedStepKeys) ? $completedStepKeys : [])
@@ -60,6 +69,8 @@ final readonly class WelcomeTourUserStateData
                 : null,
             snoozedUntil: self::carbonValue($state['snoozed_until'] ?? null),
             dismissed: ($state['dismissed'] ?? false) === true,
+            completedChecklistItemKeys: self::stringList($completedChecklistItemKeys),
+            checklistDismissed: ($state['checklist_dismissed'] ?? false) === true,
         );
     }
 
@@ -70,6 +81,16 @@ final readonly class WelcomeTourUserStateData
         }
 
         return $this->snoozedUntil->greaterThan($now ?? CarbonImmutable::now());
+    }
+
+    /** @return list<string> */
+    private static function stringList(mixed $values): array
+    {
+        return array_values(collect(is_array($values) ? $values : [])
+            ->filter(fn (mixed $value): bool => is_string($value) && $value !== '')
+            ->unique()
+            ->values()
+            ->all());
     }
 
     private static function carbonValue(mixed $value): ?CarbonImmutable

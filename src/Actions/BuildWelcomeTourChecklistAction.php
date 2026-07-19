@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace Capell\WelcomeTour\Actions;
 
+use Capell\WelcomeTour\Actions\Users\GetUserWelcomeTourStateAction;
 use Capell\WelcomeTour\Data\WelcomeTourChecklistItemData;
 use Capell\WelcomeTour\Support\WelcomeTourSchema;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Lang;
 use Lorisleiva\Actions\Concerns\AsFake;
 use Lorisleiva\Actions\Concerns\AsObject;
+use Throwable;
 
 final class BuildWelcomeTourChecklistAction
 {
@@ -19,7 +22,7 @@ final class BuildWelcomeTourChecklistAction
     /**
      * @return list<WelcomeTourChecklistItemData>
      */
-    public function handle(): array
+    public function handle(?Model $user = null): array
     {
         $items = config('capell-welcome-tour.checklist', []);
 
@@ -30,7 +33,7 @@ final class BuildWelcomeTourChecklistAction
         return array_values(collect($items)
             ->filter(fn (mixed $item): bool => is_array($item))
             ->filter(fn (array $item): bool => $this->isVisible($item))
-            ->map(fn (array $item): WelcomeTourChecklistItemData => $this->itemData($item))
+            ->map(fn (array $item): WelcomeTourChecklistItemData => $this->itemData($item, $user))
             ->values()
             ->all());
     }
@@ -38,42 +41,24 @@ final class BuildWelcomeTourChecklistAction
     /**
      * @param  array<string, mixed>  $item
      */
-    private function itemData(array $item): WelcomeTourChecklistItemData
+    private function itemData(array $item, ?Model $user): WelcomeTourChecklistItemData
     {
+        $key = $this->stringValue($item, 'key');
+        $manuallyCompleted = $user instanceof Model
+            && in_array($key, GetUserWelcomeTourStateAction::run($user)->completedChecklistItemKeys, true);
+
         return new WelcomeTourChecklistItemData(
-            key: $this->stringValue($item, 'key'),
+            key: $key,
             label: $this->translate($this->stringValue($item, 'label')),
             description: $this->translate($this->stringValue($item, 'description')),
-            url: $this->internalAdminUrl($this->nullableStringValue($item, 'url')),
-            complete: $this->isComplete($this->stringValue($item, 'complete_when')),
+            url: ResolveWelcomeTourDestinationAction::run(
+                $this->nullableStringValue($item, 'url'),
+                $this->nullableStringValue($item, 'resource'),
+                $this->nullableStringValue($item, 'resource_page'),
+            ),
+            complete: $manuallyCompleted || $this->isComplete($this->stringValue($item, 'complete_when')),
+            manuallyCompleted: $manuallyCompleted,
         );
-    }
-
-    private function internalAdminUrl(?string $url): ?string
-    {
-        if ($url === null || $url === '' || str_starts_with($url, '//')) {
-            return null;
-        }
-
-        $parts = parse_url($url);
-
-        if ($parts === false) {
-            return null;
-        }
-
-        $host = $parts['host'] ?? null;
-        $appUrl = config('app.url');
-        $appHost = is_string($appUrl) ? parse_url($appUrl, PHP_URL_HOST) : null;
-
-        if ($host !== null && (! is_string($host) || ! is_string($appHost) || strcasecmp($host, $appHost) !== 0)) {
-            return null;
-        }
-
-        $path = '/' . ltrim((string) ($parts['path'] ?? ''), '/');
-        $configuredAdminPath = config('filament.panels.admin.path', 'admin');
-        $adminPath = '/' . trim(is_string($configuredAdminPath) ? $configuredAdminPath : 'admin', '/');
-
-        return $path === $adminPath || str_starts_with($path, $adminPath . '/') ? $url : null;
     }
 
     private function isComplete(string $condition): bool
@@ -90,7 +75,13 @@ final class BuildWelcomeTourChecklistAction
                 && DB::table($value)->exists(),
             'table-exists' => $value !== '' && WelcomeTourSchema::hasTable($value),
             'non-default-theme' => WelcomeTourSchema::hasTable('themes')
-                && DB::table('themes')->where('default', false)->where('status', true)->exists(),
+                && WelcomeTourSchema::hasTable('sites')
+                && WelcomeTourSchema::hasColumn('sites', 'theme_id')
+                && DB::table('sites')
+                    ->join('themes', 'themes.id', '=', 'sites.theme_id')
+                    ->where('themes.default', false)
+                    ->where('themes.status', true)
+                    ->exists(),
             default => false,
         };
     }
@@ -104,9 +95,13 @@ final class BuildWelcomeTourChecklistAction
             return true;
         }
 
-        return class_exists($resource)
-            && method_exists($resource, 'canAccess')
-            && $resource::canAccess();
+        try {
+            return class_exists($resource)
+                && method_exists($resource, 'canAccess')
+                && $resource::canAccess();
+        } catch (Throwable) {
+            return false;
+        }
     }
 
     /**

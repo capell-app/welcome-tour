@@ -18,6 +18,13 @@ final class WelcomeTourSchema
         return self::hasTable('welcome_tour_user_states');
     }
 
+    public static function hasChecklistStateColumns(): bool
+    {
+        return self::hasUserStateTable()
+            && self::hasColumn('welcome_tour_user_states', 'completed_checklist_item_keys')
+            && self::hasColumn('welcome_tour_user_states', 'checklist_dismissed_at');
+    }
+
     public static function hasTable(string $table): bool
     {
         return resolve(RuntimeSchemaState::class)->hasTable($table);

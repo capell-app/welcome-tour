@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Capell\WelcomeTour\Health;
 
-use Capell\Admin\Facades\CapellAdmin;
 use Capell\Core\Contracts\Extensions\ChecksExtensionHealth;
 use Capell\Core\Data\Diagnostics\DoctorCheckResultData;
 use Capell\Core\Support\Settings\SettingsSchemaRegistry;
@@ -13,6 +12,7 @@ use Capell\WelcomeTour\Filament\Pages\WelcomeTourDashboard;
 use Capell\WelcomeTour\Filament\Settings\WelcomeTourSettingsSchema;
 use Capell\WelcomeTour\Settings\WelcomeTourSettings;
 use Capell\WelcomeTour\Support\WelcomeTourSchema;
+use Filament\Panel;
 use Illuminate\Support\Collection;
 use JibayMcs\FilamentTour\FilamentTourPlugin;
 use Throwable;
@@ -66,7 +66,7 @@ final class WelcomeTourHealthCheck implements ChecksExtensionHealth
     }
 
     /**
-     * Asserts the package dashboard surface has replaced the default admin dashboard.
+     * Asserts the hidden tour renderer page can be registered with the admin panel.
      */
     public function dashboardSurfaceCheck(): DoctorCheckResultData
     {
@@ -76,8 +76,8 @@ final class WelcomeTourHealthCheck implements ChecksExtensionHealth
             label: 'Welcome Tour dashboard surface',
             passed: $registered,
             message: $registered
-                ? 'The Welcome Tour dashboard page is registered as the Capell Admin dashboard.'
-                : 'The Welcome Tour dashboard page is not registered as the Capell Admin dashboard.',
+                ? 'The Welcome Tour renderer page is registered with the admin panel.'
+                : 'The Welcome Tour renderer page is not registered with the admin panel.',
             remediation: $registered
                 ? null
                 : 'Ensure WelcomeTourServiceProvider registers the installed package runtime.',
@@ -127,7 +127,10 @@ final class WelcomeTourHealthCheck implements ChecksExtensionHealth
     public function isDashboardRegistered(): bool
     {
         try {
-            return CapellAdmin::getDashboardPage() === WelcomeTourDashboard::class;
+            $panel = Panel::make()->id('welcome-tour-health');
+            resolve(WelcomeTourPanelExtender::class)->extend($panel);
+
+            return in_array(WelcomeTourDashboard::class, $panel->getPages(), true);
         } catch (Throwable) {
             return false;
         }

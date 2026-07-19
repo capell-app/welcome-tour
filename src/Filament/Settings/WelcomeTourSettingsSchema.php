@@ -50,6 +50,12 @@ class WelcomeTourSettingsSchema implements HasSchema
                                         TextInput::make('description')
                                             ->label(__('capell-welcome-tour::welcome_tour.step_description'))
                                             ->required(),
+                                        TextInput::make('chapter')
+                                            ->label(__('capell-welcome-tour::welcome_tour.step_chapter'))
+                                            ->required(),
+                                        TextInput::make('route')
+                                            ->label(__('capell-welcome-tour::welcome_tour.step_route'))
+                                            ->nullable(),
                                         TextInput::make('element')
                                             ->label(__('capell-welcome-tour::welcome_tour.step_element'))
                                             ->nullable(),

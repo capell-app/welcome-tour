@@ -10,6 +10,7 @@ use Capell\WelcomeTour\Actions\ResolveWelcomeTourChaptersAction;
 use Capell\WelcomeTour\Actions\Users\GetUserWelcomeTourStateAction;
 use Capell\WelcomeTour\Actions\Users\RecordWelcomeTourStepAction;
 use Capell\WelcomeTour\Actions\Users\SetUserWelcomeTourPreferenceAction;
+use Capell\WelcomeTour\Events\WelcomeTourCompleted;
 use Capell\WelcomeTour\Support\WelcomeTourStateStoreResolver;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Model;
@@ -51,6 +52,7 @@ final class WelcomeTourOrchestrator extends Component
         if ($remaining === []) {
             SetUserWelcomeTourPreferenceAction::run($user, enabled: false, tourKey: self::TOUR_KEY);
             session()->forget('capell_welcome_tour.active');
+            event(new WelcomeTourCompleted($user, self::TOUR_KEY));
 
             return;
         }
@@ -83,6 +85,7 @@ final class WelcomeTourOrchestrator extends Component
 
             if ($autoStart) {
                 $store->markAutoStarted($user, self::TOUR_KEY);
+                session()->put('capell_welcome_tour.active', true);
             }
         }
 

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Capell\WelcomeTour\Filament\Extenders;
 
 use Capell\Admin\Contracts\Extenders\AdminPanelExtender;
+use Capell\WelcomeTour\Filament\Pages\WelcomeTourDashboard;
 use Filament\Panel;
 use Filament\View\PanelsRenderHook;
 use Illuminate\Support\Facades\Blade;
@@ -14,15 +15,15 @@ final class WelcomeTourPanelExtender implements AdminPanelExtender
 {
     public function extend(Panel $panel): void
     {
-        if ($panel->hasPlugin('filament-tour')) {
-            return;
+        $panel->pages([WelcomeTourDashboard::class]);
+
+        if (! $panel->hasPlugin('filament-tour')) {
+            $panel->plugin(FilamentTourPlugin::make()->onlyVisibleOnce(false));
         }
 
-        $panel
-            ->plugin(FilamentTourPlugin::make()->onlyVisibleOnce(false))
-            ->renderHook(
-                PanelsRenderHook::BODY_START,
-                fn (): string => Blade::render("@livewire('capell-welcome-tour.orchestrator')"),
-            );
+        $panel->renderHook(
+            PanelsRenderHook::BODY_START,
+            fn (): string => Blade::render("@livewire('capell-welcome-tour.orchestrator')"),
+        );
     }
 }

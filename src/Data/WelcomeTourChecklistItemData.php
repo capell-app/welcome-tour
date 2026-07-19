@@ -12,5 +12,6 @@ final readonly class WelcomeTourChecklistItemData
         public string $description,
         public ?string $url,
         public bool $complete,
+        public bool $manuallyCompleted = false,
     ) {}
 }

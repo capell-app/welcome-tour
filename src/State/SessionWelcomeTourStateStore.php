@@ -89,6 +89,29 @@ final class SessionWelcomeTourStateStore implements WelcomeTourStateStore
         $this->put($tourKey, [...$this->arrayState($tourKey), 'auto_started' => true]);
     }
 
+    public function setChecklistDismissed(Model $user, bool $dismissed, string $tourKey): void
+    {
+        $this->put($tourKey, [...$this->arrayState($tourKey), 'checklist_dismissed' => $dismissed]);
+    }
+
+    public function setChecklistItemCompleted(Model $user, string $itemKey, bool $completed, string $tourKey): void
+    {
+        if ($itemKey === '') {
+            return;
+        }
+
+        $state = $this->arrayState($tourKey);
+        $storedKeys = $state['completed_checklist_item_keys'] ?? [];
+        $keys = collect(is_array($storedKeys) ? $storedKeys : [])
+            ->filter(fn (mixed $key): bool => is_string($key) && $key !== '')
+            ->when($completed, fn ($keys) => $keys->push($itemKey), fn ($keys) => $keys->reject(fn (string $key): bool => $key === $itemKey))
+            ->unique()
+            ->values()
+            ->all();
+
+        $this->put($tourKey, [...$state, 'completed_checklist_item_keys' => $keys]);
+    }
+
     /** @return array<string, mixed> */
     private function arrayState(string $tourKey): array
     {

@@ -13,7 +13,6 @@ use Capell\Core\Facades\CapellCore;
 use Capell\Core\Support\Packages\AbstractPackageServiceProvider;
 use Capell\Core\Support\Settings\SettingsGroupMetadata;
 use Capell\WelcomeTour\Filament\Extenders\WelcomeTourPanelExtender;
-use Capell\WelcomeTour\Filament\Pages\WelcomeTourDashboard;
 use Capell\WelcomeTour\Filament\Settings\WelcomeTourSettingsSchema;
 use Capell\WelcomeTour\Filament\Widgets\WelcomeTourChecklistFilamentWidget;
 use Capell\WelcomeTour\Livewire\WelcomeTourOrchestrator;
@@ -21,6 +20,7 @@ use Capell\WelcomeTour\Settings\WelcomeTourSettings;
 use Capell\WelcomeTour\Support\ContextualWelcomeTourRegistry;
 use Capell\WelcomeTour\Support\WelcomeTourStepRegistrar;
 use Capell\WelcomeTour\Support\WelcomeTourUserResourceBridge;
+use Filament\Facades\Filament;
 use Filament\Support\Icons\Heroicon;
 use Livewire\Livewire;
 use Override;
@@ -39,6 +39,7 @@ final class WelcomeTourServiceProvider extends AbstractPackageServiceProvider
     {
         return [
             '2026_05_10_190836_01_add_welcome_tour_settings',
+            '2026_07_19_000001_upgrade_welcome_tour_chapter_steps',
         ];
     }
 
@@ -47,8 +48,12 @@ final class WelcomeTourServiceProvider extends AbstractPackageServiceProvider
         $package
             ->name(self::$name)
             ->hasConfigFile()
-            ->hasMigration('2026_06_04_000001_create_welcome_tour_user_states_table')
-            ->hasTranslations();
+            ->hasMigrations([
+                '2026_06_04_000001_create_welcome_tour_user_states_table',
+                '2026_07_19_000001_add_checklist_state_to_welcome_tour_user_states_table',
+            ])
+            ->hasTranslations()
+            ->hasViews();
     }
 
     public function registeringPackage(): void
@@ -69,7 +74,6 @@ final class WelcomeTourServiceProvider extends AbstractPackageServiceProvider
         $this->app->tag([WelcomeTourPanelExtender::class], AdminPanelExtender::TAG);
         $this->app->tag([WelcomeTourUserResourceBridge::class], UserResourceBridge::TAG);
 
-        CapellAdmin::useDashboardPage(WelcomeTourDashboard::class);
         CapellAdmin::registerDashboardFilamentWidget(WelcomeTourChecklistFilamentWidget::class, DashboardEnum::Main);
         CapellAdmin::registerExtensionManagementSurface(ExtensionManagementSurfaceData::settings(
             packageName: self::$packageName,
@@ -79,7 +83,8 @@ final class WelcomeTourServiceProvider extends AbstractPackageServiceProvider
         ));
 
         $this->registerSettings();
-        resolve(WelcomeTourStepRegistrar::class)->register();
+        $this->app->booted(fn () => resolve(WelcomeTourStepRegistrar::class)->register());
+        Filament::serving(fn () => resolve(WelcomeTourStepRegistrar::class)->register());
         $contextualTours = config('capell-welcome-tour.contextual_tours', []);
 
         resolve(ContextualWelcomeTourRegistry::class)->registerConfiguredTours(
