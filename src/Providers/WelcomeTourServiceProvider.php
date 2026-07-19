@@ -48,7 +48,6 @@ final class WelcomeTourServiceProvider extends AbstractPackageServiceProvider
             ->name(self::$name)
             ->hasConfigFile()
             ->hasMigration('2026_06_04_000001_create_welcome_tour_user_states_table')
-            ->hasViews()
             ->hasTranslations();
     }
 
