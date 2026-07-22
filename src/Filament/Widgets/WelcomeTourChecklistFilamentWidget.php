@@ -6,7 +6,6 @@ namespace Capell\WelcomeTour\Filament\Widgets;
 
 use Capell\Admin\Contracts\CapellFilamentWidgetContract;
 use Capell\Admin\Filament\Concerns\GatedByRoleAndSettings;
-use Capell\Admin\Support\AdminPanelEntrypoint;
 use Capell\Core\Contracts\Extensions\RegistersExtensionFilamentWidget;
 use Capell\WelcomeTour\Actions\BuildWelcomeTourChecklistAction;
 use Capell\WelcomeTour\Actions\Users\CanShowWelcomeTourAction;
@@ -68,7 +67,6 @@ final class WelcomeTourChecklistFilamentWidget extends Widget implements CapellF
         return ! config('capell-welcome-tour.presentation_mode', false)
             && $user instanceof Model
             && ! (bool) session()->get('capell_welcome_tour.active', false)
-            && WelcomeTourSchema::hasUserStateTable()
             && WelcomeTourSchema::hasTable('sites')
             && DB::table('sites')->exists()
             && CanShowWelcomeTourAction::run($user);
@@ -84,26 +82,40 @@ final class WelcomeTourChecklistFilamentWidget extends Widget implements CapellF
         }
 
         session()->put('capell_welcome_tour.active', true);
-        $this->redirect('/' . trim(AdminPanelEntrypoint::path(), '/'));
+        session()->put('capell_welcome_tour.show_checklist', true);
+        $this->redirect(request()->url());
     }
 
     public function shouldShowChecklist(): bool
     {
+        if ((bool) session()->get('capell_welcome_tour.show_checklist', false)) {
+            return true;
+        }
+
         $user = auth()->user();
 
-        return ! $user instanceof Model || ! GetUserWelcomeTourStateAction::run($user)->checklistDismissed;
+        if (! $user instanceof Model) {
+            return ! (bool) session()->get('capell_welcome_tour.checklist_dismissed', false);
+        }
+
+        return ! GetUserWelcomeTourStateAction::run($user)->checklistDismissed;
     }
 
     public function dismissChecklist(): void
     {
+        session()->forget('capell_welcome_tour.show_checklist');
         $user = auth()->user();
 
         if ($user instanceof Model) {
             SetWelcomeTourChecklistVisibilityAction::run($user, visible: false);
+
+            return;
         }
+
+        session()->put('capell_welcome_tour.checklist_dismissed', true);
     }
 
-    public function toggleChecklistItem(string $itemKey): void
+    public function setChecklistItemCompletion(string $itemKey, bool $completed): void
     {
         $user = auth()->user();
 
@@ -111,13 +123,7 @@ final class WelcomeTourChecklistFilamentWidget extends Widget implements CapellF
             return;
         }
 
-        $item = collect($this->items())->firstWhere('key', $itemKey);
-
-        if (! $item instanceof WelcomeTourChecklistItemData) {
-            return;
-        }
-
-        SetWelcomeTourChecklistItemCompletionAction::run($user, $itemKey, completed: ! $item->manuallyCompleted);
+        SetWelcomeTourChecklistItemCompletionAction::run($user, $itemKey, $completed);
         unset($this->items);
     }
 

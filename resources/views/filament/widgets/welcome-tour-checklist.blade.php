@@ -10,14 +10,12 @@
 
             <div class="flex flex-wrap gap-3">
                 <x-filament::button
-                    type="button"
                     wire:click="startTour"
                     icon="heroicon-o-play"
                 >
                     {{ __('capell-welcome-tour::welcome_tour.take_tour') }}
                 </x-filament::button>
                 <x-filament::button
-                    type="button"
                     wire:click="dismissTourCallout"
                     color="gray"
                 >
@@ -80,8 +78,8 @@
                             @if (! $item->complete || $item->manuallyCompleted)
                                 <button
                                     type="button"
-                                    wire:click="toggleChecklistItem(@js($item->key))"
-                                    class="text-primary-600 hover:text-primary-500 dark:text-primary-400 mt-2 inline-flex text-sm font-medium"
+                                    wire:click="setChecklistItemCompletion(@js($item->key), {{ $item->manuallyCompleted ? 'false' : 'true' }})"
+                                    class="text-primary-600 hover:text-primary-500 dark:text-primary-400 mt-2 block text-sm font-medium"
                                 >
                                     {{ __($item->manuallyCompleted ? 'capell-welcome-tour::welcome_tour.checklist_mark_incomplete' : 'capell-welcome-tour::welcome_tour.checklist_mark_complete') }}
                                 </button>
@@ -93,7 +91,6 @@
 
             <div class="mt-4 flex flex-wrap gap-3">
                 <x-filament::button
-                    type="button"
                     wire:click="startTour"
                     color="gray"
                     icon="heroicon-o-arrow-path"
@@ -101,7 +98,6 @@
                     {{ __('capell-welcome-tour::welcome_tour.restart_tour') }}
                 </x-filament::button>
                 <x-filament::button
-                    type="button"
                     wire:click="dismissChecklist"
                     color="gray"
                 >

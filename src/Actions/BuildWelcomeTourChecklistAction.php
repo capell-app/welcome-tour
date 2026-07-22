@@ -12,7 +12,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Lang;
 use Lorisleiva\Actions\Concerns\AsFake;
 use Lorisleiva\Actions\Concerns\AsObject;
-use Throwable;
 
 final class BuildWelcomeTourChecklistAction
 {
@@ -75,13 +74,7 @@ final class BuildWelcomeTourChecklistAction
                 && DB::table($value)->exists(),
             'table-exists' => $value !== '' && WelcomeTourSchema::hasTable($value),
             'non-default-theme' => WelcomeTourSchema::hasTable('themes')
-                && WelcomeTourSchema::hasTable('sites')
-                && WelcomeTourSchema::hasColumn('sites', 'theme_id')
-                && DB::table('sites')
-                    ->join('themes', 'themes.id', '=', 'sites.theme_id')
-                    ->where('themes.default', false)
-                    ->where('themes.status', true)
-                    ->exists(),
+                && DB::table('themes')->where('default', false)->where('status', true)->exists(),
             default => false,
         };
     }
@@ -95,13 +88,9 @@ final class BuildWelcomeTourChecklistAction
             return true;
         }
 
-        try {
-            return class_exists($resource)
-                && method_exists($resource, 'canAccess')
-                && $resource::canAccess();
-        } catch (Throwable) {
-            return false;
-        }
+        return class_exists($resource)
+            && method_exists($resource, 'canAccess')
+            && $resource::canAccess();
     }
 
     /**

@@ -12,6 +12,7 @@ use Capell\WelcomeTour\Support\WelcomeTourSchema;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Auth\User as AuthenticatableUser;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 
@@ -92,6 +93,50 @@ final class DatabaseWelcomeTourStateStore implements WelcomeTourStateStore
         ]);
     }
 
+    public function setChecklistItemCompleted(Model $user, string $itemKey, bool $completed, string $tourKey): void
+    {
+        if ($itemKey === '' || ! WelcomeTourSchema::hasChecklistStateColumns()) {
+            return;
+        }
+
+        DB::transaction(function () use ($user, $itemKey, $completed, $tourKey): void {
+            $now = Date::now();
+            $existing = $this->query($user, $tourKey)->lockForUpdate()->first();
+            $decodedItemKeys = json_decode((string) ($existing->completed_checklist_item_keys ?? '[]'), true);
+            $completedItemKeys = collect(is_array($decodedItemKeys) ? $decodedItemKeys : [])
+                ->filter(fn (mixed $key): bool => is_string($key) && $key !== '')
+                ->when(
+                    $completed,
+                    fn (Collection $keys): Collection => $keys->push($itemKey),
+                    fn (Collection $keys): Collection => $keys->reject(fn (string $key): bool => $key === $itemKey),
+                )
+                ->unique()
+                ->values()
+                ->all();
+
+            DB::table('welcome_tour_user_states')->updateOrInsert(
+                $this->identity($user, $tourKey),
+                [
+                    'completed_checklist_item_keys' => json_encode($completedItemKeys, JSON_THROW_ON_ERROR),
+                    'updated_at' => $now,
+                    'created_at' => $existing->created_at ?? $now,
+                ],
+            );
+        });
+    }
+
+    public function setChecklistDismissed(Model $user, bool $dismissed, string $tourKey): void
+    {
+        if (! WelcomeTourSchema::hasChecklistStateColumns()) {
+            return;
+        }
+
+        DB::table('welcome_tour_user_states')->updateOrInsert($this->identity($user, $tourKey), [
+            'checklist_dismissed_at' => $dismissed ? Date::now() : null,
+            'updated_at' => Date::now(),
+        ]);
+    }
+
     public function dismiss(Model $user, string $tourKey): void
     {
         if ($user instanceof AuthenticatableUser && WelcomeTourSchema::hasDismissedHintsColumn($user->getTable())) {
@@ -127,43 +172,6 @@ final class DatabaseWelcomeTourStateStore implements WelcomeTourStateStore
     }
 
     public function markAutoStarted(Model $user, string $tourKey): void {}
-
-    public function setChecklistDismissed(Model $user, bool $dismissed, string $tourKey): void
-    {
-        if (! WelcomeTourSchema::hasChecklistStateColumns()) {
-            return;
-        }
-
-        DB::table('welcome_tour_user_states')->updateOrInsert($this->identity($user, $tourKey), [
-            'checklist_dismissed_at' => $dismissed ? Date::now() : null,
-            'updated_at' => Date::now(),
-        ]);
-    }
-
-    public function setChecklistItemCompleted(Model $user, string $itemKey, bool $completed, string $tourKey): void
-    {
-        if ($itemKey === '' || ! WelcomeTourSchema::hasChecklistStateColumns()) {
-            return;
-        }
-
-        DB::transaction(function () use ($user, $itemKey, $completed, $tourKey): void {
-            $existing = $this->query($user, $tourKey)->lockForUpdate()->first();
-            $decoded = json_decode((string) ($existing->completed_checklist_item_keys ?? '[]'), true);
-            $keys = collect(is_array($decoded) ? $decoded : [])
-                ->filter(fn (mixed $key): bool => is_string($key) && $key !== '')
-                ->when($completed, fn ($keys) => $keys->push($itemKey), fn ($keys) => $keys->reject(fn (string $key): bool => $key === $itemKey))
-                ->unique()
-                ->values()
-                ->all();
-            $now = Date::now();
-
-            DB::table('welcome_tour_user_states')->updateOrInsert($this->identity($user, $tourKey), [
-                'completed_checklist_item_keys' => json_encode($keys, JSON_THROW_ON_ERROR),
-                'updated_at' => $now,
-                'created_at' => $existing->created_at ?? $now,
-            ]);
-        });
-    }
 
     /** @return array{user_type: string, user_id: mixed, tour_key: string} */
     private function identity(Model $user, string $tourKey): array

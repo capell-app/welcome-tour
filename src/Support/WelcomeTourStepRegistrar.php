@@ -6,7 +6,6 @@ namespace Capell\WelcomeTour\Support;
 
 use Capell\Admin\Facades\CapellAdmin;
 use Capell\WelcomeTour\Actions\CanShowWelcomeTourStepAction;
-use Capell\WelcomeTour\Actions\ResolveWelcomeTourDestinationAction;
 use Capell\WelcomeTour\Actions\ResolveWelcomeTourEnabledAction;
 use Capell\WelcomeTour\Settings\WelcomeTourSettings;
 use Illuminate\Database\Eloquent\Model;
@@ -41,11 +40,7 @@ final class WelcomeTourStepRegistrar
                 sort: $this->integerValue($step, 'sort', 100),
                 visible: fn (): bool => $this->isVisible($step),
                 chapter: $this->nullableStringValue($step, 'chapter') ?? 'dashboard',
-                route: ResolveWelcomeTourDestinationAction::run(
-                    $route ?? ($resource === null ? '@dashboard' : null),
-                    $resource,
-                    $this->nullableStringValue($step, 'resource_page'),
-                ),
+                route: $this->nullableStringValue($step, 'route'),
             );
         }
     }

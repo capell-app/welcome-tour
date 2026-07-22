@@ -21,9 +21,11 @@ final class WelcomeTourPanelExtender implements AdminPanelExtender
             $panel->plugin(FilamentTourPlugin::make()->onlyVisibleOnce(false));
         }
 
-        $panel->renderHook(
-            PanelsRenderHook::BODY_START,
-            fn (): string => Blade::render("@livewire('capell-welcome-tour.orchestrator')"),
-        );
+        $panel
+            ->plugin(FilamentTourPlugin::make()->onlyVisibleOnce(false))
+            ->renderHook(
+                PanelsRenderHook::BODY_START,
+                fn (): string => Blade::render("@livewire('capell-welcome-tour.orchestrator')"),
+            );
     }
 }

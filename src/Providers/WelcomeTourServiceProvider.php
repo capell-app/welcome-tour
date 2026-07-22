@@ -48,12 +48,9 @@ final class WelcomeTourServiceProvider extends AbstractPackageServiceProvider
         $package
             ->name(self::$name)
             ->hasConfigFile()
-            ->hasMigrations([
-                '2026_06_04_000001_create_welcome_tour_user_states_table',
-                '2026_07_19_000001_add_checklist_state_to_welcome_tour_user_states_table',
-            ])
-            ->hasTranslations()
-            ->hasViews();
+            ->hasMigration('2026_06_04_000001_create_welcome_tour_user_states_table')
+            ->hasViews()
+            ->hasTranslations();
     }
 
     public function registeringPackage(): void

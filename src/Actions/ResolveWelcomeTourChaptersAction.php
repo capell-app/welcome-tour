@@ -22,27 +22,10 @@ final class ResolveWelcomeTourChaptersAction
     public function handle(array $steps, WelcomeTourUserStateData $state): array
     {
         return array_values(collect($steps)
-            ->map(function (WelcomeTourStepData $step): ?WelcomeTourStepData {
-                $route = ResolveWelcomeTourDestinationAction::run($step->route);
-
-                if (! is_string($step->chapter) || $step->chapter === '' || $route === null) {
-                    return null;
-                }
-
-                return new WelcomeTourStepData(
-                    key: $step->key,
-                    title: $step->title,
-                    description: $step->description,
-                    element: $step->element,
-                    icon: $step->icon,
-                    iconColor: $step->iconColor,
-                    sort: $step->sort,
-                    visible: $step->visible,
-                    chapter: $step->chapter,
-                    route: $route,
-                );
-            })
-            ->filter()
+            ->filter(fn (WelcomeTourStepData $step): bool => is_string($step->chapter)
+                && $step->chapter !== ''
+                && is_string($step->route)
+                && $step->route !== '')
             ->groupBy(fn (WelcomeTourStepData $step): string => (string) $step->chapter)
             ->map(function ($chapterSteps, string $chapterKey): WelcomeTourChapterData {
                 /** @var list<WelcomeTourStepData> $orderedSteps */

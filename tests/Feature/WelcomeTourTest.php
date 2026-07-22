@@ -15,7 +15,9 @@ use Capell\WelcomeTour\Actions\Users\RecordWelcomeTourStepAction;
 use Capell\WelcomeTour\Actions\Users\ResetUserWelcomeTourAction;
 use Capell\WelcomeTour\Actions\Users\ResolveWelcomeTourStepsForUserAction;
 use Capell\WelcomeTour\Actions\Users\SetUserWelcomeTourPreferenceAction;
+use Capell\WelcomeTour\Actions\Users\SetWelcomeTourChecklistItemCompletionAction;
 use Capell\WelcomeTour\Actions\Users\SnoozeUserWelcomeTourAction;
+use Capell\WelcomeTour\Data\WelcomeTourChecklistItemData;
 use Capell\WelcomeTour\Events\WelcomeTourCompleted;
 use Capell\WelcomeTour\Events\WelcomeTourRestarted;
 use Capell\WelcomeTour\Events\WelcomeTourSnoozed;
@@ -46,6 +48,10 @@ beforeEach(function (): void {
     $this->actingAsAdmin();
     CapellAdmin::clearWelcomeTourSteps();
     resolve(ContextualWelcomeTourRegistry::class)->clear();
+});
+
+it('registers its package view namespace', function (): void {
+    expect(view()->exists('capell-welcome-tour::livewire.welcome-tour-orchestrator'))->toBeTrue();
 });
 
 it('uses the package dashboard page and registers the filament tour plugin', function (): void {
@@ -200,6 +206,20 @@ it('builds the onboarding checklist from configured setup conditions', function 
     expect($items)->toHaveCount(4)
         ->and($items[0]->key)->toBe('create-page')
         ->and($items[0]->complete)->toBeFalse();
+});
+
+it("includes a user's manually completed checklist items", function (): void {
+    $user = auth()->user();
+    throw_unless($user instanceof User, RuntimeException::class, 'Expected an authenticated test user.');
+
+    SetWelcomeTourChecklistItemCompletionAction::run($user, 'create-page', true);
+
+    $pageItem = collect(BuildWelcomeTourChecklistAction::run($user))
+        ->firstWhere('key', 'create-page');
+    throw_unless($pageItem instanceof WelcomeTourChecklistItemData, RuntimeException::class, 'Expected the create-page checklist item.');
+
+    expect($pageItem->complete)->toBeTrue()
+        ->and($pageItem->manuallyCompleted)->toBeTrue();
 });
 
 it('registers configured contextual tours for pages, media, and sites', function (): void {
