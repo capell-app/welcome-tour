@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Capell\WelcomeTour\Settings;
 
-use Capell\Admin\Contracts\SettingsSchemaContract;
 use Capell\Core\Contracts\SettingsContract;
+use Capell\Core\Contracts\SettingsSchemaContract;
 use Capell\WelcomeTour\Filament\Settings\WelcomeTourSettingsSchema;
 use Spatie\LaravelSettings\Settings;
 

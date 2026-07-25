@@ -6,6 +6,7 @@ namespace Capell\WelcomeTour\Support;
 
 use Capell\Admin\Facades\CapellAdmin;
 use Capell\WelcomeTour\Actions\CanShowWelcomeTourStepAction;
+use Capell\WelcomeTour\Actions\ResolveWelcomeTourDestinationAction;
 use Capell\WelcomeTour\Actions\ResolveWelcomeTourEnabledAction;
 use Capell\WelcomeTour\Settings\WelcomeTourSettings;
 use Illuminate\Database\Eloquent\Model;
@@ -27,8 +28,15 @@ final class WelcomeTourStepRegistrar
                 continue;
             }
 
-            $resource = $this->nullableStringValue($step, 'resource');
-            $route = $this->nullableStringValue($step, 'route');
+            $route = ResolveWelcomeTourDestinationAction::run(
+                $this->nullableStringValue($step, 'route') ?? '@dashboard',
+                $this->nullableStringValue($step, 'resource'),
+                $this->nullableStringValue($step, 'resource_page'),
+            );
+
+            if ($route === null) {
+                continue;
+            }
 
             CapellAdmin::registerWelcomeTourStep(
                 key: $key,
@@ -40,7 +48,7 @@ final class WelcomeTourStepRegistrar
                 sort: $this->integerValue($step, 'sort', 100),
                 visible: fn (): bool => $this->isVisible($step),
                 chapter: $this->nullableStringValue($step, 'chapter') ?? 'dashboard',
-                route: $this->nullableStringValue($step, 'route'),
+                route: $route,
             );
         }
     }
@@ -50,15 +58,21 @@ final class WelcomeTourStepRegistrar
      */
     private function steps(): array
     {
+        $settingsSteps = [];
+
         try {
-            return $this->normalizeSteps(resolve(WelcomeTourSettings::class)->steps);
+            $settingsSteps = $this->normalizeSteps(resolve(WelcomeTourSettings::class)->steps);
         } catch (Throwable) {
-            //
+            $configuredSteps = config('capell-welcome-tour.steps', []);
+            $settingsSteps = is_array($configuredSteps) ? $this->normalizeSteps($configuredSteps) : [];
         }
 
-        $configuredSteps = config('capell-welcome-tour.steps', []);
+        $manifestSteps = config('capell-welcome-tour.manifest_steps', []);
+        $manifestSteps = is_array($manifestSteps) ? $this->normalizeSteps($manifestSteps) : [];
 
-        return is_array($configuredSteps) ? $this->normalizeSteps($configuredSteps) : [];
+        return array_values(collect([...$settingsSteps, ...$manifestSteps])
+            ->keyBy(fn (array $step): string => $this->stringValue($step, 'key'))
+            ->all());
     }
 
     /**

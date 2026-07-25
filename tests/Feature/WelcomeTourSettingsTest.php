@@ -46,10 +46,11 @@ it('stores configurable tour steps with translation keys', function (): void {
         ->and($fresh->steps[0]['title'])->toBe('capell-welcome-tour::welcome_tour.introduction_title');
 });
 
-it('seeds default settings from package configuration', function (): void {
+it('ships without application-specific tour content', function (): void {
     $settings = WelcomeTourSettings::instance();
 
     expect($settings->enabled)->toBeTrue()
-        ->and($settings->steps)->toHaveCount(6)
-        ->and($settings->steps[0]['key'])->toBe('capell-welcome-tour.dashboard');
+        ->and($settings->steps)->toBe([])
+        ->and(config('capell-welcome-tour.manifest_steps'))->toBe([])
+        ->and(config('capell-welcome-tour.checklist'))->toBe([]);
 });

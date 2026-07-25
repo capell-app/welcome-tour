@@ -7,18 +7,21 @@
     "entries": [
         {
             "id": "welcome-tour-dashboard",
-            "title": "Admin dashboard rendered through WelcomeTourDashboard.",
+            "title": "Illustrative admin dashboard rendered through welcometourdashboard preview.",
             "package": "welcome-tour",
-            "surface": "admin",
-            "targetType": "admin-route",
-            "target": "/admin",
+            "surface": "frontend",
+            "targetType": "frontend-url",
+            "target": "/screenshot-fixtures/catalogue/welcome-tour/welcome-tour-dashboard",
             "required": true,
-            "notes": "Capture after installing only the core Capell stack and capell-app/welcome-tour, with capell-app/login-audit and its direct authentication-log dependency removed from the disposable harness.",
+            "notes": "Illustrative deterministic catalogue fixture, not a live package UI capture. Capture after installing only the core Capell stack and capell-app/welcome-tour, with capell-app/login-audit and its direct authentication-log dependency removed from the disposable harness.",
             "useCase": "A first-time administrator lands on the dashboard replacement that can launch onboarding.",
             "screenshotPath": "packages/welcome-tour/docs/screenshots/welcome-tour-dashboard.png",
             "covers": [
                 "packages/welcome-tour/src/Filament/Pages/WelcomeTourDashboard.php"
-            ]
+            ],
+            "url": "/screenshot-fixtures/catalogue/welcome-tour/welcome-tour-dashboard",
+            "colorSchemes": ["light", "dark"],
+            "fixtureKind": "illustrative-catalogue"
         },
         {
             "id": "welcome-tour-overlay",

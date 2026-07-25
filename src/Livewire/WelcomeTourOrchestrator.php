@@ -9,7 +9,9 @@ use Capell\Admin\Support\AdminPanelEntrypoint;
 use Capell\WelcomeTour\Actions\ResolveWelcomeTourChaptersAction;
 use Capell\WelcomeTour\Actions\Users\GetUserWelcomeTourStateAction;
 use Capell\WelcomeTour\Actions\Users\RecordWelcomeTourStepAction;
+use Capell\WelcomeTour\Actions\Users\RestartWelcomeTourProgressAction;
 use Capell\WelcomeTour\Actions\Users\SetUserWelcomeTourPreferenceAction;
+use Capell\WelcomeTour\Data\WelcomeTourChapterData;
 use Capell\WelcomeTour\Support\WelcomeTourStateStoreResolver;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Model;
@@ -69,10 +71,28 @@ final class WelcomeTourOrchestrator extends Component
         }
     }
 
+    #[On('capell-welcome-tour::restart')]
+    public function restart(): void
+    {
+        $user = auth()->user();
+
+        if (! $user instanceof Model) {
+            return;
+        }
+
+        RestartWelcomeTourProgressAction::run($user, self::TOUR_KEY);
+        session()->put('capell_welcome_tour.active', true);
+        session()->put('capell_welcome_tour.show_checklist', true);
+
+        $this->redirect('/' . trim(AdminPanelEntrypoint::path(), '/'));
+    }
+
     public function render(): View
     {
         $user = auth()->user();
         $autoStart = false;
+        $currentChapterKey = null;
+        $currentTargetSelector = null;
 
         $dashboardPath = trim(AdminPanelEntrypoint::path(), '/');
         $isDashboardRequest = trim(request()->path(), '/') === $dashboardPath;
@@ -83,11 +103,34 @@ final class WelcomeTourOrchestrator extends Component
 
             if ($autoStart) {
                 $store->markAutoStarted($user, self::TOUR_KEY);
+                session()->put('capell_welcome_tour.active', true);
+            }
+        }
+
+        if ($user instanceof Model && $this->isTourActive()) {
+            $currentPath = '/' . trim(request()->path(), '/');
+            /** @var WelcomeTourChapterData|null $chapter */
+            $chapter = collect(ResolveWelcomeTourChaptersAction::run(
+                CapellAdmin::getWelcomeTourSteps(),
+                GetUserWelcomeTourStateAction::run($user, self::TOUR_KEY),
+            ))->first(fn (WelcomeTourChapterData $chapter): bool => $chapter->route === $currentPath);
+
+            if ($chapter !== null && count($chapter->steps) === 1) {
+                $currentChapterKey = $chapter->key;
+                $currentTargetSelector = $chapter->steps[0]->element;
             }
         }
 
         return view('capell-welcome-tour::livewire.welcome-tour-orchestrator', [
             'autoStart' => $autoStart,
+            'currentChapterKey' => $currentChapterKey,
+            'currentTargetSelector' => $currentTargetSelector,
         ]);
+    }
+
+    private function isTourActive(): bool
+    {
+        return config('capell-welcome-tour.presentation_mode', false)
+            || (bool) session()->get('capell_welcome_tour.active', false);
     }
 }

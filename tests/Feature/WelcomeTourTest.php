@@ -51,7 +51,42 @@ beforeEach(function (): void {
 });
 
 it('registers its package view namespace', function (): void {
-    expect(view()->exists('capell-welcome-tour::livewire.welcome-tour-orchestrator'))->toBeTrue();
+    expect(view()->make('capell-welcome-tour::livewire.welcome-tour-orchestrator'))->toBeInstanceOf(View::class);
+});
+
+it('renders a dashboard replay action with a stable tour target', function (): void {
+    $html = view('capell-welcome-tour::filament.actions.replay-tour')->render();
+
+    expect($html)
+        ->toContain('data-tour-id="welcome-tour-dashboard"')
+        ->toContain('capell-welcome-tour::restart');
+});
+
+it('cleans up keyboard dismissal listeners during Livewire navigation', function (): void {
+    $html = view('capell-welcome-tour::livewire.welcome-tour-orchestrator', [
+        'autoStart' => false,
+        'currentChapterKey' => null,
+        'currentTargetSelector' => null,
+    ])->render();
+
+    expect($html)
+        ->toContain('AbortController')
+        ->toContain('livewire:navigating')
+        ->toContain("event.key === 'Escape'")
+        ->toContain("document.body.classList.contains('driver-active')");
+});
+
+it('skips an active single-step chapter when its rendered target is missing', function (): void {
+    $html = view('capell-welcome-tour::livewire.welcome-tour-orchestrator', [
+        'autoStart' => false,
+        'currentChapterKey' => 'sites',
+        'currentTargetSelector' => '[data-tour-id="welcome-tour-sites"]',
+    ])->render();
+
+    expect($html)
+        ->toContain('document.querySelector(targetSelector)')
+        ->toContain('capell-welcome-tour::complete-chapter')
+        ->toContain('welcome-tour-sites');
 });
 
 it('uses the package dashboard page and registers the filament tour plugin', function (): void {
@@ -112,21 +147,72 @@ it('lets users hide the checklist and reveal it again when replaying the tour', 
     expect($widget->shouldShowChecklist())->toBeTrue();
 });
 
-it('registers default welcome tour steps from configured translation keys', function (): void {
+it('replays from chapter one without clearing dismissal history', function (): void {
+    $user = User::factory()->create();
+    test()->actingAs($user);
+
+    RecordWelcomeTourStepAction::run($user, 'capell-welcome-tour.dashboard');
+    SetUserWelcomeTourPreferenceAction::run($user, enabled: false);
+
+    (new WelcomeTourOrchestrator)->restart();
+
+    expect(GetUserWelcomeTourStateAction::run($user)->completedStepKeys)->toBe([])
+        ->and(CanShowWelcomeTourAction::run($user))->toBeFalse()
+        ->and(session()->get('capell_welcome_tour.active'))->toBeTrue()
+        ->and(session()->get('capell_welcome_tour.show_checklist'))->toBeTrue();
+});
+
+it('registers application manifest steps ahead of stale configured defaults', function (): void {
+    $settings = WelcomeTourSettings::instance();
+    $settings->steps = [[
+        'key' => 'capell-welcome-tour.dashboard',
+        'title' => 'Stale dashboard title',
+        'description' => 'Stale dashboard description',
+        'element' => '.fi-page',
+        'chapter' => 'dashboard',
+        'route' => '/admin',
+    ]];
+    $settings->save();
+
+    config()->set('capell-welcome-tour.manifest_steps', [[
+        'key' => 'capell-welcome-tour.dashboard',
+        'title' => 'Dashboard',
+        'description' => 'Your overview',
+        'element' => '[data-tour-id="welcome-tour-dashboard"]',
+        'chapter' => 'dashboard',
+        'route' => '@dashboard',
+        'sort' => 10,
+    ]]);
+
     resolve(WelcomeTourStepRegistrar::class)->register();
 
     $steps = CapellAdmin::getWelcomeTourSteps();
 
-    expect($steps)->toHaveCount(6)
+    expect($steps)->toHaveCount(1)
         ->and($steps[0]->key)->toBe('capell-welcome-tour.dashboard')
         ->and($steps[0]->chapter)->toBe('dashboard')
         ->and($steps[0]->route)->toBe('/admin')
-        ->and($steps[1]->key)->toBe('capell-welcome-tour.sites')
-        ->and($steps[2]->key)->toBe('capell-welcome-tour.pages')
-        ->and($steps[3]->key)->toBe('capell-welcome-tour.themes')
-        ->and($steps[4]->key)->toBe('capell-welcome-tour.media')
-        ->and($steps[5]->key)->toBe('capell-welcome-tour.publish')
+        ->and($steps[0]->element)->toBe('[data-tour-id="welcome-tour-dashboard"]')
         ->and(welcomeTourText($steps[0]->title))->toBe('Dashboard');
+});
+
+it('skips manifest chapters whose destination is unavailable', function (): void {
+    $settings = WelcomeTourSettings::instance();
+    $settings->steps = [];
+    $settings->save();
+
+    config()->set('capell-welcome-tour.manifest_steps', [[
+        'key' => 'missing',
+        'title' => 'Missing',
+        'description' => 'Unavailable destination',
+        'element' => '[data-tour-id="missing"]',
+        'chapter' => 'missing',
+        'route' => '/admin/route-that-does-not-exist',
+    ]]);
+
+    resolve(WelcomeTourStepRegistrar::class)->register();
+
+    expect(CapellAdmin::getWelcomeTourSteps())->toBe([]);
 });
 
 it('does not fall back to default steps when settings are explicitly empty', function (): void {
@@ -201,14 +287,30 @@ it('accepts literal step titles and filters configured steps by role and first-r
 });
 
 it('builds the onboarding checklist from configured setup conditions', function (): void {
+    config()->set('capell-welcome-tour.checklist', [[
+        'key' => 'create-page',
+        'label' => 'Create your first page',
+        'description' => 'Create content.',
+        'url' => '/admin/pages/create',
+        'complete_when' => 'table-has-rows:pages',
+    ]]);
+
     $items = BuildWelcomeTourChecklistAction::run();
 
-    expect($items)->toHaveCount(4)
+    expect($items)->toHaveCount(1)
         ->and($items[0]->key)->toBe('create-page')
         ->and($items[0]->complete)->toBeFalse();
 });
 
 it("includes a user's manually completed checklist items", function (): void {
+    config()->set('capell-welcome-tour.checklist', [[
+        'key' => 'create-page',
+        'label' => 'Create your first page',
+        'description' => 'Create content.',
+        'url' => '/admin/pages/create',
+        'complete_when' => 'table-has-rows:pages',
+    ]]);
+
     $user = auth()->user();
     throw_unless($user instanceof User, RuntimeException::class, 'Expected an authenticated test user.');
 

@@ -37,6 +37,7 @@
 
             <div
                 id="capell-welcome-tour-checklist"
+                data-tour-id="welcome-tour-checklist"
                 class="space-y-3"
             >
                 @foreach ($this->items() as $item)
