@@ -17,7 +17,10 @@ use Capell\WelcomeTour\Actions\Users\ResolveWelcomeTourStepsForUserAction;
 use Capell\WelcomeTour\Actions\Users\SetUserWelcomeTourPreferenceAction;
 use Capell\WelcomeTour\Actions\Users\SetWelcomeTourChecklistItemCompletionAction;
 use Capell\WelcomeTour\Actions\Users\SnoozeUserWelcomeTourAction;
+use Capell\WelcomeTour\Contracts\WelcomeTourReadinessResolver;
 use Capell\WelcomeTour\Data\WelcomeTourChecklistItemData;
+use Capell\WelcomeTour\Data\WelcomeTourReadinessData;
+use Capell\WelcomeTour\Enums\WelcomeTourReadinessStatus;
 use Capell\WelcomeTour\Events\WelcomeTourCompleted;
 use Capell\WelcomeTour\Events\WelcomeTourRestarted;
 use Capell\WelcomeTour\Events\WelcomeTourSnoozed;
@@ -35,6 +38,7 @@ use Capell\WelcomeTour\Support\WelcomeTourUserResourceBridge;
 use Filament\Panel;
 use Filament\Schemas\Schema;
 use Illuminate\Contracts\Session\Session;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -300,6 +304,35 @@ it('builds the onboarding checklist from configured setup conditions', function 
     expect($items)->toHaveCount(1)
         ->and($items[0]->key)->toBe('create-page')
         ->and($items[0]->complete)->toBeFalse();
+});
+
+it('builds checklist items from typed tri-state readiness resolvers', function (): void {
+    app()->bind(WelcomeTourReadinessResolver::class, fn (): WelcomeTourReadinessResolver => new class implements WelcomeTourReadinessResolver
+    {
+        public function resolve(?Model $user = null, array $context = []): WelcomeTourReadinessData
+        {
+            return new WelcomeTourReadinessData(
+                status: WelcomeTourReadinessStatus::Blocked,
+                explanation: 'Restore evidence is stale.',
+                recoveryUrl: '/admin/backups',
+            );
+        }
+    });
+
+    config()->set('capell-welcome-tour.checklist', [[
+        'key' => 'restore-drill',
+        'label' => 'Complete a restore drill',
+        'description' => 'Restore into an isolated target.',
+        'resolver' => WelcomeTourReadinessResolver::class,
+        'url' => '/admin/backups',
+    ]]);
+
+    $items = BuildWelcomeTourChecklistAction::run();
+
+    expect($items)->toHaveCount(1)
+        ->and($items[0]->status)->toBe(WelcomeTourReadinessStatus::Blocked)
+        ->and($items[0]->complete)->toBeFalse()
+        ->and($items[0]->explanation)->toBe('Restore evidence is stale.');
 });
 
 it("includes a user's manually completed checklist items", function (): void {

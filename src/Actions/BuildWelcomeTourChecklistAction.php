@@ -5,11 +5,15 @@ declare(strict_types=1);
 namespace Capell\WelcomeTour\Actions;
 
 use Capell\WelcomeTour\Actions\Users\GetUserWelcomeTourStateAction;
+use Capell\WelcomeTour\Contracts\WelcomeTourReadinessResolver;
 use Capell\WelcomeTour\Data\WelcomeTourChecklistItemData;
+use Capell\WelcomeTour\Data\WelcomeTourReadinessData;
+use Capell\WelcomeTour\Enums\WelcomeTourReadinessStatus;
 use Capell\WelcomeTour\Support\WelcomeTourSchema;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Lang;
+use InvalidArgumentException;
 use Lorisleiva\Actions\Concerns\AsFake;
 use Lorisleiva\Actions\Concerns\AsObject;
 
@@ -45,18 +49,50 @@ final class BuildWelcomeTourChecklistAction
         $key = $this->stringValue($item, 'key');
         $manuallyCompleted = $user instanceof Model
             && in_array($key, GetUserWelcomeTourStateAction::run($user)->completedChecklistItemKeys, true);
+        $readiness = $this->resolveReadiness($item, $user);
 
         return new WelcomeTourChecklistItemData(
             key: $key,
             label: $this->translate($this->stringValue($item, 'label')),
             description: $this->translate($this->stringValue($item, 'description')),
-            url: ResolveWelcomeTourDestinationAction::run(
+            url: $readiness->recoveryUrl ?? ResolveWelcomeTourDestinationAction::run(
                 $this->nullableStringValue($item, 'url'),
                 $this->nullableStringValue($item, 'resource'),
                 $this->nullableStringValue($item, 'resource_page'),
             ),
-            complete: $manuallyCompleted || $this->isComplete($this->stringValue($item, 'complete_when')),
+            complete: $manuallyCompleted || $readiness->status === WelcomeTourReadinessStatus::Complete,
             manuallyCompleted: $manuallyCompleted,
+            status: $manuallyCompleted ? WelcomeTourReadinessStatus::Complete : $readiness->status,
+            explanation: $this->translate($readiness->explanation),
+        );
+    }
+
+    /**
+     * @param  array<string, mixed>  $item
+     */
+    private function resolveReadiness(array $item, ?Model $user): WelcomeTourReadinessData
+    {
+        $resolver = $this->nullableStringValue($item, 'resolver');
+
+        if ($resolver !== null) {
+            $resolved = resolve($resolver);
+
+            throw_unless(
+                $resolved instanceof WelcomeTourReadinessResolver,
+                InvalidArgumentException::class,
+                "Welcome Tour checklist resolver [{$resolver}] must implement " . WelcomeTourReadinessResolver::class . '.',
+            );
+
+            return $resolved->resolve($user, $item);
+        }
+
+        $complete = $this->isComplete($this->stringValue($item, 'complete_when'));
+
+        return new WelcomeTourReadinessData(
+            status: $complete
+                ? WelcomeTourReadinessStatus::Complete
+                : WelcomeTourReadinessStatus::ActionRequired,
+            explanation: $this->stringValue($item, 'description'),
         );
     }
 

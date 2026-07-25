@@ -5,5 +5,5 @@
     data-tour-id="welcome-tour-dashboard"
     x-on:click="Livewire.dispatch('capell-welcome-tour::restart')"
 >
-    {{ __('capell-welcome-tour::welcome_tour.restart') }}
+    {{ __('capell-welcome-tour::welcome_tour.restart_tour') }}
 </x-filament::button>

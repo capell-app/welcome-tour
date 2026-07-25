@@ -64,7 +64,7 @@
                             <div
                                 class="mt-1 text-sm text-gray-500 dark:text-gray-400"
                             >
-                                {{ $item->description }}
+                                {{ $item->explanation !== '' ? $item->explanation : $item->description }}
                             </div>
 
                             @if ($item->url !== null)
