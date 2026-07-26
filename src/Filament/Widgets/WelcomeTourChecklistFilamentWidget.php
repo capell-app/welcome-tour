@@ -48,7 +48,8 @@ final class WelcomeTourChecklistFilamentWidget extends Widget implements CapellF
 
     public function mount(): void
     {
-        $this->returnPath = request()->getRequestUri();
+        $this->returnPath = $this->returnPathFromReferer()
+            ?? '/' . trim(AdminPanelEntrypoint::path(), '/');
     }
 
     /**
@@ -146,5 +147,29 @@ final class WelcomeTourChecklistFilamentWidget extends Widget implements CapellF
         if ($user instanceof Model) {
             SetUserWelcomeTourPreferenceAction::run($user, enabled: false);
         }
+    }
+
+    private function returnPathFromReferer(): ?string
+    {
+        $referer = request()->headers->get('referer');
+
+        if (! is_string($referer) || $referer === '') {
+            return null;
+        }
+
+        $parts = parse_url($referer);
+        $host = is_array($parts) ? ($parts['host'] ?? null) : null;
+        $path = is_array($parts) ? ($parts['path'] ?? null) : null;
+
+        if (! is_string($host)
+            || ! hash_equals(strtolower(request()->getHost()), strtolower($host))
+            || ! is_string($path)
+            || ! str_starts_with($path, '/')) {
+            return null;
+        }
+
+        $query = $parts['query'] ?? null;
+
+        return $path . (is_string($query) && $query !== '' ? '?' . $query : '');
     }
 }

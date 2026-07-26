@@ -141,7 +141,11 @@ it('lets users hide the checklist and reveal it again when replaying the tour', 
     $user = User::factory()->create();
     test()->actingAs($user);
     $widget = new WelcomeTourChecklistFilamentWidget;
-    $request = Request::create('/admin?site=1');
+    $request = Request::create(
+        '/livewire-cfab9099/update',
+        'POST',
+        server: ['HTTP_REFERER' => 'http://localhost/admin?site=1'],
+    );
     app()->instance('request', $request);
     $widget->mount();
 
@@ -160,7 +164,11 @@ it('lets users hide the checklist and reveal it again when replaying the tour', 
 it('redirects tour replay to its locked page path instead of the Livewire update endpoint', function (): void {
     $user = User::factory()->create();
     test()->actingAs($user);
-    $request = Request::create('/admin?site=1');
+    $request = Request::create(
+        '/livewire-cfab9099/update',
+        'POST',
+        server: ['HTTP_REFERER' => 'http://localhost/admin?site=1'],
+    );
     app()->instance('request', $request);
     $widget = new WelcomeTourChecklistFilamentWidget;
     $widget->mount();
@@ -172,6 +180,18 @@ it('redirects tour replay to its locked page path instead of the Livewire update
     $fallbackWidget->startTour();
 
     expect(store($fallbackWidget)->get('redirect'))->toBe('/admin');
+
+    $externalRefererRequest = Request::create(
+        '/livewire-cfab9099/update',
+        'POST',
+        server: ['HTTP_REFERER' => 'https://example.com/steal-session'],
+    );
+    app()->instance('request', $externalRefererRequest);
+    $externalRefererWidget = new WelcomeTourChecklistFilamentWidget;
+    $externalRefererWidget->mount();
+    $externalRefererWidget->startTour();
+
+    expect(store($externalRefererWidget)->get('redirect'))->toBe('/admin');
 });
 
 it('replays from chapter one without clearing dismissal history', function (): void {
