@@ -46,11 +46,22 @@ it('stores configurable tour steps with translation keys', function (): void {
         ->and($fresh->steps[0]['title'])->toBe('capell-welcome-tour::welcome_tour.introduction_title');
 });
 
-it('ships without application-specific tour content', function (): void {
+it('ships generic onboarding tasks without application-specific tour steps', function (): void {
     $settings = WelcomeTourSettings::instance();
+    $checklist = config('capell-welcome-tour.checklist');
+
+    if (! is_array($checklist)) {
+        throw new RuntimeException('The default Welcome Tour checklist must be an array.');
+    }
 
     expect($settings->enabled)->toBeTrue()
         ->and($settings->steps)->toBe([])
         ->and(config('capell-welcome-tour.manifest_steps'))->toBe([])
-        ->and(config('capell-welcome-tour.checklist'))->toBe([]);
+        ->and($checklist)->toBeArray()
+        ->and(array_column($checklist, 'key'))->toBe([
+            'create-site',
+            'create-page',
+            'pick-theme',
+            'extend',
+        ]);
 });

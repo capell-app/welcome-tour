@@ -6,6 +6,7 @@ namespace Capell\WelcomeTour\Filament\Widgets;
 
 use Capell\Admin\Contracts\CapellFilamentWidgetContract;
 use Capell\Admin\Filament\Concerns\GatedByRoleAndSettings;
+use Capell\Admin\Support\AdminPanelEntrypoint;
 use Capell\Core\Contracts\Extensions\RegistersExtensionFilamentWidget;
 use Capell\WelcomeTour\Actions\BuildWelcomeTourChecklistAction;
 use Capell\WelcomeTour\Actions\Users\CanShowWelcomeTourAction;
@@ -20,10 +21,14 @@ use Filament\Widgets\Widget;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Computed;
+use Livewire\Attributes\Locked;
 
 final class WelcomeTourChecklistFilamentWidget extends Widget implements CapellFilamentWidgetContract, RegistersExtensionFilamentWidget
 {
     use GatedByRoleAndSettings;
+
+    #[Locked]
+    public string $returnPath = '';
 
     /** @var list<string> */
     protected static array $rolesConfigKeys = ['editor', 'admin', 'super_admin'];
@@ -39,6 +44,11 @@ final class WelcomeTourChecklistFilamentWidget extends Widget implements CapellF
     public static function compatibleCapellApiVersion(): string
     {
         return '^1.0';
+    }
+
+    public function mount(): void
+    {
+        $this->returnPath = request()->getRequestUri();
     }
 
     /**
@@ -83,7 +93,9 @@ final class WelcomeTourChecklistFilamentWidget extends Widget implements CapellF
 
         session()->put('capell_welcome_tour.active', true);
         session()->put('capell_welcome_tour.show_checklist', true);
-        $this->redirect(request()->url());
+        $this->redirect($this->returnPath !== ''
+            ? $this->returnPath
+            : '/' . AdminPanelEntrypoint::path());
     }
 
     public function shouldShowChecklist(): bool

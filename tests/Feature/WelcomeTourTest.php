@@ -47,6 +47,8 @@ use Illuminate\Support\Facades\Schema as SchemaFacade;
 use Illuminate\Support\HtmlString;
 use Illuminate\View\View;
 
+use function Livewire\store;
+
 beforeEach(function (): void {
     config()->set('capell-welcome-tour.presentation_mode', false);
     $this->actingAsAdmin();
@@ -139,6 +141,9 @@ it('lets users hide the checklist and reveal it again when replaying the tour', 
     $user = User::factory()->create();
     test()->actingAs($user);
     $widget = new WelcomeTourChecklistFilamentWidget;
+    $request = Request::create('/admin?site=1');
+    app()->instance('request', $request);
+    $widget->mount();
 
     expect($widget->shouldShowChecklist())->toBeTrue();
 
@@ -148,7 +153,25 @@ it('lets users hide the checklist and reveal it again when replaying the tour', 
 
     $widget->startTour();
 
-    expect($widget->shouldShowChecklist())->toBeTrue();
+    expect($widget->shouldShowChecklist())->toBeTrue()
+        ->and($widget->returnPath)->toBe('/admin?site=1');
+});
+
+it('redirects tour replay to its locked page path instead of the Livewire update endpoint', function (): void {
+    $user = User::factory()->create();
+    test()->actingAs($user);
+    $request = Request::create('/admin?site=1');
+    app()->instance('request', $request);
+    $widget = new WelcomeTourChecklistFilamentWidget;
+    $widget->mount();
+    $widget->startTour();
+
+    expect(store($widget)->get('redirect'))->toBe('/admin?site=1');
+
+    $fallbackWidget = new WelcomeTourChecklistFilamentWidget;
+    $fallbackWidget->startTour();
+
+    expect(store($fallbackWidget)->get('redirect'))->toBe('/admin');
 });
 
 it('replays from chapter one without clearing dismissal history', function (): void {
@@ -335,6 +358,32 @@ it('builds checklist items from typed tri-state readiness resolvers', function (
         ->and($items[0]->explanation)->toBe('Restore evidence is stale.');
 });
 
+it('rejects external recovery urls from readiness resolvers', function (): void {
+    app()->bind(WelcomeTourReadinessResolver::class, fn (): WelcomeTourReadinessResolver => new class implements WelcomeTourReadinessResolver
+    {
+        public function resolve(?Model $user = null, array $context = []): WelcomeTourReadinessData
+        {
+            return new WelcomeTourReadinessData(
+                status: WelcomeTourReadinessStatus::ActionRequired,
+                explanation: 'Complete setup.',
+                recoveryUrl: 'https://malicious.example/steal-session',
+            );
+        }
+    });
+
+    config()->set('capell-welcome-tour.checklist', [[
+        'key' => 'complete-setup',
+        'label' => 'Complete setup',
+        'description' => 'Finish configuring the site.',
+        'resolver' => WelcomeTourReadinessResolver::class,
+    ]]);
+
+    $items = BuildWelcomeTourChecklistAction::run();
+
+    expect($items)->toHaveCount(1)
+        ->and($items[0]->url)->toBeNull();
+});
+
 it("includes a user's manually completed checklist items", function (): void {
     config()->set('capell-welcome-tour.checklist', [[
         'key' => 'create-page',
@@ -358,6 +407,17 @@ it("includes a user's manually completed checklist items", function (): void {
 });
 
 it('registers configured contextual tours for pages, media, and sites', function (): void {
+    config()->set('capell-welcome-tour.contextual_tours', collect([
+        'capell_admin_sites',
+        'capell_admin_pages',
+        'capell_admin_media',
+    ])->mapWithKeys(fn (string $tourKey): array => [$tourKey => [[
+        'key' => $tourKey . '.overview',
+        'title' => 'Tour overview',
+        'description' => 'Review this surface.',
+        'element' => '.fi-page',
+    ]]])->all());
+
     $configuredTours = config('capell-welcome-tour.contextual_tours');
 
     if (! is_array($configuredTours)) {
@@ -368,10 +428,10 @@ it('registers configured contextual tours for pages, media, and sites', function
 
     $registry = resolve(ContextualWelcomeTourRegistry::class);
 
-    expect($registry->stepsFor('capell_admin_sites'))->toHaveCount(2)
-        ->and($registry->stepsFor('capell_admin_pages'))->toHaveCount(2)
-        ->and($registry->stepsFor('capell_admin_media'))->toHaveCount(2)
-        ->and(welcomeTourText($registry->stepsFor('capell_admin_pages')[0]->title))->toBe('Organise the page tree');
+    expect($registry->stepsFor('capell_admin_sites'))->toHaveCount(1)
+        ->and($registry->stepsFor('capell_admin_pages'))->toHaveCount(1)
+        ->and($registry->stepsFor('capell_admin_media'))->toHaveCount(1)
+        ->and(welcomeTourText($registry->stepsFor('capell_admin_pages')[0]->title))->toBe('Tour overview');
 });
 
 it('allows packages to contribute contextual page steps by tour key', function (): void {

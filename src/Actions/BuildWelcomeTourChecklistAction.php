@@ -55,11 +55,13 @@ final class BuildWelcomeTourChecklistAction
             key: $key,
             label: $this->translate($this->stringValue($item, 'label')),
             description: $this->translate($this->stringValue($item, 'description')),
-            url: $readiness->recoveryUrl ?? ResolveWelcomeTourDestinationAction::run(
-                $this->nullableStringValue($item, 'url'),
-                $this->nullableStringValue($item, 'resource'),
-                $this->nullableStringValue($item, 'resource_page'),
-            ),
+            url: $readiness->recoveryUrl !== null
+                ? ResolveWelcomeTourDestinationAction::run($readiness->recoveryUrl)
+                : ResolveWelcomeTourDestinationAction::run(
+                    $this->nullableStringValue($item, 'url'),
+                    $this->nullableStringValue($item, 'resource'),
+                    $this->nullableStringValue($item, 'resource_page'),
+                ),
             complete: $manuallyCompleted || $readiness->status === WelcomeTourReadinessStatus::Complete,
             manuallyCompleted: $manuallyCompleted,
             status: $manuallyCompleted ? WelcomeTourReadinessStatus::Complete : $readiness->status,
