@@ -21,7 +21,7 @@ This guide is for owners and operators who set up the admin onboarding tour, and
 2. Switch on **Enable welcome tour**. This allows the tour to be shown to admins. Per-user preferences only take effect while this is on.
 3. Save.
 
-![A site owner configures the enabled state and tour steps from the package settings page.](screenshots/welcome-tour-settings.png)
+![A site owner configures the enabled state and tour steps from the extension management surface.](screenshots/welcome-tour-settings.png)
 
 ### How to edit the tour steps
 

@@ -159,6 +159,11 @@
                 "path": "docs/assets/marketplace/extension-card.jpg",
                 "alt": "Welcome Tour extension preview image",
                 "caption": "Welcome Tour extension preview"
+            },
+            {
+                "path": "docs/screenshots/welcome-tour-dashboard.png",
+                "alt": "Capell admin dashboard with the Welcome Tour onboarding checklist",
+                "caption": "Guide new administrators through setup from the dashboard"
             }
         ],
         "categories": ["admin", "foundation"]

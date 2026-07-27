@@ -7,21 +7,19 @@
     "entries": [
         {
             "id": "welcome-tour-dashboard",
-            "title": "Illustrative admin dashboard rendered through welcometourdashboard preview.",
+            "title": "Capell admin dashboard with the Welcome Tour onboarding checklist.",
             "package": "welcome-tour",
-            "surface": "frontend",
-            "targetType": "frontend-url",
-            "target": "/screenshot-fixtures/catalogue/welcome-tour/welcome-tour-dashboard",
+            "surface": "admin",
+            "targetType": "admin-route",
+            "target": "/admin",
             "required": true,
-            "notes": "Illustrative deterministic catalogue fixture, not a live package UI capture. Capture after installing only the core Capell stack and capell-app/welcome-tour, with capell-app/login-audit and its direct authentication-log dependency removed from the disposable harness.",
-            "useCase": "A first-time administrator lands on the dashboard replacement that can launch onboarding.",
+            "notes": "Capture from a disposable installed Capell application with Welcome Tour enabled and onboarding checklist state available for the authenticated administrator.",
+            "useCase": "A first-time administrator lands on the dashboard checklist and can launch onboarding.",
             "screenshotPath": "packages/welcome-tour/docs/screenshots/welcome-tour-dashboard.png",
             "covers": [
-                "packages/welcome-tour/src/Filament/Pages/WelcomeTourDashboard.php"
+                "packages/welcome-tour/src/Filament/Widgets/WelcomeTourChecklistFilamentWidget.php"
             ],
-            "url": "/screenshot-fixtures/catalogue/welcome-tour/welcome-tour-dashboard",
-            "colorSchemes": ["light", "dark"],
-            "fixtureKind": "illustrative-catalogue"
+            "colorSchemes": ["light", "dark"]
         },
         {
             "id": "welcome-tour-overlay",
@@ -37,14 +35,14 @@
         },
         {
             "id": "welcome-tour-settings",
-            "title": "Welcome tour settings group with enabled toggle and step repeater.",
+            "title": "Welcome tour settings action with enabled toggle and step repeater.",
             "package": "welcome-tour",
             "surface": "admin",
             "targetType": "admin-route",
-            "target": "/admin/extensions/welcome-tour/settings",
+            "target": "/admin/extensions?manage=capell-app%2Fwelcome-tour&surface=welcome-tour",
             "required": true,
-            "notes": "Open the Welcome Tour package settings page after publishing and running the package settings migration.",
-            "useCase": "A site owner configures the enabled state and tour step repeater from the package settings page.",
+            "notes": "Open the Welcome Tour settings action from the Extensions manager after publishing and running the package settings migration.",
+            "useCase": "A site owner configures the enabled state and tour step repeater from the extension management surface.",
             "screenshotPath": "packages/welcome-tour/docs/screenshots/welcome-tour-settings.png"
         },
         {

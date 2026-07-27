@@ -33,11 +33,11 @@ Evidence: [`src/Support/ContextualWelcomeTourRegistry.php`](src/Support/Contextu
 
 Screenshot contract: `docs/screenshots.json`.
 
-![Admin dashboard rendered through WelcomeTourDashboard](docs/screenshots/welcome-tour-dashboard.png)
+![Admin dashboard with the Welcome Tour onboarding checklist](docs/screenshots/welcome-tour-dashboard.png)
 
 ![Welcome tour overlay showing the first configured onboarding step](docs/screenshots/welcome-tour-overlay.png)
 
-- Admin dashboard rendered through WelcomeTourDashboard (admin, required).
+- Admin dashboard with the Welcome Tour onboarding checklist (admin, required).
 - Welcome tour overlay showing the first configured onboarding step (admin, required).
 - Welcome tour settings group with enabled toggle and step repeater (admin, required).
 - User edit form with Show welcome tour toggle (admin, required).
@@ -49,7 +49,7 @@ Screenshot contract: `docs/screenshots.json`.
 - Migrations: `packages/welcome-tour/database/migrations/2026_06_04_000001_create_welcome_tour_user_states_table.php`.
 - Settings migrations: `packages/welcome-tour/database/settings/2026_05_10_190836_01_add_welcome_tour_settings.php`.
 - Settings classes: `WelcomeTourSettings`.
-- Filament classes: `HasContextualWelcomeTour`, `WelcomeTourPanelExtender`, `WelcomeTourDashboard`, `WelcomeTourSettingsPage`, `WelcomeTourSettingsSchema`, `WelcomeTourChecklistFilamentWidget`.
+- Filament classes: `HasContextualWelcomeTour`, `WelcomeTourPanelExtender`, `WelcomeTourDashboard`, `WelcomeTourSettingsSchema`, `WelcomeTourChecklistFilamentWidget`.
 - Events: `WelcomeTourCompleted`, `WelcomeTourRestarted`, `WelcomeTourSnoozed`, `WelcomeTourStarted`, `WelcomeTourStepCompleted`.
 - Actions: `BuildWelcomeTourChecklistAction`, `CanShowWelcomeTourStepAction`, `ResolveWelcomeTourEnabledAction`, `AuthorizeWelcomeTourUserMutationAction`, `CanShowWelcomeTourAction`, `GetUserWelcomeTourStateAction`, `RecordWelcomeTourStepAction`, `ResetUserWelcomeTourAction`, `ResolveWelcomeTourStepsForUserAction`, `SetUserWelcomeTourPreferenceAction`, `SnoozeUserWelcomeTourAction`.
 - Data objects: `WelcomeTourChecklistItemData`, `WelcomeTourUserStateData`.
