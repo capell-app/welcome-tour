@@ -45,7 +45,7 @@
                         class="flex items-start gap-3 rounded-lg border border-gray-200 p-3 dark:border-gray-700"
                     >
                         <div
-                            @class ([
+                            @class([
                             'mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border text-xs font-semibold',
                             'border-success-500 bg-success-50 text-success-700 dark:bg-success-950 dark:text-success-300' => $item->complete,
                             'border-gray-300 bg-gray-50 text-gray-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300' => ! $item->complete,
