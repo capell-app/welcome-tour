@@ -29,6 +29,13 @@
             "targetType": "admin-overlay",
             "target": "/admin",
             "required": true,
+            "waitFor": ".driver-popover",
+            "interactions": [
+                {
+                    "type": "click",
+                    "selector": "button[wire\\:click=\"startTour\"]"
+                }
+            ],
             "notes": "Use an admin account that has not dismissed the tour.",
             "useCase": "A first-time administrator sees the first configured tour step overlay.",
             "screenshotPath": "packages/welcome-tour/docs/screenshots/welcome-tour-overlay.png"
@@ -51,11 +58,34 @@
             "package": "welcome-tour",
             "surface": "admin",
             "targetType": "admin-resource-form",
-            "target": "/admin/users/{record}/edit",
+            "target": "UserResource",
             "required": true,
+            "url": "/users/{first-record}/edit",
             "notes": "Requires a users table with the dismissed_hints column so the bridge contributes the field.",
             "useCase": "An administrator toggles whether a user should see the welcome tour again from the user edit form.",
             "screenshotPath": "packages/welcome-tour/docs/screenshots/welcome-tour-user-toggle.png"
+        },
+        {
+            "id": "welcome-tour-admin-sidebar-menu-open",
+            "title": "Capell admin dashboard with the Welcome Tour onboarding checklist with admin sidebar menu open.",
+            "package": "welcome-tour",
+            "surface": "admin",
+            "targetType": "admin-route",
+            "target": "/admin",
+            "required": false,
+            "notes": "Capture from a disposable installed Capell application with Welcome Tour enabled and onboarding checklist state available for the authenticated administrator. Capture this same admin surface with the fully collapsible sidebar opened.",
+            "useCase": "A first-time administrator lands on the dashboard checklist and can launch onboarding.",
+            "screenshotPath": "packages/welcome-tour/docs/screenshots/welcome-tour-admin-sidebar-menu-open.png",
+            "covers": [
+                "packages/welcome-tour/src/Filament/Widgets/WelcomeTourChecklistFilamentWidget.php"
+            ],
+            "colorSchemes": ["light", "dark"],
+            "beforeWait": [
+                {
+                    "type": "click",
+                    "selector": ".fi-topbar-open-collapse-sidebar-btn"
+                }
+            ]
         }
     ]
 }

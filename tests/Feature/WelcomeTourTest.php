@@ -7,6 +7,7 @@ use Capell\Admin\Enums\DashboardEnum;
 use Capell\Admin\Enums\UserSchemaHookEnum;
 use Capell\Admin\Facades\CapellAdmin;
 use Capell\Admin\Filament\Plugin\CapellAdminPlugin;
+use Capell\Core\Support\Database\RuntimeSchemaState;
 use Capell\Tests\Fixtures\Models\User;
 use Capell\WelcomeTour\Actions\BuildWelcomeTourChecklistAction;
 use Capell\WelcomeTour\Actions\Users\CanShowWelcomeTourAction;
@@ -111,6 +112,47 @@ it('registers the onboarding checklist dashboard widget', function (): void {
         ->and(WelcomeTourChecklistFilamentWidget::canView())->toBeTrue();
 });
 
+it('sends the welcome message as a persistent filament notification', function (): void {
+    SchemaFacade::dropIfExists('sites');
+    SchemaFacade::create('sites', static function (Blueprint $table): void {
+        $table->id();
+    });
+    DB::table('sites')->insert(['id' => 1]);
+    resolve(RuntimeSchemaState::class)->refreshTable('sites');
+
+    try {
+        $widget = new WelcomeTourChecklistFilamentWidget;
+        $widget->mount();
+
+        $notifications = session()->get('filament.notifications');
+        throw_unless(is_array($notifications), RuntimeException::class, 'Expected Filament notifications to be stored as an array.');
+
+        $notification = reset($notifications);
+        throw_unless(is_array($notification), RuntimeException::class, 'Expected one Filament notification payload.');
+
+        $actions = $notification['actions'] ?? null;
+        throw_unless(is_array($actions), RuntimeException::class, 'Expected Filament notification actions to be stored as an array.');
+
+        $startAction = $actions[0] ?? null;
+        $dismissAction = $actions[1] ?? null;
+        throw_unless(is_array($startAction), RuntimeException::class, 'Expected the welcome-tour start action payload.');
+        throw_unless(is_array($dismissAction), RuntimeException::class, 'Expected the welcome-tour dismiss action payload.');
+
+        expect($notification['id'])->toBe('welcome-tour-introduction')
+            ->and($notification['duration'])->toBe('persistent')
+            ->and($notification['title'])->toBe(__('capell-welcome-tour::welcome_tour.callout_heading'))
+            ->and($notification['body'])->toBe(__('capell-welcome-tour::welcome_tour.callout_description'))
+            ->and($actions)->toHaveCount(2)
+            ->and($startAction['event'])->toBe('capell-welcome-tour::start')
+            ->and($startAction['shouldClose'])->toBeTrue()
+            ->and($dismissAction['event'])->toBe('capell-welcome-tour::dismiss')
+            ->and($dismissAction['shouldClose'])->toBeTrue();
+    } finally {
+        SchemaFacade::dropIfExists('sites');
+        resolve(RuntimeSchemaState::class)->forgetTable('sites');
+    }
+});
+
 it('activates a presentation tour before the renderer resolves its chapters', function (): void {
     config()->set('capell-welcome-tour.presentation_mode', true);
 
@@ -207,6 +249,17 @@ it('replays from chapter one without clearing dismissal history', function (): v
         ->and(CanShowWelcomeTourAction::run($user))->toBeFalse()
         ->and(session()->get('capell_welcome_tour.active'))->toBeTrue()
         ->and(session()->get('capell_welcome_tour.show_checklist'))->toBeTrue();
+});
+
+it('starts the tour from the welcome notification event', function (): void {
+    $user = auth()->user();
+    throw_unless($user instanceof User, RuntimeException::class, 'Expected an authenticated test user.');
+
+    (new WelcomeTourOrchestrator)->start();
+
+    expect(session()->get('capell_welcome_tour.active'))->toBeTrue()
+        ->and(session()->get('capell_welcome_tour.show_checklist'))->toBeTrue()
+        ->and(GetUserWelcomeTourStateAction::run($user)->completedStepKeys)->toBe([]);
 });
 
 it('registers application manifest steps ahead of stale configured defaults', function (): void {

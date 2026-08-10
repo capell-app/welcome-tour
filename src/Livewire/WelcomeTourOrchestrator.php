@@ -22,6 +22,12 @@ final class WelcomeTourOrchestrator extends Component
 {
     private const string TOUR_KEY = 'capell_admin_welcome';
 
+    #[On('capell-welcome-tour::start')]
+    public function start(): void
+    {
+        $this->restart();
+    }
+
     #[On('capell-welcome-tour::complete-chapter')]
     public function completeChapter(string $chapterKey): void
     {

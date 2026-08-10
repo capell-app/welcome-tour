@@ -1,30 +1,4 @@
 <x-filament-widgets::widget>
-    @if ($this->shouldShowCallout())
-        <x-filament::section class="mb-6">
-            <x-slot name="heading">
-                {{ __('capell-welcome-tour::welcome_tour.callout_heading') }}
-            </x-slot>
-            <x-slot name="description">
-                {{ __('capell-welcome-tour::welcome_tour.callout_description') }}
-            </x-slot>
-
-            <div class="flex flex-wrap gap-3">
-                <x-filament::button
-                    wire:click="startTour"
-                    icon="heroicon-o-play"
-                >
-                    {{ __('capell-welcome-tour::welcome_tour.take_tour') }}
-                </x-filament::button>
-                <x-filament::button
-                    wire:click="dismissTourCallout"
-                    color="gray"
-                >
-                    {{ __('capell-welcome-tour::welcome_tour.not_now') }}
-                </x-filament::button>
-            </div>
-        </x-filament::section>
-    @endif
-
     @if ($this->shouldShowChecklist())
         <x-filament::section>
             <x-slot name="heading">

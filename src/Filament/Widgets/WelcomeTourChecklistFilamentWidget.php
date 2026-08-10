@@ -12,11 +12,12 @@ use Capell\WelcomeTour\Actions\BuildWelcomeTourChecklistAction;
 use Capell\WelcomeTour\Actions\Users\CanShowWelcomeTourAction;
 use Capell\WelcomeTour\Actions\Users\GetUserWelcomeTourStateAction;
 use Capell\WelcomeTour\Actions\Users\RestartWelcomeTourProgressAction;
-use Capell\WelcomeTour\Actions\Users\SetUserWelcomeTourPreferenceAction;
 use Capell\WelcomeTour\Actions\Users\SetWelcomeTourChecklistItemCompletionAction;
 use Capell\WelcomeTour\Actions\Users\SetWelcomeTourChecklistVisibilityAction;
 use Capell\WelcomeTour\Data\WelcomeTourChecklistItemData;
 use Capell\WelcomeTour\Support\WelcomeTourSchema;
+use Filament\Actions\Action;
+use Filament\Notifications\Notification;
 use Filament\Widgets\Widget;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
@@ -50,6 +51,28 @@ final class WelcomeTourChecklistFilamentWidget extends Widget implements CapellF
     {
         $this->returnPath = $this->returnPathFromReferer()
             ?? '/' . trim(AdminPanelEntrypoint::path(), '/');
+
+        if (! $this->shouldSendWelcomeNotification()) {
+            return;
+        }
+
+        Notification::make('welcome-tour-introduction')
+            ->title(__('capell-welcome-tour::welcome_tour.callout_heading'))
+            ->body(__('capell-welcome-tour::welcome_tour.callout_description'))
+            ->icon('heroicon-o-sparkles')
+            ->actions([
+                Action::make('take-tour')
+                    ->label(__('capell-welcome-tour::welcome_tour.take_tour'))
+                    ->dispatch('capell-welcome-tour::start')
+                    ->close(),
+                Action::make('not-now')
+                    ->label(__('capell-welcome-tour::welcome_tour.not_now'))
+                    ->color('gray')
+                    ->dispatch('capell-welcome-tour::dismiss')
+                    ->close(),
+            ])
+            ->persistent()
+            ->send();
     }
 
     /**
@@ -71,7 +94,7 @@ final class WelcomeTourChecklistFilamentWidget extends Widget implements CapellF
         ));
     }
 
-    public function shouldShowCallout(): bool
+    public function shouldSendWelcomeNotification(): bool
     {
         $user = auth()->user();
 
@@ -138,15 +161,6 @@ final class WelcomeTourChecklistFilamentWidget extends Widget implements CapellF
 
         SetWelcomeTourChecklistItemCompletionAction::run($user, $itemKey, $completed);
         unset($this->items);
-    }
-
-    public function dismissTourCallout(): void
-    {
-        $user = auth()->user();
-
-        if ($user instanceof Model) {
-            SetUserWelcomeTourPreferenceAction::run($user, enabled: false);
-        }
     }
 
     private function returnPathFromReferer(): ?string
