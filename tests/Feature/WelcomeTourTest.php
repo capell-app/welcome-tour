@@ -83,6 +83,21 @@ it('cleans up keyboard dismissal listeners during Livewire navigation', function
         ->toContain("document.body.classList.contains('driver-active')");
 });
 
+it('waits for filament tour elements before automatically opening the dashboard tour', function (): void {
+    $html = view('capell-welcome-tour::livewire.welcome-tour-orchestrator', [
+        'autoStart' => true,
+        'currentChapterKey' => null,
+        'currentTargetSelector' => null,
+    ])->render();
+
+    expect($html)
+        ->toContain("Livewire.on('filament-tour::loaded-elements'")
+        ->toContain("Livewire.dispatch('filament-tour::open-tour'")
+        ->toContain('capell_admin_welcome.dashboard')
+        ->toContain('stopWaitingForTourElements()')
+        ->not->toContain('setTimeout(');
+});
+
 it('skips an active single-step chapter when its rendered target is missing', function (): void {
     $html = view('capell-welcome-tour::livewire.welcome-tour-orchestrator', [
         'autoStart' => false,
