@@ -29,13 +29,21 @@
             "targetType": "admin-overlay",
             "target": "/admin",
             "required": true,
-            "waitFor": ".driver-popover",
-            "interactions": [
+            "beforeWait": [
+                {
+                    "type": "scrollIntoView",
+                    "selector": "[wire\\:name=\"capell.welcome-tour.filament.widgets.welcome-tour-checklist-filament-widget\"]"
+                },
+                {
+                    "type": "waitFor",
+                    "selector": "button[wire\\:click=\"startTour\"]"
+                },
                 {
                     "type": "click",
                     "selector": "button[wire\\:click=\"startTour\"]"
                 }
             ],
+            "waitFor": ".driver-popover",
             "notes": "Use an admin account that has not dismissed the tour.",
             "useCase": "A first-time administrator sees the first configured tour step overlay.",
             "screenshotPath": "packages/welcome-tour/docs/screenshots/welcome-tour-overlay.png"

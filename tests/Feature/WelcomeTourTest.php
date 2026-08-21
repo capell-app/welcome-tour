@@ -72,6 +72,7 @@ it('renders a dashboard replay action with a stable tour target', function (): v
 it('cleans up keyboard dismissal listeners during Livewire navigation', function (): void {
     $html = view('capell-welcome-tour::livewire.welcome-tour-orchestrator', [
         'autoStart' => false,
+        'tourIdToOpen' => null,
         'currentChapterKey' => null,
         'currentTargetSelector' => null,
     ])->render();
@@ -83,15 +84,19 @@ it('cleans up keyboard dismissal listeners during Livewire navigation', function
         ->toContain("document.body.classList.contains('driver-active')");
 });
 
-it('waits for filament tour elements before automatically opening the dashboard tour', function (): void {
+it('waits for the requested filament tour registry entry before automatically opening the dashboard tour', function (): void {
     $html = view('capell-welcome-tour::livewire.welcome-tour-orchestrator', [
         'autoStart' => true,
+        'tourIdToOpen' => 'capell_admin_welcome.dashboard',
         'currentChapterKey' => null,
         'currentTargetSelector' => null,
     ])->render();
 
     expect($html)
         ->toContain("Livewire.on('filament-tour::loaded-elements'")
+        ->toContain('({ tours = [] })')
+        ->toContain('tours.some((tour) => tour.id === `tour_${tourIdToOpen}`)')
+        ->toContain("queueMicrotask(() => Livewire.dispatch('filament-tour::open-tour'")
         ->toContain("Livewire.dispatch('filament-tour::open-tour'")
         ->toContain('capell_admin_welcome.dashboard')
         ->toContain('stopWaitingForTourElements()')
@@ -101,6 +106,7 @@ it('waits for filament tour elements before automatically opening the dashboard 
 it('skips an active single-step chapter when its rendered target is missing', function (): void {
     $html = view('capell-welcome-tour::livewire.welcome-tour-orchestrator', [
         'autoStart' => false,
+        'tourIdToOpen' => null,
         'currentChapterKey' => 'sites',
         'currentTargetSelector' => '[data-tour-id="welcome-tour-sites"]',
     ])->render();
@@ -188,10 +194,47 @@ it('activates a presentation tour before the renderer resolves its chapters', fu
     $request->setLaravelSession($session);
     app()->instance('request', $request);
 
-    (new WelcomeTourOrchestrator)->render();
+    $html = (new WelcomeTourOrchestrator)->render()->render();
 
     expect(session()->get('capell_welcome_tour.active'))->toBeTrue()
-        ->and((new WelcomeTourDashboard)->tours())->toHaveCount(1);
+        ->and((new WelcomeTourDashboard)->tours())->toHaveCount(1)
+        ->and($html)->toContain('capell_admin_welcome.dashboard');
+});
+
+it('opens the first configured chapter for an active normal session', function (): void {
+    $user = User::factory()->create();
+    test()->actingAs($user);
+
+    CapellAdmin::registerWelcomeTourStep(
+        key: 'capell-welcome-tour.overview',
+        title: 'Overview',
+        description: 'Start here',
+        chapter: 'overview',
+        route: '/admin',
+    );
+    CapellAdmin::registerWelcomeTourStep(
+        key: 'capell-welcome-tour.settings',
+        title: 'Settings',
+        description: 'Configure the workspace',
+        chapter: 'settings',
+        route: '/admin',
+    );
+
+    session()->put('capell_welcome_tour.active', true);
+
+    $request = Request::create('/admin');
+    $session = app('session')->driver();
+    throw_unless($session instanceof Session, RuntimeException::class, 'Expected a Laravel session driver.');
+    $request->setLaravelSession($session);
+    app()->instance('request', $request);
+
+    $html = (new WelcomeTourOrchestrator)->render()->render();
+
+    expect($html)
+        ->toContain('capell_admin_welcome.overview')
+        ->not->toContain('capell_admin_welcome.settings')
+        ->toContain('if (tourIdToOpen)')
+        ->toContain("Livewire.dispatch('filament-tour::open-tour'");
 });
 
 it('lets users hide the checklist and reveal it again when replaying the tour', function (): void {

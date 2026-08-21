@@ -97,6 +97,7 @@ final class WelcomeTourOrchestrator extends Component
     {
         $user = auth()->user();
         $autoStart = false;
+        $tourIdToOpen = null;
         $currentChapterKey = null;
         $currentTargetSelector = null;
 
@@ -110,16 +111,26 @@ final class WelcomeTourOrchestrator extends Component
             if ($autoStart) {
                 $store->markAutoStarted($user, self::TOUR_KEY);
                 session()->put('capell_welcome_tour.active', true);
+                $tourIdToOpen = self::TOUR_KEY . '.dashboard';
             }
         }
 
         if ($user instanceof Model && $this->isTourActive()) {
             $currentPath = '/' . trim(request()->path(), '/');
-            /** @var WelcomeTourChapterData|null $chapter */
-            $chapter = collect(ResolveWelcomeTourChaptersAction::run(
+            /** @var list<WelcomeTourChapterData> $chapters */
+            $chapters = ResolveWelcomeTourChaptersAction::run(
                 CapellAdmin::getWelcomeTourSteps(),
                 GetUserWelcomeTourStateAction::run($user, self::TOUR_KEY),
-            ))->first(fn (WelcomeTourChapterData $chapter): bool => $chapter->route === $currentPath);
+            );
+
+            /** @var WelcomeTourChapterData|null $chapter */
+            $chapter = collect($chapters)->first(fn (WelcomeTourChapterData $chapter): bool => $chapter->route === $currentPath);
+
+            if (! config('capell-welcome-tour.presentation_mode', false)
+                && (bool) session()->get('capell_welcome_tour.active', false)
+                && $chapter !== null) {
+                $tourIdToOpen = self::TOUR_KEY . '.' . $chapter->key;
+            }
 
             if ($chapter !== null && count($chapter->steps) === 1) {
                 $currentChapterKey = $chapter->key;
@@ -129,6 +140,7 @@ final class WelcomeTourOrchestrator extends Component
 
         return view('capell-welcome-tour::livewire.welcome-tour-orchestrator', [
             'autoStart' => $autoStart,
+            'tourIdToOpen' => $tourIdToOpen,
             'currentChapterKey' => $currentChapterKey,
             'currentTargetSelector' => $currentTargetSelector,
         ]);
