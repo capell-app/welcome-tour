@@ -11,7 +11,10 @@ it('loads the lazy checklist before starting the required overlay capture', func
         flags: JSON_THROW_ON_ERROR,
     );
 
-    $entry = collect($screenshots['entries'])->firstWhere('id', 'welcome-tour-overlay');
+    $entries = is_array($screenshots) ? ($screenshots['entries'] ?? null) : null;
+    throw_unless(is_array($entries), RuntimeException::class, 'Expected the welcome-tour screenshot manifest to contain entries.');
+
+    $entry = collect($entries)->firstWhere('id', 'welcome-tour-overlay');
 
     expect($entry)->toMatchArray([
         'beforeWait' => [
