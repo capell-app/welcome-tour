@@ -10,8 +10,6 @@ Welcome Tour adds a contextual admin checklist with per-user step state, prefere
 
 Administrators see relevant setup steps on the dashboard and can complete, snooze, or reset their own tour state.
 
-Evidence: [`src/Filament/Widgets/WelcomeTourChecklistFilamentWidget.php`](src/Filament/Widgets/WelcomeTourChecklistFilamentWidget.php), [`src/Actions/BuildWelcomeTourChecklistAction.php`](src/Actions/BuildWelcomeTourChecklistAction.php), [`src/Support/ContextualWelcomeTourRegistry.php`](src/Support/ContextualWelcomeTourRegistry.php), [`tests/Feature/WelcomeTourTest.php`](tests/Feature/WelcomeTourTest.php), [`src/Filament/Extenders/WelcomeTourPanelExtender.php`](src/Filament/Extenders/WelcomeTourPanelExtender.php).
-
 Status details:
 
 - Status: Available
@@ -26,8 +24,6 @@ Status details:
 **For developers:** A contextual registry and focused Actions keep checklist composition separate from the Filament widget and persisted user state.
 
 **For teams:** Teams can give each administrator a repeatable setup path without forcing every user through the same uninterrupted sequence.
-
-Evidence: [`src/Support/ContextualWelcomeTourRegistry.php`](src/Support/ContextualWelcomeTourRegistry.php), [`src/Actions/BuildWelcomeTourChecklistAction.php`](src/Actions/BuildWelcomeTourChecklistAction.php), [`tests/Unit/WelcomeTourSchemaCoverageTest.php`](tests/Unit/WelcomeTourSchemaCoverageTest.php), [`src/Filament/Widgets/WelcomeTourChecklistFilamentWidget.php`](src/Filament/Widgets/WelcomeTourChecklistFilamentWidget.php), [`tests/Feature/WelcomeTourTest.php`](tests/Feature/WelcomeTourTest.php), [`tests/Feature/WelcomeTourSettingsTest.php`](tests/Feature/WelcomeTourSettingsTest.php).
 
 ## Screens And Workflow
 
@@ -102,6 +98,7 @@ Desktop, tablet, and mobile variants remain defined in the screenshot contract; 
 - `BuildWelcomeTourSummaryAction`
 - `CanShowWelcomeTourStepAction`
 - `NormalizeWelcomeTourStepsAction`
+- `PrepareWelcomeTourScreenshotAction`
 - `ResolveWelcomeTourChaptersAction`
 - `ResolveWelcomeTourDestinationAction`
 - `ResolveWelcomeTourEnabledAction`
@@ -200,12 +197,13 @@ Desktop, tablet, and mobile variants remain defined in the screenshot contract; 
 ## Quick Start
 
 1. Install the package: `composer require capell-app/welcome-tour`.
-2. Open a verified package admin surface and confirm Welcome Tour is available.
+2. Open a host admin workflow that uses the package extension and verify Welcome Tour is available.
 
 ## Next Steps
 
 - [Package docs](docs/README.md)
 - [Overview](docs/overview.md)
+- [Worked extension examples](docs/extension-contracts.md)
 - [Admin guide](docs/admin-guide.md)
 - Configuration files: [`config/capell-welcome-tour.php`](config/capell-welcome-tour.php).
 - [Troubleshooting](#troubleshooting)
@@ -214,6 +212,5 @@ Desktop, tablet, and mobile variants remain defined in the screenshot contract; 
 - [Capell content language plan](../../docs/CONTENT_LANGUAGE_PLAN.md)
 - [Capell documentation design system](../../docs/DESIGN_SYSTEM.md)
 - [Capell and package ERD notes](../../docs/erd/capell-and-package-erds.md)
-- Focused tests: `vendor/bin/pest packages/welcome-tour/tests --configuration=phpunit.xml`.
 
 <!-- prettier-ignore-end -->

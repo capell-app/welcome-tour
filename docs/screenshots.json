@@ -119,8 +119,16 @@
             "colorSchemes": ["light", "dark"],
             "beforeWait": [
                 {
+                    "type": "waitForTimeout",
+                    "timeout": 1000
+                },
+                {
                     "type": "click",
                     "selector": ".fi-topbar-open-collapse-sidebar-btn"
+                },
+                {
+                    "type": "waitFor",
+                    "selector": ".fi-sidebar.fi-sidebar-open"
                 }
             ],
             "requiredViewport": {

@@ -42,6 +42,7 @@ return [
     'step_roles' => 'Roles',
     'step_roles_helper' => 'Optional comma-separated role names. Leave empty for all admins.',
     'step_user_created_within_days' => 'First-run days',
+    'step_user_created_within_days_helper' => 'A positive value limits this step to users created within that many days. Leave empty for no limit; stored zero values are also unrestricted.',
     'step_icon' => 'Icon',
     'step_icon_color' => 'Icon color',
     'step_sort' => 'Sort',

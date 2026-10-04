@@ -18,10 +18,12 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Str;
+use Override;
 
 class WelcomeTourSettingsSchema implements HasSchema
 {
     /** @return list<Section> */
+    #[Override]
     public static function make(Schema $schema): array
     {
         return [
@@ -73,6 +75,7 @@ class WelcomeTourSettingsSchema implements HasSchema
                                         ->helperText(__('capell-welcome-tour::welcome_tour.step_roles_helper')),
                                     TextInput::make('user_created_within_days')
                                         ->label(__('capell-welcome-tour::welcome_tour.step_user_created_within_days'))
+                                        ->helperText(__('capell-welcome-tour::welcome_tour.step_user_created_within_days_helper'))
                                         ->integer()->minValue(1),
                                 ]),
                             Section::make(__('capell-welcome-tour::welcome_tour.appearance'))
