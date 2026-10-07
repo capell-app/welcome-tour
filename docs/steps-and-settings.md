@@ -134,12 +134,6 @@ Welcome Tour stores dismissal in the host `users.dismissed_hints` column when th
 
 The package table also records completed step keys and snooze state. When a user leaves part-way through the tour, the dashboard resumes at the first incomplete step. The dashboard header includes Remind me later and Restart tour actions for the current user.
 
-## Verification
-
-```bash
-vendor/bin/pest packages/welcome-tour/tests --configuration=phpunit.xml
-```
-
 ## Operator controls and developer authoring
 
 Extension settings lead with **Enabled**, the current actor's checklist and chapter summary, **Preview as me**, and **Restart my tour**. The summary uses the saved registry and applies the current actor's visibility and resource permissions. Save settings before previewing. Preview runs the existing tour renderer with isolated session state; completion, dismissal and snooze leave database preferences and progress unchanged. Restart clears only the current actor's main tour progress and snooze. Account eligibility remains a separate User form preference; enabling it no longer clears completed steps.

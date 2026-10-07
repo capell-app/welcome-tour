@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Capell\WelcomeTour\Tests;
 
 use AmidEsfahani\FilamentTinyEditor\TinyeditorServiceProvider;
-use Awcodes\BadgeableColumn\BadgeableColumnServiceProvider;
 use BezhanSalleh\FilamentShield\FilamentShieldServiceProvider;
 use BladeUI\Heroicons\BladeHeroiconsServiceProvider;
 use Capell\Admin\Facades\CapellAdmin;
@@ -78,7 +77,6 @@ abstract class WelcomeTourTestCase extends PackagesTestCase
         return [
             ...parent::getPackageProviders($app),
             ActionsServiceProvider::class,
-            BadgeableColumnServiceProvider::class,
             SpatieTranslatableServiceProvider::class,
             TinyeditorServiceProvider::class,
             FilamentServiceProvider::class,

@@ -9,7 +9,6 @@ use Capell\Admin\Contracts\Extenders\AdminPanelExtender;
 use Capell\Admin\Data\Extensions\ExtensionManagementSurfaceData;
 use Capell\Admin\Enums\DashboardEnum;
 use Capell\Admin\Facades\CapellAdmin;
-use Capell\Core\Facades\CapellCore;
 use Capell\Core\Support\Packages\AbstractPackageServiceProvider;
 use Capell\Core\Support\Settings\SettingsGroupMetadata;
 use Capell\WelcomeTour\Filament\Extenders\WelcomeTourPanelExtender;
@@ -33,6 +32,8 @@ final class WelcomeTourServiceProvider extends AbstractPackageServiceProvider
 
     public static string $packageName = 'capell-app/welcome-tour';
 
+    private bool $installedRuntimeBooted = false;
+
     private bool $panelExtenderTagged = false;
 
     /**
@@ -46,6 +47,7 @@ final class WelcomeTourServiceProvider extends AbstractPackageServiceProvider
         ];
     }
 
+    #[Override]
     public function configurePackage(Package $package): void
     {
         $package
@@ -69,13 +71,22 @@ final class WelcomeTourServiceProvider extends AbstractPackageServiceProvider
             $this->app->tag([WelcomeTourPanelExtender::class], AdminPanelExtender::TAG);
             $this->panelExtenderTagged = true;
         }
+
+        $this->booted($this->registerEnabledRuntime(...));
     }
 
     #[Override]
-    protected function bootInstalledPackage(): self
+    protected function bootInstalledRuntime(): void
     {
-        if (! $this->shouldRegisterRuntime()) {
-            return $this;
+        $this->registerEnabledRuntime();
+    }
+
+    private function registerEnabledRuntime(): void
+    {
+        if ($this->installedRuntimeBooted
+            || ! $this->isPackageInstalled()
+            || ! $this->shouldRegisterRuntime()) {
+            return;
         }
 
         Livewire::component('capell-welcome-tour.orchestrator', WelcomeTourOrchestrator::class);
@@ -91,7 +102,7 @@ final class WelcomeTourServiceProvider extends AbstractPackageServiceProvider
         ));
 
         $this->registerSettings();
-        $this->app->booted(fn () => resolve(WelcomeTourStepRegistrar::class)->register());
+        resolve(WelcomeTourStepRegistrar::class)->register();
         Filament::serving(fn () => resolve(WelcomeTourStepRegistrar::class)->register());
         $contextualTours = config('capell-welcome-tour.contextual_tours', []);
 
@@ -99,16 +110,12 @@ final class WelcomeTourServiceProvider extends AbstractPackageServiceProvider
             is_array($contextualTours) ? $contextualTours : [],
         );
 
-        return $this;
+        $this->installedRuntimeBooted = true;
     }
 
     private function shouldRegisterRuntime(): bool
     {
-        if (! config('capell-welcome-tour.enabled', true)) {
-            return false;
-        }
-
-        return CapellCore::isPackageInstalled(self::$packageName);
+        return config('capell-welcome-tour.enabled', true) === true;
     }
 
     private function registerSettings(): void

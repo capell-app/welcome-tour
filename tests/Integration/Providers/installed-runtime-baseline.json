@@ -1,0 +1,117 @@
+{
+    "version": 3,
+    "package": "welcome-tour",
+    "scenarios": {
+        "default": {
+            "source": {
+                "ref": "origin/main",
+                "commit": "646068b2d21e233ea517c342d62bc0eca1762192",
+                "providers": {
+                    "Providers/WelcomeTourServiceProvider.php": "2fe3f7275c01ac4bbc8b480963e036b14f80e55fa1991b4d13d3fcf170827ce3"
+                }
+            },
+            "disabledContributions": [],
+            "surfaces": {
+                "routes": [],
+                "livewire": [
+                    "capell-welcome-tour.orchestrator=Capell\\WelcomeTour\\Livewire\\WelcomeTourOrchestrator",
+                    "capell-welcome-tour.settings-controls=Capell\\WelcomeTour\\Livewire\\WelcomeTourSettingsControls"
+                ],
+                "filament": [],
+                "listeners": [
+                    "Filament\\Events\\ServingFilament|Capell\\WelcomeTour\\Providers\\WelcomeTourServiceProvider(): bound=Capell\\WelcomeTour\\Providers\\WelcomeTourServiceProvider"
+                ],
+                "gates": [],
+                "policies": [],
+                "commands": [],
+                "view-namespaces": ["capell-welcome-tour"],
+                "config-keys": [
+                    "capell-welcome-tour",
+                    "capell-welcome-tour.checklist",
+                    "capell-welcome-tour.checklist.0",
+                    "capell-welcome-tour.checklist.0.complete_when",
+                    "capell-welcome-tour.checklist.0.description",
+                    "capell-welcome-tour.checklist.0.key",
+                    "capell-welcome-tour.checklist.0.label",
+                    "capell-welcome-tour.checklist.0.resource",
+                    "capell-welcome-tour.checklist.1",
+                    "capell-welcome-tour.checklist.1.complete_when",
+                    "capell-welcome-tour.checklist.1.description",
+                    "capell-welcome-tour.checklist.1.key",
+                    "capell-welcome-tour.checklist.1.label",
+                    "capell-welcome-tour.checklist.1.resource",
+                    "capell-welcome-tour.checklist.1.resource_page",
+                    "capell-welcome-tour.checklist.2",
+                    "capell-welcome-tour.checklist.2.complete_when",
+                    "capell-welcome-tour.checklist.2.description",
+                    "capell-welcome-tour.checklist.2.key",
+                    "capell-welcome-tour.checklist.2.label",
+                    "capell-welcome-tour.checklist.2.resource",
+                    "capell-welcome-tour.checklist.3",
+                    "capell-welcome-tour.checklist.3.complete_when",
+                    "capell-welcome-tour.checklist.3.description",
+                    "capell-welcome-tour.checklist.3.key",
+                    "capell-welcome-tour.checklist.3.label",
+                    "capell-welcome-tour.checklist.3.resource",
+                    "capell-welcome-tour.contextual_tours",
+                    "capell-welcome-tour.enabled",
+                    "capell-welcome-tour.manifest_steps",
+                    "capell-welcome-tour.presentation_mode",
+                    "capell-welcome-tour.steps"
+                ],
+                "migrations": [
+                    "2026_06_04_000001_create_welcome_tour_user_states_table",
+                    "2026_07_19_000001_add_checklist_state_to_welcome_tour_user_states_table"
+                ]
+            },
+            "uninstalledSurfaces": {
+                "routes": [],
+                "livewire": [],
+                "filament": [],
+                "listeners": [],
+                "gates": [],
+                "policies": [],
+                "commands": [],
+                "view-namespaces": ["capell-welcome-tour"],
+                "config-keys": [
+                    "capell-welcome-tour",
+                    "capell-welcome-tour.checklist",
+                    "capell-welcome-tour.checklist.0",
+                    "capell-welcome-tour.checklist.0.complete_when",
+                    "capell-welcome-tour.checklist.0.description",
+                    "capell-welcome-tour.checklist.0.key",
+                    "capell-welcome-tour.checklist.0.label",
+                    "capell-welcome-tour.checklist.0.resource",
+                    "capell-welcome-tour.checklist.1",
+                    "capell-welcome-tour.checklist.1.complete_when",
+                    "capell-welcome-tour.checklist.1.description",
+                    "capell-welcome-tour.checklist.1.key",
+                    "capell-welcome-tour.checklist.1.label",
+                    "capell-welcome-tour.checklist.1.resource",
+                    "capell-welcome-tour.checklist.1.resource_page",
+                    "capell-welcome-tour.checklist.2",
+                    "capell-welcome-tour.checklist.2.complete_when",
+                    "capell-welcome-tour.checklist.2.description",
+                    "capell-welcome-tour.checklist.2.key",
+                    "capell-welcome-tour.checklist.2.label",
+                    "capell-welcome-tour.checklist.2.resource",
+                    "capell-welcome-tour.checklist.3",
+                    "capell-welcome-tour.checklist.3.complete_when",
+                    "capell-welcome-tour.checklist.3.description",
+                    "capell-welcome-tour.checklist.3.key",
+                    "capell-welcome-tour.checklist.3.label",
+                    "capell-welcome-tour.checklist.3.resource",
+                    "capell-welcome-tour.contextual_tours",
+                    "capell-welcome-tour.enabled",
+                    "capell-welcome-tour.manifest_steps",
+                    "capell-welcome-tour.presentation_mode",
+                    "capell-welcome-tour.steps"
+                ],
+                "migrations": [
+                    "2026_06_04_000001_create_welcome_tour_user_states_table",
+                    "2026_07_19_000001_add_checklist_state_to_welcome_tour_user_states_table"
+                ]
+            }
+        }
+    }
+}

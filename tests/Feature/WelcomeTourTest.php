@@ -37,7 +37,7 @@ use Capell\WelcomeTour\Support\ContextualWelcomeTourRegistry;
 use Capell\WelcomeTour\Support\WelcomeTourStepContributor;
 use Capell\WelcomeTour\Support\WelcomeTourStepRegistrar;
 use Capell\WelcomeTour\Support\WelcomeTourUserResourceBridge;
-use Filament\Panel;
+use Filament\Facades\Filament;
 use Filament\Schemas\Schema;
 use Illuminate\Contracts\Session\Session;
 use Illuminate\Database\Eloquent\Model;
@@ -142,11 +142,10 @@ it('reports an unavailable target without completing its chapter', function (): 
 });
 
 it('uses the package dashboard page and registers the filament tour plugin', function (): void {
-    $panel = Panel::make();
-
-    CapellAdminPlugin::make()->register($panel);
+    $panel = Filament::getDefaultPanel();
 
     expect(CapellAdmin::getDashboardPage())->not->toBe(WelcomeTourDashboard::class)
+        ->and($panel->hasPlugin(CapellAdminPlugin::ID))->toBeTrue()
         ->and($panel->getPages())->toContain(WelcomeTourDashboard::class)
         ->and($panel->hasPlugin('filament-tour'))->toBeTrue();
 });
