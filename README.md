@@ -168,7 +168,7 @@ Desktop, tablet, and mobile variants remain defined in the screenshot contract; 
 
 ## Install Impact
 
-- Required packages: `capell-app/admin`.
+- Required packages: `capell-app/admin`, `capell-app/core`.
 - Admin navigation: no admin page or resource contribution is declared.
 - Admin/editor extensions: `dashboard-widget: WelcomeTourChecklistWidgetContribution`.
 - Permissions: no package permission declarations or Shield gates detected; host access rules still apply.
@@ -182,7 +182,7 @@ Desktop, tablet, and mobile variants remain defined in the screenshot contract; 
 
 ## Common Pitfalls
 
-- Keep required Capell packages on compatible v4 releases: `capell-app/admin`.
+- Keep required Capell packages on compatible v4 releases: `capell-app/admin`, `capell-app/core`.
 - Run migrations before opening package resources or public routes.
 - Review package configuration before production-like verification: `config/capell-welcome-tour.php`, `Capell\WelcomeTour\Settings\WelcomeTourSettings`.
 - Custom write integrations must preserve invalidation for `welcome-tour` cache tags.
