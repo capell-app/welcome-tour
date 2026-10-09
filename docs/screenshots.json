@@ -462,6 +462,20 @@
                 "height": 900
             },
             "url": "/screenshot-fixtures/welcome-tour/settings"
+        },
+        {
+            "id": "welcome-tour-tour-advance",
+            "colorSchemes": ["light"],
+            "title": "Welcome tour advancing between onboarding steps.",
+            "package": "welcome-tour",
+            "surface": "admin",
+            "targetType": "artifact",
+            "target": "tour-advance",
+            "required": false,
+            "path": "docs/screenshots/welcome-tour-tour-advance.gif",
+            "fixtureKind": "illustrative-workflow",
+            "notes": "Committed animation of the tour advancing between steps. The screenshot runner does not capture animations, so it is a static file and is recorded as a manifest exclusion in docs/screenshot-receipt-baseline.json.",
+            "useCase": "An administrator previews how the tour moves between onboarding steps."
         }
     ]
 }
