@@ -24,6 +24,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Locked;
+use Override;
 
 final class WelcomeTourChecklistFilamentWidget extends Widget implements CapellFilamentWidgetContract, RegistersExtensionFilamentWidget
 {
@@ -43,9 +44,16 @@ final class WelcomeTourChecklistFilamentWidget extends Widget implements CapellF
 
     protected static ?int $sort = -1;
 
+    #[Override]
     public static function compatibleCapellApiVersion(): string
     {
         return '^1.0';
+    }
+
+    #[Override]
+    public static function canView(): bool
+    {
+        return config('capell-welcome-tour.enabled', true) === true && self::canViewCheck();
     }
 
     public function mount(): void

@@ -9,6 +9,7 @@ use Capell\Admin\Facades\CapellAdmin;
 use Capell\Admin\Filament\Plugin\CapellAdminPlugin;
 use Capell\Core\Support\Database\RuntimeSchemaState;
 use Capell\Tests\Fixtures\Models\User;
+use Capell\Tests\Support\FilamentNotificationTestSupport;
 use Capell\WelcomeTour\Actions\BuildWelcomeTourChecklistAction;
 use Capell\WelcomeTour\Actions\CanShowWelcomeTourStepAction;
 use Capell\WelcomeTour\Actions\Users\CanShowWelcomeTourAction;
@@ -169,8 +170,8 @@ it('sends the welcome message as a persistent filament notification', function (
         $widget = new WelcomeTourChecklistFilamentWidget;
         $widget->mount();
 
-        $notifications = session()->get('filament.notifications');
-        throw_unless(is_array($notifications), RuntimeException::class, 'Expected Filament notifications to be stored as an array.');
+        $notifications = FilamentNotificationTestSupport::pull();
+        expect($notifications)->toHaveCount(1);
 
         $notification = reset($notifications);
         throw_unless(is_array($notification), RuntimeException::class, 'Expected one Filament notification payload.');

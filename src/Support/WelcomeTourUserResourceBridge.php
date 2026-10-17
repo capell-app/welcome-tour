@@ -7,8 +7,10 @@ namespace Capell\WelcomeTour\Support;
 use Capell\Admin\Data\Schemas\UserSchemaContextData;
 use Capell\Admin\Enums\UserSchemaHookEnum;
 use Capell\Admin\Support\Bridges\AbstractUserResourceBridge;
+use Capell\Core\Facades\CapellCore;
 use Capell\WelcomeTour\Actions\Users\CanShowWelcomeTourAction;
 use Capell\WelcomeTour\Actions\Users\SetUserWelcomeTourPreferenceAction;
+use Capell\WelcomeTour\Providers\WelcomeTourServiceProvider;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Component;
 use Filament\Schemas\Schema;
@@ -17,6 +19,13 @@ use Override;
 
 final class WelcomeTourUserResourceBridge extends AbstractUserResourceBridge
 {
+    #[Override]
+    public function supports(UserSchemaContextData $context): bool
+    {
+        return config('capell-welcome-tour.enabled', true) === true
+            && CapellCore::isPackageEnabled(WelcomeTourServiceProvider::$packageName);
+    }
+
     /**
      * @return array<int, Component>
      */

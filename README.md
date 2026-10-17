@@ -41,6 +41,7 @@ Desktop, tablet, and mobile variants remain defined in the screenshot contract; 
 - User edit form with Show welcome tour toggle (admin, required evidence).
 - Capell admin dashboard with the Welcome Tour onboarding checklist with admin sidebar menu open (admin, supplementary evidence).
 - Welcome Tour grouped developer authoring and destination validation (admin, required evidence).
+- Welcome tour advancing between onboarding steps (admin, supplementary documentation fixture).
 
 ## Technical Shape
 

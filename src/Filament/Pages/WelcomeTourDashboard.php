@@ -21,6 +21,7 @@ use Capell\WelcomeTour\Events\WelcomeTourCompleted;
 use Capell\WelcomeTour\Events\WelcomeTourStarted;
 use Capell\WelcomeTour\Support\WelcomeTourStepFactory;
 use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
 use Filament\Notifications\Notification;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Database\Eloquent\Model;
@@ -164,7 +165,7 @@ class WelcomeTourDashboard extends CapellDashboard
     }
 
     /**
-     * @return array<int, Action>
+     * @return array<int, Action|ActionGroup>
      */
     #[Override]
     protected function getHeaderActions(): array

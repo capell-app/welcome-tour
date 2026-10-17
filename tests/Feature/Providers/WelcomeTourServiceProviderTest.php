@@ -3,169 +3,111 @@
 declare(strict_types=1);
 
 use Capell\Admin\Contracts\Extenders\AdminPanelExtender;
-use Capell\Core\Facades\CapellCore;
+use Capell\Admin\Data\Schemas\UserSchemaContextData;
+use Capell\Tests\Support\InstalledRuntimeParity;
+use Capell\Tests\Support\InstalledRuntimeState;
+use Capell\Tests\Support\InstalledRuntimeTestCase;
 use Capell\WelcomeTour\Filament\Extenders\WelcomeTourPanelExtender;
+use Capell\WelcomeTour\Filament\Widgets\WelcomeTourChecklistFilamentWidget;
 use Capell\WelcomeTour\Providers\WelcomeTourServiceProvider;
+use Capell\WelcomeTour\Support\ContextualWelcomeTourRegistry;
+use Capell\WelcomeTour\Support\WelcomeTourUserResourceBridge;
 use Filament\Panel;
+use Filament\Support\Facades\FilamentView;
+use Filament\Support\View\ViewManager;
 use Filament\View\PanelsRenderHook;
+use Illuminate\Contracts\Config\Repository;
+use Illuminate\Foundation\Application;
+use JibayMcs\FilamentTour\FilamentTourServiceProvider;
 
-it('does not resolve unrelated panel extenders while registering its own', function (): void {
-    $tagsProperty = new ReflectionProperty(app(), 'tags');
-    $originalTags = $tagsProperty->getValue(app());
-    throw_unless(is_array($originalTags), RuntimeException::class, 'Expected application container tags.');
-
-    $constructions = 0;
-    app()->bind('welcome-tour-unrelated-panel-extender-probe', function () use (&$constructions): AdminPanelExtender {
-        $constructions++;
-
-        return new class implements AdminPanelExtender
-        {
-            public function extend(Panel $panel): void {}
-        };
+it('does not resolve unrelated panel extenders during registration', function (): void {
+    app()->bind('welcome-tour-unrelated-panel-extender-probe', static function (): never {
+        throw new RuntimeException('Unrelated panel extender was resolved during registration.');
     });
     app()->tag('welcome-tour-unrelated-panel-extender-probe', AdminPanelExtender::TAG);
 
-    try {
-        $provider = new WelcomeTourServiceProvider(app());
-        $provider->registeringPackage();
+    $provider = new WelcomeTourServiceProvider(app());
+    $provider->registeringPackage();
 
-        expect($constructions)->toBe(0);
-    } finally {
-        $tagsProperty->setValue(app(), $originalTags);
-    }
+    $panel = Panel::make();
+    resolve(WelcomeTourPanelExtender::class)->extend($panel);
+    expect($panel->hasPlugin('filament-tour'))->toBeTrue();
 });
 
-it('registers the installed tour panel extender before the panel consumes it', function (): void {
-    $tagsProperty = new ReflectionProperty(app(), 'tags');
-    $originalTags = $tagsProperty->getValue(app());
-    throw_unless(is_array($originalTags), RuntimeException::class, 'Expected application container tags.');
-    $tags = $originalTags;
-    $tags[AdminPanelExtender::TAG] = array_values(array_filter(
-        (array) ($tags[AdminPanelExtender::TAG] ?? []),
-        static fn (mixed $abstract): bool => $abstract !== WelcomeTourPanelExtender::class,
-    ));
-    $tagsProperty->setValue(app(), $tags);
-    CapellCore::forcePackageInstalled(WelcomeTourServiceProvider::$packageName, true);
+it('renders one tour orchestrator after repeated package registration', function (): void {
+    InstalledRuntimeState::run(static function (): void {
+        $app = InstalledRuntimeTestCase::boot(InstalledRuntimeParity::manifest('welcome-tour'), true);
+        $app->register(FilamentTourServiceProvider::class);
 
-    try {
-        $provider = new WelcomeTourServiceProvider(app());
-
+        $provider = $app->getProvider(WelcomeTourServiceProvider::class);
+        throw_unless($provider instanceof WelcomeTourServiceProvider, RuntimeException::class);
         $provider->registeringPackage();
         $provider->registeringPackage();
-
-        $welcomeExtenders = collect(app()->tagged(AdminPanelExtender::TAG))
-            ->filter(static fn (mixed $extender): bool => $extender instanceof WelcomeTourPanelExtender);
-
-        expect($welcomeExtenders)->toHaveCount(1);
 
         $panel = Panel::make();
-        $welcomeExtender = $welcomeExtenders->first();
-        throw_unless($welcomeExtender instanceof WelcomeTourPanelExtender, RuntimeException::class, 'Expected the Welcome Tour panel extender.');
-        $welcomeExtender->extend($panel);
-
-        expect($panel->hasPlugin('filament-tour'))->toBeTrue();
-
-        $reflection = new ReflectionProperty($panel, 'renderHooks');
-        $renderHooks = $reflection->getValue($panel);
-        throw_unless(is_array($renderHooks), RuntimeException::class, 'Expected panel render hooks.');
-        $bodyStartScopes = $renderHooks[PanelsRenderHook::BODY_START] ?? null;
-        throw_unless(is_array($bodyStartScopes), RuntimeException::class, 'Expected body-start render hooks.');
-        $bodyStartHooks = $bodyStartScopes[''] ?? null;
-        throw_unless(is_array($bodyStartHooks), RuntimeException::class, 'Expected unscoped body-start hooks.');
-        expect($bodyStartHooks)->toHaveCount(2);
-
-        $rendered = '';
-        foreach ($bodyStartHooks as $hook) {
-            throw_unless($hook instanceof Closure, RuntimeException::class, 'Expected a body-start render hook.');
-            $rendered .= (string) $hook();
-        }
-
-        expect($rendered)->toContain('wire:id')
-            ->toContain('x-data');
-    } finally {
-        $tagsProperty->setValue(app(), $originalTags);
-        CapellCore::forcePackageInstalled(WelcomeTourServiceProvider::$packageName);
-    }
-});
-
-it('does not render an orchestrator hook when the package is not installed', function (): void {
-    $tagsProperty = new ReflectionProperty(app(), 'tags');
-    $originalTags = $tagsProperty->getValue(app());
-    throw_unless(is_array($originalTags), RuntimeException::class, 'Expected the application container tags to be an array.');
-
-    $tags = $originalTags;
-    $tags[AdminPanelExtender::TAG] = array_values(array_filter(
-        (array) ($tags[AdminPanelExtender::TAG] ?? []),
-        static fn (mixed $abstract): bool => $abstract !== WelcomeTourPanelExtender::class,
-    ));
-
-    $tagsProperty->setValue(app(), $tags);
-    CapellCore::forcePackageInstalled(WelcomeTourServiceProvider::$packageName, false);
-
-    try {
-        $provider = new WelcomeTourServiceProvider(app());
-
-        $provider->registeringPackage();
-
-        $welcomeExtenders = collect(app()->tagged(AdminPanelExtender::TAG))
-            ->filter(static fn (mixed $extender): bool => $extender instanceof WelcomeTourPanelExtender);
-        $panel = Panel::make();
-
-        $rendered = '';
-        $exception = null;
-
-        try {
-            foreach ($welcomeExtenders as $extender) {
+        foreach ($app->tagged(AdminPanelExtender::TAG) as $extender) {
+            if ($extender instanceof AdminPanelExtender) {
                 $extender->extend($panel);
             }
-
-            $reflection = new ReflectionProperty($panel, 'renderHooks');
-            $renderHooks = $reflection->getValue($panel);
-            $bodyStartHooks = [];
-
-            if (is_array($renderHooks)) {
-                $bodyStartHooks = $renderHooks[PanelsRenderHook::BODY_START] ?? [];
-                $bodyStartHooks = is_array($bodyStartHooks) ? ($bodyStartHooks[''] ?? []) : [];
-            }
-
-            foreach ((array) $bodyStartHooks as $hook) {
-                if ($hook instanceof Closure) {
-                    $rendered .= (string) $hook();
-                }
-            }
-        } catch (Throwable $caught) {
-            $exception = $caught;
         }
 
-        expect($welcomeExtenders)->toHaveCount(1)
-            ->and($exception)->toBeNull()
-            ->and($rendered)->toBe('')
-            ->and($panel->hasPlugin('filament-tour'))->toBeFalse();
-    } finally {
-        $tagsProperty->setValue(app(), $originalTags);
-        CapellCore::forcePackageInstalled(WelcomeTourServiceProvider::$packageName);
-    }
+        $app->instance(ViewManager::class, new ViewManager);
+        FilamentView::clearResolvedInstance();
+        $panel->boot();
+        $html = FilamentView::renderHook(PanelsRenderHook::BODY_START)->toHtml();
+
+        expect($panel->hasPlugin('filament-tour'))->toBeTrue()
+            ->and(substr_count($html, 'wire:id='))->toBe(2)
+            ->and($html)->toContain('x-data');
+    });
 });
 
-it('does not add tour panel behaviour when the package is disabled', function (): void {
-    $originalEnabled = config('capell-welcome-tour.enabled');
-    config()->set('capell-welcome-tour.enabled', false);
-    CapellCore::forcePackageInstalled(WelcomeTourServiceProvider::$packageName, true);
-
-    try {
+it('does not render tour controls when uninstalled or disabled', function (bool $installed, bool $enabled): void {
+    InstalledRuntimeState::run(static function () use ($installed, $enabled): void {
+        $app = InstalledRuntimeTestCase::boot(InstalledRuntimeParity::manifest('welcome-tour'), $installed);
+        config()->set('capell-welcome-tour.enabled', $enabled);
         $panel = Panel::make();
-        resolve(WelcomeTourPanelExtender::class)->extend($panel);
+        foreach ($app->tagged(AdminPanelExtender::TAG) as $extender) {
+            if ($extender instanceof AdminPanelExtender) {
+                $extender->extend($panel);
+            }
+        }
 
-        $reflection = new ReflectionProperty($panel, 'renderHooks');
-        $renderHooks = $reflection->getValue($panel);
-        throw_unless(is_array($renderHooks), RuntimeException::class, 'Expected panel render hooks.');
-        $bodyStartScopes = $renderHooks[PanelsRenderHook::BODY_START] ?? [];
-        throw_unless(is_array($bodyStartScopes), RuntimeException::class, 'Expected body-start render hook scopes.');
+        $app->instance(ViewManager::class, new ViewManager);
+        FilamentView::clearResolvedInstance();
+        $panel->boot();
 
         expect($panel->hasPlugin('filament-tour'))->toBeFalse()
-            ->and($bodyStartScopes[''] ?? [])->toBeEmpty();
-    } finally {
-        config()->set('capell-welcome-tour.enabled', $originalEnabled);
-        CapellCore::forcePackageInstalled(WelcomeTourServiceProvider::$packageName);
-    }
+            ->and(FilamentView::renderHook(PanelsRenderHook::BODY_START)->toHtml())->toBe('');
+    });
+})->with([[false, true], [true, false]]);
+
+it('retains one panel extender and the contextual registry across provider instances', function (): void {
+    InstalledRuntimeState::run(static function (): void {
+        $app = InstalledRuntimeTestCase::boot(InstalledRuntimeParity::manifest('welcome-tour'), false);
+        $registry = $app->make(ContextualWelcomeTourRegistry::class);
+
+        new WelcomeTourServiceProvider($app)->registeringPackage();
+        new WelcomeTourServiceProvider($app)->registeringPackage();
+
+        expect(array_filter(iterator_to_array($app->tagged(AdminPanelExtender::TAG)), static fn (mixed $extender): bool => $extender instanceof WelcomeTourPanelExtender))->toHaveCount(1)
+            ->and($app->make(ContextualWelcomeTourRegistry::class))->toBe($registry);
+    });
+});
+
+it('keeps retained user controls inactive until the configuration enables them', function (): void {
+    InstalledRuntimeState::run(static function (): void {
+        $app = InstalledRuntimeTestCase::boot(InstalledRuntimeParity::manifest('welcome-tour'), true, static function (Application $app): void {
+            $app->make(Repository::class)->set('capell-welcome-tour.enabled', false);
+        });
+        $bridge = $app->make(WelcomeTourUserResourceBridge::class);
+        $context = UserSchemaContextData::forCreate();
+
+        expect($bridge->supports($context))->toBeFalse()
+            ->and(WelcomeTourChecklistFilamentWidget::canView())->toBeFalse();
+        config(['capell-welcome-tour.enabled' => true]);
+        expect($bridge->supports($context))->toBeTrue();
+        config(['capell-welcome-tour.enabled' => false]);
+        expect($bridge->supports($context))->toBeFalse();
+    });
 });

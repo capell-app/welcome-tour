@@ -152,7 +152,7 @@
         "privateDocsRequested": false
     },
     "marketplace": {
-        "summary": "Guided, in-product onboarding for Capell Admin — configurable multi-step tours that introduce new editors to sites, pages, media, and settings, with per-user dismiss and resume.",
+        "summary": "Guided, in-product onboarding for Capell Admin: configurable multi-step tours that introduce new editors to sites, pages, media, and settings, with per-user dismiss and resume.",
         "description": "Configurable Filament onboarding tours and per-user welcome flow for the Capell admin panel.",
         "screenshots": [
             {

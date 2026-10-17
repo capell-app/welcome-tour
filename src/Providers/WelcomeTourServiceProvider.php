@@ -32,10 +32,6 @@ final class WelcomeTourServiceProvider extends AbstractPackageServiceProvider
 
     public static string $packageName = 'capell-app/welcome-tour';
 
-    private bool $installedRuntimeBooted = false;
-
-    private bool $panelExtenderTagged = false;
-
     /**
      * @return array<array-key, mixed>
      */
@@ -63,32 +59,20 @@ final class WelcomeTourServiceProvider extends AbstractPackageServiceProvider
     {
         parent::registeringPackage();
 
-        $this->app->singleton(ContextualWelcomeTourRegistry::class);
+        $this->app->singletonIf(ContextualWelcomeTourRegistry::class);
 
         // The panel consumes extenders before installed-package boot callbacks.
         // The extender itself checks installation when the panel consumes it.
-        if (! $this->panelExtenderTagged) {
+        $tagKey = AdminPanelExtender::TAG . ':' . WelcomeTourPanelExtender::class;
+        if (! $this->app->bound($tagKey)) {
             $this->app->tag([WelcomeTourPanelExtender::class], AdminPanelExtender::TAG);
-            $this->panelExtenderTagged = true;
+            $this->app->instance($tagKey, true);
         }
-
-        $this->booted($this->registerEnabledRuntime(...));
     }
 
     #[Override]
     protected function bootInstalledRuntime(): void
     {
-        $this->registerEnabledRuntime();
-    }
-
-    private function registerEnabledRuntime(): void
-    {
-        if ($this->installedRuntimeBooted
-            || ! $this->isPackageInstalled()
-            || ! $this->shouldRegisterRuntime()) {
-            return;
-        }
-
         Livewire::component('capell-welcome-tour.orchestrator', WelcomeTourOrchestrator::class);
         Livewire::component('capell-welcome-tour.settings-controls', WelcomeTourSettingsControls::class);
         $this->app->tag([WelcomeTourUserResourceBridge::class], UserResourceBridge::TAG);
@@ -109,13 +93,6 @@ final class WelcomeTourServiceProvider extends AbstractPackageServiceProvider
         resolve(ContextualWelcomeTourRegistry::class)->registerConfiguredTours(
             is_array($contextualTours) ? $contextualTours : [],
         );
-
-        $this->installedRuntimeBooted = true;
-    }
-
-    private function shouldRegisterRuntime(): bool
-    {
-        return config('capell-welcome-tour.enabled', true) === true;
     }
 
     private function registerSettings(): void
