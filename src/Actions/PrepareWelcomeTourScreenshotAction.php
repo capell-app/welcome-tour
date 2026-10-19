@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Capell\WelcomeTour\Actions;
 
 use Capell\Admin\Support\AdminPanelEntrypoint;
+use Capell\ScreenshotFixtures\FixtureState;
 use Capell\WelcomeTour\Actions\Users\StartWelcomeTourForCurrentUserAction;
 use Capell\WelcomeTour\Support\WelcomeTourStepRegistrar;
 use Illuminate\Database\Eloquent\Model;
@@ -18,13 +19,19 @@ final class PrepareWelcomeTourScreenshotAction
         abort_unless(app()->environment(['local', 'testing'])
             && getenv('CAPELL_SCREENSHOT_FIXTURE') === 'record-state'
             && is_string($screenshotApplication)
-            && realpath($screenshotApplication) === realpath(base_path()), 403);
+            && realpath($screenshotApplication) === realpath(base_path())
+                && (realpath(base_path()) === realpath(dirname(__DIR__, 4) . '/vendor/orchestra/testbench-core/laravel')
+                    || str_starts_with((string) realpath(base_path()), dirname(__DIR__, 4) . '/tmp/testbench-skeletons/')), 403);
+
+        require_once dirname(__DIR__, 4) . '/scripts/screenshots/FixtureState.php';
+        FixtureState::boot();
         abort_unless(in_array($state, ['dashboard', 'overlay', 'settings', 'user-toggle'], true), 404);
         $user = auth()->user();
         abort_unless($user instanceof Model, 403);
 
         session()->forget(['capell_welcome_tour.active', 'capell_welcome_tour.preview_user', 'capell_welcome_tour.preview_state']);
         session()->put('capell_welcome_tour.show_checklist', true);
+
         $admin = '/' . trim(AdminPanelEntrypoint::path(), '/');
 
         if ($state === 'overlay') {
