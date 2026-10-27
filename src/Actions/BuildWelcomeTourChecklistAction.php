@@ -10,6 +10,7 @@ use Capell\WelcomeTour\Data\WelcomeTourChecklistItemData;
 use Capell\WelcomeTour\Data\WelcomeTourReadinessData;
 use Capell\WelcomeTour\Enums\WelcomeTourReadinessStatus;
 use Capell\WelcomeTour\Support\WelcomeTourSchema;
+use Filament\Resources\Resource;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Lang;
@@ -46,6 +47,15 @@ final class BuildWelcomeTourChecklistAction
      */
     private function itemData(array $item, ?Model $user): WelcomeTourChecklistItemData
     {
+        $resource = $this->nullableStringValue($item, 'resource');
+        if ($resource !== null && is_subclass_of($resource, Resource::class)
+            && $this->nullableStringValue($item, 'resource_page') === 'create'
+            && ! $resource::canCreate()) {
+            $item['resource_page'] = 'index';
+            $item['label'] = $item['fallback_label'] ?? $item['label'] ?? '';
+            $item['description'] = $item['fallback_description'] ?? $item['description'] ?? '';
+        }
+
         $key = $this->stringValue($item, 'key');
         $manuallyCompleted = $user instanceof Model
             && in_array($key, GetUserWelcomeTourStateAction::run($user)->completedChecklistItemKeys, true);

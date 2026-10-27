@@ -25,7 +25,7 @@ This guide is for owners and operators who set up the admin onboarding tour, and
 
 ### Preview your onboarding
 
-The settings summary shows your getting started checklist and available guided chapters. **No guided steps are registered** means the checklist works on its own; you do not need to fill in the developer builder. Save any settings changes, then select **Preview as me** to try the saved sequence using your own roles and access. Preview leaves your saved progress and preferences unchanged.
+The settings summary shows your getting started checklist and available guided chapters. "No guided steps are registered for your account. The getting started checklist is still available." means the checklist works on its own; you do not need to fill in the developer builder. Save any settings changes, then select **Preview as me** to try the saved sequence using your own roles and access. Preview leaves your saved progress and preferences unchanged.
 
 ### How to edit the tour steps
 
@@ -59,12 +59,12 @@ Open **Advanced developer** only when you need custom guidance. Add a title, des
 
 ### Add when needed
 
-| Need                                   | What to use                                                 |
-| -------------------------------------- | ----------------------------------------------------------- |
-| Point new admins at your key screens   | **Tour steps** with a clear **Title** and **Description**   |
-| Show some steps only to certain people | The step **Roles** field                                    |
-| Show steps only to brand-new accounts  | The step **First-run days** field                           |
-| Let someone retake the walkthrough     | **Restart tour**, or **Show welcome tour** on their account |
+| Need                                   | What to use                                                  |
+| -------------------------------------- | ------------------------------------------------------------ |
+| Point new admins at your key screens   | **Tour steps** with a clear **Title** and **Description**    |
+| Show some steps only to certain people | The step **Roles** field                                     |
+| Show steps only to brand-new accounts  | The step **First-run days** field                            |
+| Let someone retake the walkthrough     | **Take the tour**, or **Show welcome tour** on their account |
 
 ### Who does what
 
@@ -82,3 +82,5 @@ Open **Advanced developer** only when you need custom guidance. Add a title, des
 | A step shows for the wrong people    | The step **Roles** or **First-run days** limit it              | Edit the step and adjust **Roles** or clear **First-run days** |
 | A step is unclear or out of date     | The screen it describes has changed                            | Edit the step's **Description** in the settings                |
 | The tour keeps interrupting an admin | They want to do it later                                       | They can choose **Remind me later** to pause it until tomorrow |
+
+Checklist destinations respect the signed-in user's Filament resource and page permissions. Page creators receive the create-page task. Editors who can view Pages but cannot create receive **Review your pages**, opening the Pages list. Configured and readiness-resolver links to denied Filament pages are omitted; direct server-side permission checks still apply.

@@ -54,7 +54,7 @@ final class WelcomeTourHealthCheck implements ChecksExtensionHealth
             && class_exists(WelcomeTourPanelExtender::class);
 
         return new DoctorCheckResultData(
-            label: 'Welcome Tour Filament plugin',
+            label: 'Welcome Tour: tour plugin registered',
             passed: $available,
             message: $available
                 ? 'The Filament tour plugin and Welcome Tour panel extender are available.'
@@ -62,6 +62,7 @@ final class WelcomeTourHealthCheck implements ChecksExtensionHealth
             remediation: $available
                 ? null
                 : 'Ensure jibaymcs/filament-tour is installed and WelcomeTourPanelExtender is autoloadable.',
+            id: 'legacy.welcome.tour.filament.plugin',
         );
     }
 
@@ -73,7 +74,7 @@ final class WelcomeTourHealthCheck implements ChecksExtensionHealth
         $registered = $this->isDashboardRegistered();
 
         return new DoctorCheckResultData(
-            label: 'Welcome Tour dashboard surface',
+            label: 'Welcome Tour: dashboard tour available',
             passed: $registered,
             message: $registered
                 ? 'The Welcome Tour renderer page is registered with the admin panel.'
@@ -81,6 +82,7 @@ final class WelcomeTourHealthCheck implements ChecksExtensionHealth
             remediation: $registered
                 ? null
                 : 'Ensure WelcomeTourServiceProvider registers the installed package runtime.',
+            id: 'legacy.welcome.tour.dashboard.surface',
         );
     }
 
@@ -92,7 +94,7 @@ final class WelcomeTourHealthCheck implements ChecksExtensionHealth
         $resolvable = $this->areSettingsResolvable();
 
         return new DoctorCheckResultData(
-            label: 'Welcome Tour settings',
+            label: 'Welcome Tour: settings valid',
             passed: $resolvable,
             message: $resolvable
                 ? 'Welcome Tour settings and schema metadata are resolvable.'
@@ -100,6 +102,7 @@ final class WelcomeTourHealthCheck implements ChecksExtensionHealth
             remediation: $resolvable
                 ? null
                 : 'Run the Welcome Tour settings migration and ensure the settings registry is available.',
+            id: 'legacy.welcome.tour.settings',
         );
     }
 
@@ -113,7 +116,7 @@ final class WelcomeTourHealthCheck implements ChecksExtensionHealth
         $available = $hasLegacyColumn || $hasPackageState;
 
         return new DoctorCheckResultData(
-            label: 'Welcome Tour user dismissal storage',
+            label: 'Welcome Tour: tour dismissal database column present',
             passed: $available,
             message: $available
                 ? 'Per-user tour dismissal storage is available through host user hints or package-owned state.'
@@ -121,6 +124,7 @@ final class WelcomeTourHealthCheck implements ChecksExtensionHealth
             remediation: $available
                 ? null
                 : 'Run the Welcome Tour package migration or add the users.dismissed_hints JSON column.',
+            id: 'legacy.welcome.tour.user.dismissal.storage',
         );
     }
 

@@ -31,6 +31,8 @@ return [
             'description' => 'capell-welcome-tour::welcome_tour.checklist_create_page_description',
             'resource' => PageResource::class,
             'resource_page' => 'create',
+            'fallback_label' => 'capell-welcome-tour::welcome_tour.checklist_manage_pages',
+            'fallback_description' => 'capell-welcome-tour::welcome_tour.checklist_manage_pages_description',
             'complete_when' => 'table-has-rows:pages',
         ],
         [

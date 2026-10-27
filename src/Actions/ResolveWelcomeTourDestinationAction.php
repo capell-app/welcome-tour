@@ -6,6 +6,11 @@ namespace Capell\WelcomeTour\Actions;
 
 use Capell\Admin\Support\AdminPanelEntrypoint;
 use Filament\Pages\Page;
+use Filament\Resources\Pages\CreateRecord;
+use Filament\Resources\Pages\EditRecord;
+use Filament\Resources\Pages\ListRecords;
+use Filament\Resources\Pages\Page as ResourcePage;
+use Filament\Resources\Pages\ViewRecord;
 use Filament\Resources\Resource;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Router;
@@ -27,7 +32,7 @@ final class ResolveWelcomeTourDestinationAction
             ? $this->surfaceDestination($surface, $page)
             : $this->configuredDestination($destination);
 
-        if ($resolvedDestination === null || ! $this->routeExists($resolvedDestination)) {
+        if ($resolvedDestination === null || ! $this->canVisitRoute($resolvedDestination)) {
             return null;
         }
 
@@ -99,12 +104,52 @@ final class ResolveWelcomeTourDestinationAction
         return '/' . ltrim($path, '/');
     }
 
-    private function routeExists(string $destination): bool
+    private function canVisitRoute(string $destination): bool
     {
         try {
             $route = resolve(Router::class)->getRoutes()->match(Request::create($destination, 'GET'));
 
-            return ! $route->isFallback;
+            if ($route->isFallback) {
+                return false;
+            }
+
+            $controller = $route->getAction('controller');
+            $page = is_string($controller) ? explode('@', $controller)[0] : null;
+            if ($page === null || ! is_subclass_of($page, Page::class)) {
+                return true;
+            }
+
+            if (! is_subclass_of($page, ResourcePage::class)) {
+                return $page::canAccess();
+            }
+
+            if (! $page::canAccess($route->parameters())) {
+                return false;
+            }
+
+            $resource = $page::getResource();
+            if (! $resource::canAccess()) {
+                return false;
+            }
+
+            if (is_subclass_of($page, CreateRecord::class)) {
+                return $resource::canCreate();
+            }
+
+            if (is_subclass_of($page, ListRecords::class)) {
+                return $resource::canViewAny();
+            }
+
+            if (is_subclass_of($page, EditRecord::class) || is_subclass_of($page, ViewRecord::class)) {
+                $key = $route->parameter('record');
+                $record = is_string($key) || is_int($key) ? $resource::resolveRecordRouteBinding($key) : null;
+
+                return $record !== null && (is_subclass_of($page, EditRecord::class)
+                    ? $resource::canEdit($record)
+                    : $resource::canView($record));
+            }
+
+            return true;
         } catch (Throwable) {
             return false;
         }

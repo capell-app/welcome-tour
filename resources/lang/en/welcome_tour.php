@@ -3,6 +3,8 @@
 declare(strict_types=1);
 
 return [
+    'checklist_manage_pages' => 'Review your pages',
+    'checklist_manage_pages_description' => 'Open Pages to review the content you can access.',
     'settings_label' => 'Welcome tour',
     'settings_section' => 'Welcome tour',
     'enabled' => 'Enabled',

@@ -200,6 +200,12 @@ Desktop, tablet, and mobile variants remain defined in the screenshot contract; 
 1. Install the package: `composer require capell-app/welcome-tour`.
 2. Open a host admin workflow that uses the package extension and verify Welcome Tour is available.
 
+## Upgrading
+
+No manual steps between minor versions.
+
+Read [CHANGELOG.md](CHANGELOG.md) before upgrading.
+
 ## Next Steps
 
 - [Package docs](docs/README.md)

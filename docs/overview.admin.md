@@ -1,6 +1,6 @@
 ## What it does
 
-Welcome Tour adds guided onboarding to Capell Admin. It shows a configurable dashboard tour, tracks each user's completed steps, and adds a Getting started checklist for the first site, page, and media upload.
+Welcome Tour adds guided onboarding to Capell Admin. It shows a configurable dashboard tour, tracks each user's completed steps, and adds a Getting started checklist for the first site, page, and enabled non-default theme.
 
 ## Setup requirements
 
@@ -32,6 +32,6 @@ Go to **Welcome tour** in the admin settings. Open the dashboard to use the tour
 - Progress, dismissal, and snooze state are per user. Completing the tour dismisses it for that user; **Restart tour** clears that state and starts it again on the next dashboard load.
 - **Remind me later** snoozes only the current user's dashboard tour for 24 hours. Disabling the shared setting prevents every user from seeing it, even if their own preference is enabled.
 - A user can change their own tour state from the dashboard. Only a global admin can change another user's state through the user edit form.
-- Checklist completion is installation-wide: it checks whether the Sites, Pages, and Media tables contain any rows. It is not scoped to the current user or assigned site.
+- Checklist completion is installation-wide: it checks whether the Sites and Pages tables contain any rows and whether a non-default theme is enabled. It is not scoped to the current user or assigned site.
 - A deliberately empty list of shared tour steps stays empty; the package does not restore its defaults. Contextual tours for Sites, Pages, and Media come from package configuration or extension contributions, rather than this settings form.
 - Diagnostics checks the dashboard integration, settings, checklist contribution, and per-user state storage.
