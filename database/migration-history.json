@@ -1,0 +1,11 @@
+{
+    "create_welcome_tour_user_states_table": {
+        "names": [
+            "2026_06_04_000001_create_welcome_tour_user_states_table"
+        ],
+        "sha256": [
+            "73b6a3a564563cfb194458a8ee97c0b6b61b2071be410722b1decd78efa5cb83",
+            "be7598ae75467e64a1eccc7414c4a9954c3bb56a066192a56446ec21fc747c6b"
+        ]
+    }
+}

@@ -20,10 +20,10 @@ final class PrepareWelcomeTourScreenshotAction
             && getenv('CAPELL_SCREENSHOT_FIXTURE') === 'record-state'
             && is_string($screenshotApplication)
             && realpath($screenshotApplication) === realpath(base_path())
-                && (realpath(base_path()) === realpath(dirname(__DIR__, 4) . '/vendor/orchestra/testbench-core/laravel')
-                    || str_starts_with((string) realpath(base_path()), dirname(__DIR__, 4) . '/tmp/testbench-skeletons/')), 403);
+                && (realpath(base_path()) === realpath((str_contains(__DIR__, '/vendor/capell-app/') ? dirname(__DIR__, 5) : dirname(__DIR__, 4)) . '/vendor/orchestra/testbench-core/laravel')
+                    || str_starts_with((string) realpath(base_path()), (str_contains(__DIR__, '/vendor/capell-app/') ? dirname(__DIR__, 5) : dirname(__DIR__, 4)) . '/tmp/testbench-skeletons/')), 403);
 
-        require_once dirname(__DIR__, 4) . '/scripts/screenshots/FixtureState.php';
+        require_once (str_contains(__DIR__, '/vendor/capell-app/') ? dirname(__DIR__, 5) : dirname(__DIR__, 4)) . '/scripts/screenshots/FixtureState.php';
         FixtureState::boot();
         abort_unless(in_array($state, ['dashboard', 'overlay', 'settings', 'user-toggle'], true), 404);
         $user = auth()->user();

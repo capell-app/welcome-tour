@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Capell\WelcomeTour\Actions;
 
+use Capell\Core\Support\TableName;
 use Capell\WelcomeTour\Actions\Users\GetUserWelcomeTourStateAction;
 use Capell\WelcomeTour\Contracts\WelcomeTourReadinessResolver;
 use Capell\WelcomeTour\Data\WelcomeTourChecklistItemData;
@@ -121,8 +122,8 @@ final class BuildWelcomeTourChecklistAction
                 && WelcomeTourSchema::hasTable($value)
                 && DB::table($value)->exists(),
             'table-exists' => $value !== '' && WelcomeTourSchema::hasTable($value),
-            'non-default-theme' => WelcomeTourSchema::hasTable('themes')
-                && DB::table('themes')->where('default', false)->where('status', true)->exists(),
+            'non-default-theme' => WelcomeTourSchema::hasTable(TableName::resolve('themes'))
+                && DB::table(TableName::resolve('themes'))->where('default', false)->where('status', true)->exists(),
             default => false,
         };
     }

@@ -8,7 +8,7 @@
     "version": "1.0.0",
     "description": "Configurable Filament onboarding tours and per-user welcome flow for the Capell admin panel.",
     "product": {
-        "group": "Capell Foundation",
+        "group": "Capell Essentials",
         "tier": "free",
         "bundle": "foundation"
     },
@@ -20,7 +20,9 @@
         "conflicts": []
     },
     "providers": {
-        "metadata": [],
+        "metadata": [
+            "Capell\\WelcomeTour\\Providers\\MigrationMetadataServiceProvider"
+        ],
         "install": [],
         "runtime": [],
         "admin": ["Capell\\WelcomeTour\\Providers\\WelcomeTourServiceProvider"],
@@ -154,6 +156,22 @@
     "marketplace": {
         "summary": "Guided, in-product onboarding for Capell Admin: configurable multi-step tours that introduce new editors to sites, pages, media, and settings, with per-user dismiss and resume.",
         "description": "Configurable Filament onboarding tours and per-user welcome flow for the Capell admin panel.",
+        "problem": "New administrators can lose track of the setup steps relevant to them.",
+        "outcome": "Each administrator has a dashboard checklist with their own progress.",
+        "faq": [
+            {
+                "question": "Who has their own tour state?",
+                "answer": "Each user has their own checklist state and preferences."
+            },
+            {
+                "question": "Can a setup step be postponed?",
+                "answer": "Yes. Administrators can snooze their own tour steps."
+            },
+            {
+                "question": "Where is the checklist shown?",
+                "answer": "It appears as a contextual widget on the admin dashboard."
+            }
+        ],
         "screenshots": [
             {
                 "path": "docs/assets/marketplace/extension-card.jpg",

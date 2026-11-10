@@ -8,6 +8,7 @@ use Capell\Admin\Contracts\CapellFilamentWidgetContract;
 use Capell\Admin\Filament\Concerns\GatedByRoleAndSettings;
 use Capell\Admin\Support\AdminPanelEntrypoint;
 use Capell\Core\Contracts\Extensions\RegistersExtensionFilamentWidget;
+use Capell\Core\Support\TableName;
 use Capell\WelcomeTour\Actions\BuildWelcomeTourChecklistAction;
 use Capell\WelcomeTour\Actions\BuildWelcomeTourSummaryAction;
 use Capell\WelcomeTour\Actions\Users\CanShowWelcomeTourAction;
@@ -110,8 +111,8 @@ final class WelcomeTourChecklistFilamentWidget extends Widget implements CapellF
         return ! config('capell-welcome-tour.presentation_mode', false)
             && $user instanceof Model
             && ! (bool) session()->get('capell_welcome_tour.active', false)
-            && WelcomeTourSchema::hasTable('sites')
-            && DB::table('sites')->exists()
+            && WelcomeTourSchema::hasTable(TableName::resolve('sites'))
+            && DB::table(TableName::resolve('sites'))->exists()
             && CanShowWelcomeTourAction::run($user);
     }
 

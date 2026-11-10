@@ -1,6 +1,6 @@
 {
     "whatThisPluginAdds": {
-        "text": "Welcome Tour adds a contextual admin checklist with per-user step state, preferences, snoozing, and reset behavior. The checklist is exposed as a Filament dashboard widget.",
+        "text": "Welcome Tour adds a contextual admin checklist with per-user step state, preferences, snoozing, and reset behaviour. The checklist is exposed as a Filament dashboard widget.",
         "evidence": [
             "src/Filament/Widgets/WelcomeTourChecklistFilamentWidget.php",
             "src/Actions/BuildWelcomeTourChecklistAction.php",

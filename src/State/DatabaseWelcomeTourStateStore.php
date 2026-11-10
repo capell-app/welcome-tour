@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Capell\WelcomeTour\State;
 
 use Capell\Admin\Actions\DismissHintAction;
+use Capell\Core\Support\TableName;
 use Capell\WelcomeTour\Actions\Users\CanShowWelcomeTourAction;
 use Capell\WelcomeTour\Contracts\WelcomeTourStateStore;
 use Capell\WelcomeTour\Data\WelcomeTourUserStateData;
@@ -24,7 +25,7 @@ final class DatabaseWelcomeTourStateStore implements WelcomeTourStateStore
             return new WelcomeTourUserStateData([], null, null, false);
         }
 
-        $row = DB::table('welcome_tour_user_states')
+        $row = DB::table(TableName::resolve('welcome_tour_user_states'))
             ->where('user_type', $user->getMorphClass())
             ->where('user_id', $user->getKey())
             ->where('tour_key', $tourKey)
@@ -50,7 +51,7 @@ final class DatabaseWelcomeTourStateStore implements WelcomeTourStateStore
                 ->values()
                 ->all();
 
-            DB::table('welcome_tour_user_states')->updateOrInsert(
+            DB::table(TableName::resolve('welcome_tour_user_states'))->updateOrInsert(
                 $this->identity($user, $tourKey),
                 [
                     'completed_step_keys' => json_encode($completedStepKeys, JSON_THROW_ON_ERROR),
@@ -68,7 +69,7 @@ final class DatabaseWelcomeTourStateStore implements WelcomeTourStateStore
             return;
         }
 
-        DB::table('welcome_tour_user_states')->updateOrInsert($this->identity($user, $tourKey), [
+        DB::table(TableName::resolve('welcome_tour_user_states'))->updateOrInsert($this->identity($user, $tourKey), [
             'completed_step_keys' => '[]',
             'last_completed_step_key' => null,
             'snoozed_until' => null,
@@ -84,7 +85,7 @@ final class DatabaseWelcomeTourStateStore implements WelcomeTourStateStore
     public function enable(Model $user, string $tourKey): void
     {
         if (WelcomeTourSchema::hasUserStateTable()) {
-            DB::table('welcome_tour_user_states')->updateOrInsert($this->identity($user, $tourKey), [
+            DB::table(TableName::resolve('welcome_tour_user_states'))->updateOrInsert($this->identity($user, $tourKey), [
                 'snoozed_until' => null,
                 'dismissed_at' => null,
                 'updated_at' => Date::now(),
@@ -102,7 +103,7 @@ final class DatabaseWelcomeTourStateStore implements WelcomeTourStateStore
             return;
         }
 
-        DB::table('welcome_tour_user_states')->updateOrInsert($this->identity($user, $tourKey), [
+        DB::table(TableName::resolve('welcome_tour_user_states'))->updateOrInsert($this->identity($user, $tourKey), [
             'completed_step_keys' => '[]',
             'last_completed_step_key' => null,
             'snoozed_until' => null,
@@ -131,7 +132,7 @@ final class DatabaseWelcomeTourStateStore implements WelcomeTourStateStore
                 ->values()
                 ->all();
 
-            DB::table('welcome_tour_user_states')->updateOrInsert(
+            DB::table(TableName::resolve('welcome_tour_user_states'))->updateOrInsert(
                 $this->identity($user, $tourKey),
                 [
                     'completed_checklist_item_keys' => json_encode($completedItemKeys, JSON_THROW_ON_ERROR),
@@ -148,7 +149,7 @@ final class DatabaseWelcomeTourStateStore implements WelcomeTourStateStore
             return;
         }
 
-        DB::table('welcome_tour_user_states')->updateOrInsert($this->identity($user, $tourKey), [
+        DB::table(TableName::resolve('welcome_tour_user_states'))->updateOrInsert($this->identity($user, $tourKey), [
             'checklist_dismissed_at' => $dismissed ? Date::now() : null,
             'updated_at' => Date::now(),
         ]);
@@ -163,7 +164,7 @@ final class DatabaseWelcomeTourStateStore implements WelcomeTourStateStore
         }
 
         if (WelcomeTourSchema::hasUserStateTable()) {
-            DB::table('welcome_tour_user_states')->updateOrInsert($this->identity($user, $tourKey), [
+            DB::table(TableName::resolve('welcome_tour_user_states'))->updateOrInsert($this->identity($user, $tourKey), [
                 'dismissed_at' => Date::now(),
                 'snoozed_until' => null,
                 'updated_at' => Date::now(),
@@ -177,7 +178,7 @@ final class DatabaseWelcomeTourStateStore implements WelcomeTourStateStore
             return;
         }
 
-        DB::table('welcome_tour_user_states')->updateOrInsert($this->identity($user, $tourKey), [
+        DB::table(TableName::resolve('welcome_tour_user_states'))->updateOrInsert($this->identity($user, $tourKey), [
             'snoozed_until' => Date::now()->addHours(max(1, $hours)),
             'updated_at' => Date::now(),
         ]);
@@ -198,7 +199,7 @@ final class DatabaseWelcomeTourStateStore implements WelcomeTourStateStore
 
     private function query(Model $user, string $tourKey): Builder
     {
-        return DB::table('welcome_tour_user_states')->where($this->identity($user, $tourKey));
+        return DB::table(TableName::resolve('welcome_tour_user_states'))->where($this->identity($user, $tourKey));
     }
 
     private function removeDismissedHint(Model $user): void
