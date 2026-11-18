@@ -4,11 +4,11 @@
     "scenarios": {
         "default": {
             "source": {
-                "ref": "c92ce184be4d91c372f35ca125ea25f6c1308599",
-                "commit": "c92ce184be4d91c372f35ca125ea25f6c1308599",
+                "ref": "HEAD",
+                "commit": "4e8eaae89410b50df5f6c1be224c53ba707be7b9",
                 "providers": {
                     "Providers/MigrationMetadataServiceProvider.php": "f3a93d71b3ad0fcdadf1fd5e2f1daf151cb9529b5b53e32c7ba58d794155e768",
-                    "Providers/WelcomeTourServiceProvider.php": "09b1843a5edc30e5c22e218c333d48043776eb05aadc3ab92aaf5143e98c3a4f"
+                    "Providers/WelcomeTourServiceProvider.php": "41020d6026a0381d720931604fe4fcd55f3c5abaee89d3e11d4ae2922aa924d4"
                 },
                 "configure": null
             },
@@ -31,7 +31,7 @@
                     "capell-welcome-tour.php": {
                         "checklist": [
                             {
-                                "complete_when": "table-has-rows:sites",
+                                "complete_when": "site-saved",
                                 "description": "capell-welcome-tour::welcome_tour.checklist_create_site_description",
                                 "key": "create-site",
                                 "label": "capell-welcome-tour::welcome_tour.checklist_create_site",
@@ -55,7 +55,7 @@
                                 "resource": "Capell\\Admin\\Filament\\Resources\\Themes\\ThemeResource"
                             },
                             {
-                                "complete_when": "",
+                                "complete_when": "extension-installed",
                                 "description": "capell-welcome-tour::welcome_tour.checklist_extend_description",
                                 "key": "extend",
                                 "label": "capell-welcome-tour::welcome_tour.checklist_extend",
@@ -248,7 +248,7 @@
                                     "group": "welcome-tour",
                                     "icon": "o-sparkles",
                                     "label": "capell-welcome-tour::welcome_tour.settings_label",
-                                    "navigationGroup": "capell-admin::navigation.group_system",
+                                    "navigationGroup": "settings",
                                     "navigationSort": 92,
                                     "packageName": "capell-app/welcome-tour"
                                 }
@@ -302,7 +302,7 @@
                     "capell-welcome-tour.php": {
                         "checklist": [
                             {
-                                "complete_when": "table-has-rows:sites",
+                                "complete_when": "site-saved",
                                 "description": "capell-welcome-tour::welcome_tour.checklist_create_site_description",
                                 "key": "create-site",
                                 "label": "capell-welcome-tour::welcome_tour.checklist_create_site",
@@ -326,7 +326,7 @@
                                 "resource": "Capell\\Admin\\Filament\\Resources\\Themes\\ThemeResource"
                             },
                             {
-                                "complete_when": "",
+                                "complete_when": "extension-installed",
                                 "description": "capell-welcome-tour::welcome_tour.checklist_extend_description",
                                 "key": "extend",
                                 "label": "capell-welcome-tour::welcome_tour.checklist_extend",

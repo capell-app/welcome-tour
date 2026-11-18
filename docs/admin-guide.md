@@ -7,8 +7,8 @@ This guide is for owners and operators who set up the admin onboarding tour, and
 ### How to take the welcome tour as a new admin
 
 1. Sign in and open the admin dashboard.
-2. If the tour is on and you have not dismissed it, it starts on its own and shows the first step.
-3. Read each step, then move forward to the next one. The tour highlights the menu, header tools, sites, pages, media, and the dashboard.
+2. If the tour is on, the Getting started checklist shows across the top. The tour does not start by itself, and no steps ship ready-made: an administrator adds them in the Welcome tour settings.
+3. Choose **Take the tour**, read each step, then move forward to the next one.
 4. If you would rather not do it now, choose **Remind me later** to pause it until tomorrow.
 
 ![A first-time administrator lands on the dashboard that can launch onboarding.](screenshots/welcome-tour-dashboard.png)

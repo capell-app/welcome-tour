@@ -1,13 +1,13 @@
 # Steps And Settings
 
-Welcome Tour replaces the default admin dashboard with `WelcomeTourDashboard`, registers the Filament tour plugin, and reads tour steps from settings or package config.
+Welcome Tour adds `WelcomeTourDashboard` as its own page at `welcome-tour/welcome-tour-dashboard` without replacing the standard dashboard, registers the Filament tour plugin, and reads tour steps from settings or package config.
 
 ## Runtime Surface
 
 | Surface              | Code                                   |
 | -------------------- | -------------------------------------- |
 | Enabled flag         | `capell-welcome-tour.enabled`          |
-| Default steps        | `capell-welcome-tour.steps`            |
+| Dashboard steps      | `capell-welcome-tour.steps`            |
 | Contextual tours     | `capell-welcome-tour.contextual_tours` |
 | Settings group       | `welcome-tour`                         |
 | Admin panel extender | `WelcomeTourPanelExtender`             |
@@ -59,13 +59,9 @@ Keep selectors stable. A missing selector means the step cannot anchor to the UI
 
 ## Contextual Page Tours
 
-Dashboard steps introduce the main admin areas. Contextual tours guide editors once they are already on a specific Filament page or resource surface. The package ships default scoped tours for Sites, Pages, and Media under:
+Dashboard steps introduce the main admin areas. Contextual tours guide editors once they are already on a specific Filament page or resource surface. The package ships no contextual tours, and `capell-welcome-tour.contextual_tours` is empty until you or a package adds one.
 
-- `capell_admin_sites`
-- `capell_admin_pages`
-- `capell_admin_media`
-
-Add `Capell\WelcomeTour\Filament\Concerns\HasContextualWelcomeTour` to the Filament page that should render a scoped tour, then set its `$welcomeTourKey` to one of those keys or a host/package-owned key.
+Add `Capell\WelcomeTour\Filament\Concerns\HasContextualWelcomeTour` to the Filament page that should render a scoped tour, then set its `$welcomeTourKey` to a host or package-owned key. The examples below use `capell_admin_pages` as an illustrative key.
 
 ```php
 use Capell\WelcomeTour\Filament\Concerns\HasContextualWelcomeTour;
@@ -115,6 +111,8 @@ The dashboard checklist is configured through `capell-welcome-tour.checklist`. S
 
 - `table-exists:{table}`
 - `table-has-rows:{table}`
+- `site-saved`: a signed-in person has saved a site. The installer creates the site without one, so a fresh install starts incomplete.
+- `extension-installed`: an extension beyond the installer's defaults was enabled after the installation finished.
 
 Checklist items are admin-only dashboard data and do not affect public frontend output.
 

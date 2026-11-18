@@ -1,6 +1,6 @@
 {
     "name": "capell-app/welcome-tour",
-    "description": "Configurable Filament onboarding tours and per-user welcome flow for the Capell admin panel.",
+    "description": "Getting started checklist on the Capell admin dashboard that points new editors at their first setup jobs.",
     "type": "library",
     "license": "proprietary",
     "autoload": {

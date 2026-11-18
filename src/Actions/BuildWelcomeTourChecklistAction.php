@@ -11,6 +11,7 @@ use Capell\WelcomeTour\Data\WelcomeTourChecklistItemData;
 use Capell\WelcomeTour\Data\WelcomeTourReadinessData;
 use Capell\WelcomeTour\Enums\WelcomeTourReadinessStatus;
 use Capell\WelcomeTour\Support\WelcomeTourSchema;
+use Capell\WelcomeTour\Support\WelcomeTourSetupSignals;
 use Filament\Resources\Resource;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
@@ -124,6 +125,8 @@ final class BuildWelcomeTourChecklistAction
             'table-exists' => $value !== '' && WelcomeTourSchema::hasTable($value),
             'non-default-theme' => WelcomeTourSchema::hasTable(TableName::resolve('themes'))
                 && DB::table(TableName::resolve('themes'))->where('default', false)->where('status', true)->exists(),
+            'site-saved' => resolve(WelcomeTourSetupSignals::class)->siteSaved(),
+            'extension-installed' => resolve(WelcomeTourSetupSignals::class)->extensionInstalledAfterSetup(),
             default => false,
         };
     }

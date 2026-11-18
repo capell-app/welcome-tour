@@ -6,7 +6,7 @@
     "kind": "package",
     "capellApiVersion": "^1.0",
     "version": "1.0.0",
-    "description": "Configurable Filament onboarding tours and per-user welcome flow for the Capell admin panel.",
+    "description": "Admin dashboard checklist of four setup jobs for new editors, ticked by the work itself or by hand, with a place to write optional tour steps.",
     "product": {
         "group": "Capell Essentials",
         "tier": "free",
@@ -74,25 +74,7 @@
     },
     "settings": ["Capell\\WelcomeTour\\Settings\\WelcomeTourSettings"],
     "permissions": [],
-    "capabilities": [
-        "admin-guided-tour",
-        "admin-dashboard-tour",
-        "contextual-page-tours",
-        "anchored-tour-steps",
-        "configurable-tour-steps",
-        "extension-contributed-tour-steps",
-        "per-user-dismissal",
-        "package-owned-tour-state",
-        "tour-progress-resume",
-        "restart-tour",
-        "snooze-tour",
-        "onboarding-checklist-widget",
-        "role-targeted-tour-steps",
-        "first-run-tour-steps",
-        "literal-or-translated-step-copy",
-        "tour-lifecycle-events",
-        "settings-managed-onboarding"
-    ],
+    "capabilities": [],
     "security": {
         "riskTier": "standard",
         "publicSurface": {
@@ -141,7 +123,7 @@
     "healthChecks": [
         {
             "key": "welcome-tour.package-health",
-            "label": "Welcome Tour plugin, dashboard, settings, and user state storage are healthy.",
+            "label": "Welcome Tour panel registration, dashboard, settings, and user state storage are healthy.",
             "class": "Capell\\WelcomeTour\\Health\\WelcomeTourHealthCheck",
             "severity": "critical",
             "surface": "admin"
@@ -154,36 +136,45 @@
         "privateDocsRequested": false
     },
     "marketplace": {
-        "summary": "Guided, in-product onboarding for Capell Admin: configurable multi-step tours that introduce new editors to sites, pages, media, and settings, with per-user dismiss and resume.",
-        "description": "Configurable Filament onboarding tours and per-user welcome flow for the Capell admin panel.",
-        "problem": "New administrators can lose track of the setup steps relevant to them.",
-        "outcome": "Each administrator has a dashboard checklist with their own progress.",
+        "summary": "A Getting started checklist across the top of the admin dashboard that gives each new editor four jobs and a link to each.",
+        "description": "Give new editors a first screen to work from. A Getting started checklist sits across the top of the admin dashboard and covers your site and domain, a first page, a theme and a package to extend the site. Jobs tick as the work happens or by hand, and a job a person has no permission to open does not appear for them. Owners can write tour steps in the Welcome tour settings, though none come ready-made.",
+        "problem": "I gave my editor a login and they emailed asking where to start.",
+        "outcome": "The dashboard shows each editor which of the four setup jobs are ticked and which are still open.",
         "faq": [
             {
-                "question": "Who has their own tour state?",
-                "answer": "Each user has their own checklist state and preferences."
+                "question": "Who sees the Getting started checklist?",
+                "answer": "Editors and every kind of admin. Visitors never see it, and jobs a person has no permission to open are left out of their list."
             },
             {
-                "question": "Can a setup step be postponed?",
-                "answer": "Yes. Administrators can snooze their own tour steps."
+                "question": "Is the checklist the same for everyone?",
+                "answer": "No. Each person has their own checklist state, so ticking a job or hiding the checklist affects only that person."
             },
             {
-                "question": "Where is the checklist shown?",
-                "answer": "It appears as a contextual widget on the admin dashboard."
+                "question": "Can I hide it once I know my way around?",
+                "answer": "Yes. Anyone can hide it from their own dashboard without changing what other people see."
+            },
+            {
+                "question": "Do I have to write tour steps?",
+                "answer": "No. The checklist works with none, and owners can add notes for each screen in the Welcome tour settings."
+            },
+            {
+                "question": "Which jobs tick themselves?",
+                "answer": "Saving the site, a page appearing, a theme other than the default being switched on and a package being enabled after install. Anyone can also tick a job by hand."
             }
         ],
         "screenshots": [
             {
                 "path": "docs/assets/marketplace/extension-card.jpg",
-                "alt": "Welcome Tour extension preview image",
-                "caption": "Welcome Tour extension preview"
+                "alt": "Marketplace card for Welcome Tour with a line about introducing sites and pages, and the steps Step, Guide and Resume",
+                "caption": "Welcome Tour appears on the Marketplace with this card."
             },
             {
                 "path": "docs/screenshots/welcome-tour-dashboard.png",
-                "alt": "Capell admin dashboard with the Welcome Tour onboarding checklist",
-                "caption": "Guide new administrators through setup from the dashboard"
+                "alt": "Capell admin dashboard with a Take the tour button, a red installer warning and collapsed panels, and no checklist visible",
+                "caption": "The tour is started from the Take the tour button at the top right of the dashboard."
             }
         ],
         "categories": ["admin", "foundation"]
-    }
+    },
+    "defaultSelected": true
 }

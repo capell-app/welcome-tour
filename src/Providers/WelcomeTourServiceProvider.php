@@ -104,7 +104,7 @@ final class WelcomeTourServiceProvider extends AbstractPackageServiceProvider
             group: WelcomeTourSettings::group(),
             label: 'capell-welcome-tour::welcome_tour.settings_label',
             icon: Heroicon::OutlinedSparkles,
-            navigationGroup: 'capell-admin::navigation.group_system',
+            navigationGroup: 'settings',
             navigationSort: 92,
             packageName: self::$packageName,
         ));

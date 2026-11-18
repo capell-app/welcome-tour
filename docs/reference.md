@@ -6,7 +6,7 @@ Developer reference for `capell-app/welcome-tour`. Start with the [README](../RE
 
 ## Package Details
 
-Welcome Tour is an **Available**, **Schema-owning** Capell package in the **Capell Essentials** product group. It ships as `capell-app/welcome-tour` and extends these surfaces: admin.
+Welcome Tour is an **Available** Capell package in the **Capell Essentials** product group. It ships as `capell-app/welcome-tour` and extends these surfaces: admin.
 
 - Status: Available
 - Tier: free

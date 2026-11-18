@@ -2,29 +2,27 @@
 
 <!-- prettier-ignore-start -->
 
-## What It Does
+A new editor opens the admin dashboard for the first time and wonders where to start. A Getting started checklist runs across the top, covering your site and domain, a first page, a theme and a first package. Each job has an Open link to the screen where the work is done.
 
-Welcome Tour adds a contextual admin checklist with per-user step state, preferences, snoozing, and reset behaviour. The checklist is exposed as a Filament dashboard widget.
+Saving the site, a page appearing, a theme other than the default being switched on and a package being enabled after install each tick a job for you. Each person can also tick a job by hand. Jobs a person has no permission to open don't appear for them. Editors and every kind of admin see the checklist, and visitors never do.
+
+Owners can also write tour steps, the notes a tour shows on each screen, in the Welcome tour settings. None come ready-made, and the checklist works without them. Each person can hide the checklist for themselves, and until they do it shows at a glance which jobs are done and which are still open.
 
 - **Price and availability:** Check current availability and price on the [Capell Marketplace listing](https://capell.app/extensions/welcome-tour).
 - **Licence:** Check the licence terms on the [Capell Marketplace listing](https://capell.app/extensions/welcome-tour).
 - **Requires:** `PHP ^8.4`, `capell-app/admin ^1.0.66`, `capell-app/core ^1.0.75`, `jibaymcs/filament-tour ^5.0`, `laravel/framework ^12.61.1|^13.12.0`, `lorisleiva/laravel-actions ^2.8`, `spatie/laravel-package-tools ^1.15`, `spatie/laravel-settings ^3.0`.
 - **Install:** `composer require capell-app/welcome-tour`.
 
-Administrators see relevant setup steps on the dashboard and can complete, snooze, or reset their own tour state.
-
-## Who It Is For
-
-**For developers:** A contextual registry and focused Actions keep checklist composition separate from the Filament widget and persisted user state.
-
-**For teams:** Teams can give each administrator a repeatable setup path without forcing every user through the same uninterrupted sequence.
-
 ## Quick Start
 
 1. Install the package: `composer require capell-app/welcome-tour`.
-2. For site owners and administrators: An administrator account, and **Enabled** switched on in the Welcome tour settings. Welcome Tour replaces the standard admin dashboard with its own.
-3. Open `/admin`. Sign in and open the dashboard. The tour starts on its first step and the Getting started checklist appears beside it. Move through the steps, or choose **Remind me later** to pause it until tomorrow.
-4. Check the result: The dashboard shows the tour overlay on its first step, and the checklist lists the first site, page and theme tasks you have not yet finished. Next: Open the Welcome tour settings to edit the steps, limit them by role, or preview the tour as another administrator.
+2. For site owners and administrators: An administrator account, and **Enabled** switched on in the Welcome tour settings.
+3. Open `/admin`. Sign in and open the dashboard. The Getting started checklist appears across the top. The tour does not start by itself unless presentation mode is on, and it ships with no steps: add steps in the Welcome tour settings, then choose **Take the tour** to run it. Choose **Remind me later** to hide the tour until tomorrow.
+4. Check the result: The dashboard shows the Getting started checklist with the first site, page and theme tasks you have not yet finished. Next: Open the Welcome tour settings to add tour steps, limit them by role, or preview the tour as another administrator.
+
+## For Developers
+
+A contextual registry and focused Actions keep checklist composition separate from the Filament widget and persisted user state.
 
 ## Configure
 

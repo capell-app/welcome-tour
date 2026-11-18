@@ -23,7 +23,7 @@ return [
             'label' => 'capell-welcome-tour::welcome_tour.checklist_create_site',
             'description' => 'capell-welcome-tour::welcome_tour.checklist_create_site_description',
             'resource' => SiteResource::class,
-            'complete_when' => 'table-has-rows:sites',
+            'complete_when' => 'site-saved',
         ],
         [
             'key' => 'create-page',
@@ -47,7 +47,7 @@ return [
             'label' => 'capell-welcome-tour::welcome_tour.checklist_extend',
             'description' => 'capell-welcome-tour::welcome_tour.checklist_extend_description',
             'resource' => ExtensionsPage::class,
-            'complete_when' => '',
+            'complete_when' => 'extension-installed',
         ],
     ],
 ];

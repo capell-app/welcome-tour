@@ -1,8 +1,8 @@
 {
     "audience": "site owners and administrators",
-    "prerequisites": "An administrator account, and **Enabled** switched on in the Welcome tour settings. Welcome Tour replaces the standard admin dashboard with its own.",
+    "prerequisites": "An administrator account, and **Enabled** switched on in the Welcome tour settings.",
     "destination": "/admin",
-    "task": "Sign in and open the dashboard. The tour starts on its first step and the Getting started checklist appears beside it. Move through the steps, or choose **Remind me later** to pause it until tomorrow.",
-    "expectedResult": "The dashboard shows the tour overlay on its first step, and the checklist lists the first site, page and theme tasks you have not yet finished.",
-    "nextStep": "Open the Welcome tour settings to edit the steps, limit them by role, or preview the tour as another administrator."
+    "task": "Sign in and open the dashboard. The Getting started checklist appears across the top. The tour does not start by itself unless presentation mode is on, and it ships with no steps: add steps in the Welcome tour settings, then choose **Take the tour** to run it. Choose **Remind me later** to hide the tour until tomorrow.",
+    "expectedResult": "The dashboard shows the Getting started checklist with the first site, page and theme tasks you have not yet finished.",
+    "nextStep": "Open the Welcome tour settings to add tour steps, limit them by role, or preview the tour as another administrator."
 }

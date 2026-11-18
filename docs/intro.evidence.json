@@ -1,0 +1,74 @@
+[
+    {
+        "claim": "A Getting started checklist runs across the top, covering your site and domain, a first page, a theme and a first package.",
+        "evidence": [
+            "src/Providers/WelcomeTourServiceProvider.php",
+            "src/Filament/Widgets/WelcomeTourChecklistFilamentWidget.php",
+            "resources/views/filament/widgets/welcome-tour-checklist.blade.php",
+            "resources/lang/en/welcome_tour.php",
+            "config/capell-welcome-tour.php"
+        ]
+    },
+    {
+        "claim": "Each job has an Open link to the screen where the work is done.",
+        "evidence": [
+            "resources/views/filament/widgets/welcome-tour-checklist.blade.php",
+            "config/capell-welcome-tour.php",
+            "resources/lang/en/welcome_tour.php"
+        ]
+    },
+    {
+        "claim": "Saving the site, a page appearing, a theme other than the default being switched on and a package being enabled after install each tick a job for you.",
+        "evidence": [
+            "config/capell-welcome-tour.php",
+            "src/Actions/BuildWelcomeTourChecklistAction.php",
+            "src/Support/WelcomeTourSetupSignals.php"
+        ]
+    },
+    {
+        "claim": "Each person can also tick a job by hand.",
+        "evidence": [
+            "resources/views/filament/widgets/welcome-tour-checklist.blade.php",
+            "src/Filament/Widgets/WelcomeTourChecklistFilamentWidget.php",
+            "src/Actions/Users/SetWelcomeTourChecklistItemCompletionAction.php",
+            "src/Actions/BuildWelcomeTourChecklistAction.php"
+        ]
+    },
+    {
+        "claim": "Jobs a person has no permission to open don't appear for them.",
+        "evidence": ["src/Actions/BuildWelcomeTourChecklistAction.php"]
+    },
+    {
+        "claim": "Editors and every kind of admin see the checklist, and visitors never do.",
+        "evidence": [
+            "src/Filament/Widgets/WelcomeTourChecklistFilamentWidget.php"
+        ]
+    },
+    {
+        "claim": "Owners can also write tour steps, the notes a tour shows on each screen, in the Welcome tour settings.",
+        "evidence": [
+            "src/Filament/Settings/WelcomeTourSettingsSchema.php",
+            "resources/lang/en/welcome_tour.php",
+            "src/Livewire/WelcomeTourOrchestrator.php"
+        ]
+    },
+    {
+        "claim": "None come ready-made, and the checklist works without them.",
+        "evidence": [
+            "config/capell-welcome-tour.php",
+            "database/settings/2026_05_10_190836_01_add_welcome_tour_settings.php",
+            "database/settings/2026_07_19_000001_upgrade_welcome_tour_chapter_steps.php",
+            "src/Actions/BuildWelcomeTourChecklistAction.php",
+            "resources/views/filament/widgets/welcome-tour-checklist.blade.php"
+        ]
+    },
+    {
+        "claim": "Each person can hide the checklist for themselves, and until they do it shows at a glance which jobs are done and which are still open.",
+        "evidence": [
+            "src/Filament/Widgets/WelcomeTourChecklistFilamentWidget.php",
+            "src/Actions/Users/SetWelcomeTourChecklistVisibilityAction.php",
+            "resources/views/filament/widgets/welcome-tour-checklist.blade.php",
+            "resources/lang/en/welcome_tour.php"
+        ]
+    }
+]

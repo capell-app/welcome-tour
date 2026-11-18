@@ -4,6 +4,10 @@ All notable changes to `capell-app/welcome-tour` will be documented in this file
 
 ## Unreleased
 
+### 2026-11-13
+
+- Corrected the README and admin guide: the tour does not start on its own and ships no default steps, so earlier mentions of default Sites, Pages and Media steps do not apply. Steps are added in the Welcome tour settings.
+
 ### 2026-06-04
 
 - Added package-owned `welcome_tour_user_states` persistence for hosts without `users.dismissed_hints`.
