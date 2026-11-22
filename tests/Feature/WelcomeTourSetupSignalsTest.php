@@ -10,6 +10,8 @@ use Capell\WelcomeTour\Data\WelcomeTourChecklistItemData;
 
 beforeEach(function (): void {
     $this->actingAsAdmin();
+    // The test install records every booted package as installed now; these tests set the install history themselves.
+    CapellExtension::query()->delete();
 });
 
 function shippedChecklistItem(string $key): WelcomeTourChecklistItemData

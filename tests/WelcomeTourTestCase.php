@@ -14,7 +14,6 @@ use Capell\Core\Facades\CapellCore;
 use Capell\Tests\Packages\PackagesTestCase;
 use Capell\Tests\Support\Concerns\CreatesAdminUser;
 use Capell\WelcomeTour\Providers\WelcomeTourServiceProvider;
-use CmsMulti\FilamentClearCache\FilamentClearCacheServiceProvider;
 use CodeWithDennis\FilamentSelectTree\FilamentSelectTreeServiceProvider;
 use Filament\Actions\ActionsServiceProvider;
 use Filament\FilamentServiceProvider;
@@ -83,7 +82,6 @@ abstract class WelcomeTourTestCase extends PackagesTestCase
             FilamentAdjacencyListServiceProvider::class,
             FilamentShieldServiceProvider::class,
             FilamentSelectTreeServiceProvider::class,
-            FilamentClearCacheServiceProvider::class,
             FilamentPeekServiceProvider::class,
             FilamentTourServiceProvider::class,
             FilamentImpersonateServiceProvider::class,

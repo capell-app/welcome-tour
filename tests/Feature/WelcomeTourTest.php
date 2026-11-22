@@ -51,6 +51,7 @@ use Illuminate\Support\Facades\Schema as SchemaFacade;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
+use Livewire\Livewire;
 
 use function Livewire\store;
 
@@ -165,6 +166,8 @@ it('sends the welcome message as a persistent filament notification', function (
     });
     DB::table('sites')->insert(['uuid' => (string) Str::uuid(), 'id' => 1]);
     resolve(RuntimeSchemaState::class)->refreshTable('sites');
+
+    CapellAdmin::registerWelcomeTourStep('one', 'One', 'Copy', chapter: 'one', route: '/admin');
 
     try {
         $widget = new WelcomeTourChecklistFilamentWidget;
@@ -932,5 +935,34 @@ it('does not use a scalar role to bypass team scoped tour restrictions', functio
     } finally {
         config(['permission.teams' => false]);
         resolve(PermissionRegistrar::class)->teams = false;
+    }
+});
+
+it('offers no tour button or welcome message while no tour steps are registered', function (): void {
+    SchemaFacade::dropIfExists('sites');
+    SchemaFacade::create('sites', static function (Blueprint $table): void {
+        $table->id();
+        $table->uuid('uuid');
+    });
+    DB::table('sites')->insert(['uuid' => (string) Str::uuid(), 'id' => 1]);
+    resolve(RuntimeSchemaState::class)->refreshTable('sites');
+
+    try {
+        $widget = new WelcomeTourChecklistFilamentWidget;
+        $widget->mount();
+
+        expect(FilamentNotificationTestSupport::pull())->toBe([])
+            ->and($widget->hasTourSteps())->toBeFalse()
+            ->and($widget->shouldShowChecklist())->toBeTrue();
+
+        Livewire::test(WelcomeTourChecklistFilamentWidget::class)
+            ->assertSee('Hide checklist')
+            ->assertDontSee('Take the tour');
+
+        CapellAdmin::registerWelcomeTourStep('one', 'One', 'Copy', chapter: 'one', route: '/admin');
+
+        Livewire::test(WelcomeTourChecklistFilamentWidget::class)->assertSee('Take the tour');
+    } finally {
+        SchemaFacade::dropIfExists('sites');
     }
 });

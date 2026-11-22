@@ -8,14 +8,14 @@ Saving the site, a page appearing, a theme other than the default being switched
 
 Owners can also write tour steps, the notes a tour shows on each screen, in the Welcome tour settings. None come ready-made, and the checklist works without them. Each person can hide the checklist for themselves, and until they do it shows at a glance which jobs are done and which are still open.
 
-- **Price and availability:** Check current availability and price on the [Capell Marketplace listing](https://capell.app/extensions/welcome-tour).
-- **Licence:** Check the licence terms on the [Capell Marketplace listing](https://capell.app/extensions/welcome-tour).
+- **Price and availability:** Check current availability and price on the [Capell Marketplace listing](https://capell.app/marketplace/extensions/welcome-tour).
+- **Licence:** Check the licence terms on the [Capell Marketplace listing](https://capell.app/marketplace/extensions/welcome-tour).
 - **Requires:** `PHP ^8.4`, `capell-app/admin ^1.0.66`, `capell-app/core ^1.0.75`, `jibaymcs/filament-tour ^5.0`, `laravel/framework ^12.61.1|^13.12.0`, `lorisleiva/laravel-actions ^2.8`, `spatie/laravel-package-tools ^1.15`, `spatie/laravel-settings ^3.0`.
-- **Install:** `composer require capell-app/welcome-tour`.
+- **Install:** `composer require capell-app/welcome-tour:@beta`.
 
 ## Quick Start
 
-1. Install the package: `composer require capell-app/welcome-tour`.
+1. Install the package: `composer require capell-app/welcome-tour:@beta`.
 2. For site owners and administrators: An administrator account, and **Enabled** switched on in the Welcome tour settings.
 3. Open `/admin`. Sign in and open the dashboard. The Getting started checklist appears across the top. The tour does not start by itself unless presentation mode is on, and it ships with no steps: add steps in the Welcome tour settings, then choose **Take the tour** to run it. Choose **Remind me later** to hide the tour until tomorrow.
 4. Check the result: The dashboard shows the Getting started checklist with the first site, page and theme tasks you have not yet finished. Next: Open the Welcome tour settings to add tour steps, limit them by role, or preview the tour as another administrator.

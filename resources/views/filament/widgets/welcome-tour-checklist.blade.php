@@ -65,13 +65,15 @@
             </div>
 
             <div class="mt-4 flex flex-wrap gap-3">
-                <x-filament::button
-                    wire:click="startTour"
-                    color="gray"
-                    icon="heroicon-o-arrow-path"
-                >
-                    {{ __('capell-welcome-tour::welcome_tour.restart_tour') }}
-                </x-filament::button>
+                @if ($this->hasTourSteps())
+                    <x-filament::button
+                        wire:click="startTour"
+                        color="gray"
+                        icon="heroicon-o-arrow-path"
+                    >
+                        {{ __('capell-welcome-tour::welcome_tour.restart_tour') }}
+                    </x-filament::button>
+                @endif
                 <x-filament::button
                     wire:click="dismissChecklist"
                     color="gray"

@@ -71,7 +71,7 @@ return [
     'checklist_create_page_description' => 'A page is a unit of public content that stays private until you publish it.',
     'checklist_pick_theme' => 'Pick a theme',
     'checklist_pick_theme_description' => 'Change the site’s look without changing its content.',
-    'checklist_extend' => 'Extend with extensions',
+    'checklist_extend' => 'Install an extension',
     'checklist_extend_description' => 'Add focused capabilities when your site needs them.',
     'sites_title' => 'Sites',
     'sites_description' => 'A site groups its domains, languages, branding, and pages. Manage its domains from the site record.',

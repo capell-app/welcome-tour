@@ -104,6 +104,11 @@ final class WelcomeTourChecklistFilamentWidget extends Widget implements CapellF
         ));
     }
 
+    public function hasTourSteps(): bool
+    {
+        return BuildWelcomeTourSummaryAction::run()->chapters !== [];
+    }
+
     public function shouldSendWelcomeNotification(): bool
     {
         $user = auth()->user();
@@ -113,6 +118,7 @@ final class WelcomeTourChecklistFilamentWidget extends Widget implements CapellF
             && ! (bool) session()->get('capell_welcome_tour.active', false)
             && WelcomeTourSchema::hasTable(TableName::resolve('sites'))
             && DB::table(TableName::resolve('sites'))->exists()
+            && $this->hasTourSteps()
             && CanShowWelcomeTourAction::run($user);
     }
 
