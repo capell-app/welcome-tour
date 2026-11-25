@@ -8,6 +8,7 @@ use Capell\Admin\Contracts\Bridges\UserResourceBridge;
 use Capell\Admin\Contracts\Extenders\AdminPanelExtender;
 use Capell\Admin\Data\Extensions\ExtensionManagementSurfaceData;
 use Capell\Admin\Enums\DashboardEnum;
+use Capell\Admin\Enums\DashboardRegionEnum;
 use Capell\Admin\Facades\CapellAdmin;
 use Capell\Core\Support\Packages\AbstractPackageServiceProvider;
 use Capell\Core\Support\Settings\SettingsGroupMetadata;
@@ -77,7 +78,7 @@ final class WelcomeTourServiceProvider extends AbstractPackageServiceProvider
         Livewire::component('capell-welcome-tour.settings-controls', WelcomeTourSettingsControls::class);
         $this->app->tag([WelcomeTourUserResourceBridge::class], UserResourceBridge::TAG);
 
-        CapellAdmin::registerDashboardFilamentWidget(WelcomeTourChecklistFilamentWidget::class, DashboardEnum::Main);
+        CapellAdmin::registerDashboardPanel(DashboardRegionEnum::Setup, WelcomeTourChecklistFilamentWidget::class, DashboardEnum::Main);
         CapellAdmin::registerExtensionManagementSurface(ExtensionManagementSurfaceData::settings(
             packageName: self::$packageName,
             label: 'capell-welcome-tour::welcome_tour.settings_label',

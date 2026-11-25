@@ -33,6 +33,13 @@ final class WelcomeTourOrchestrator extends Component
     #[On('capell-welcome-tour::start')]
     public function start(): void
     {
+        $user = auth()->user();
+
+        if ($user instanceof Model) {
+            // A user who dismissed the tour earlier and now asks for it must see it, not a silent no-op.
+            SetUserWelcomeTourPreferenceAction::run($user, enabled: true, tourKey: self::TOUR_KEY);
+        }
+
         $this->restart();
     }
 

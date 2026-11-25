@@ -5,10 +5,10 @@
         "default": {
             "source": {
                 "ref": "HEAD",
-                "commit": "4e8eaae89410b50df5f6c1be224c53ba707be7b9",
+                "commit": "ac9cd8d8dd3882bd034db7b18b54741482847e94",
                 "providers": {
                     "Providers/MigrationMetadataServiceProvider.php": "f3a93d71b3ad0fcdadf1fd5e2f1daf151cb9529b5b53e32c7ba58d794155e768",
-                    "Providers/WelcomeTourServiceProvider.php": "41020d6026a0381d720931604fe4fcd55f3c5abaee89d3e11d4ae2922aa924d4"
+                    "Providers/WelcomeTourServiceProvider.php": "15617707261cdbafab23ca5583d0cb80190de54befcd841fb5b27851bc4f12d7"
                 },
                 "configure": null
             },
@@ -155,7 +155,7 @@
                 "receipt-emissions": [
                     [
                         "dashboard-widget",
-                        "dashboard-widget:Capell\\WelcomeTour\\Filament\\Widgets\\WelcomeTourChecklistFilamentWidget",
+                        "dashboard-panel:setup:Capell\\WelcomeTour\\Filament\\Widgets\\WelcomeTourChecklistFilamentWidget",
                         "Capell\\WelcomeTour\\Filament\\Widgets\\WelcomeTourChecklistFilamentWidget",
                         "Capell\\Admin\\Support\\CapellAdminManager",
                         "admin",
@@ -181,7 +181,7 @@
                     "dashboard-widget": [
                         [
                             "dashboard-widget",
-                            "dashboard-widget:Capell\\WelcomeTour\\Filament\\Widgets\\WelcomeTourChecklistFilamentWidget",
+                            "dashboard-panel:setup:Capell\\WelcomeTour\\Filament\\Widgets\\WelcomeTourChecklistFilamentWidget",
                             "Capell\\WelcomeTour\\Filament\\Widgets\\WelcomeTourChecklistFilamentWidget"
                         ]
                     ],
@@ -209,7 +209,7 @@
                             "main:Capell\\WelcomeTour\\Filament\\Widgets\\WelcomeTourChecklistFilamentWidget": "Capell\\WelcomeTour\\Filament\\Widgets\\WelcomeTourChecklistFilamentWidget"
                         },
                         "regions": {
-                            "main:Capell\\WelcomeTour\\Filament\\Widgets\\WelcomeTourChecklistFilamentWidget": "additional"
+                            "main:Capell\\WelcomeTour\\Filament\\Widgets\\WelcomeTourChecklistFilamentWidget": "setup"
                         }
                     },
                     "Capell\\Admin\\Support\\Extensions\\ExtensionManagementSurfaceRegistry": {

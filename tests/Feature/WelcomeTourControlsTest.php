@@ -149,3 +149,16 @@ it('keeps the account preference helper explicit and preserves progress through 
     expect($data)->toBe(['name' => 'Editor'])
         ->and(GetUserWelcomeTourStateAction::run($user)->completedStepKeys)->toBe(['done']);
 });
+
+it('starts the tour from the welcome notification even after it was dismissed', function (): void {
+    config()->set('capell-welcome-tour.presentation_mode', false);
+    $this->actingAsAdmin();
+    $user = $this->authenticatedUser();
+    SetUserWelcomeTourPreferenceAction::run($user, false);
+    expect(CanShowWelcomeTourAction::run($user))->toBeFalse();
+
+    Livewire::test(WelcomeTourOrchestrator::class)->dispatch('capell-welcome-tour::start')->assertRedirect();
+
+    expect(CanShowWelcomeTourAction::run($user))->toBeTrue()
+        ->and(session()->get('capell_welcome_tour.active'))->toBeTrue();
+});
