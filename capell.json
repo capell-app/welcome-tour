@@ -6,6 +6,7 @@
     "kind": "package",
     "capellApiVersion": "^1.0",
     "version": "1.0.0",
+    "launchStatus": "preview",
     "description": "Admin dashboard checklist of four setup jobs for new editors, ticked by the work itself or by hand, with a place to write optional tour steps.",
     "product": {
         "group": "Capell Essentials",
